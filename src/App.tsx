@@ -94,19 +94,7 @@ const servicesKa: Service[] = [
 // ==========================================
 // CUSTOM HOOKS
 // ==========================================
-function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 767px)');
-    setIsMobile(media.matches);
-    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, []);
-
-  return isMobile;
-}
 
 // useStaggeredReveal hook
 interface StaggeredReveal {
@@ -114,7 +102,7 @@ interface StaggeredReveal {
   getAnimStyle: (index: number) => React.CSSProperties;
 }
 
-function useStaggeredReveal(count: number, threshold = 0.15): StaggeredReveal {
+function useStaggeredReveal(threshold = 0.15): StaggeredReveal {
   const [visible, setVisible] = useState(false);
   const containerRef = useRef<HTMLElement | null>(null);
 
@@ -149,7 +137,7 @@ function useStaggeredReveal(count: number, threshold = 0.15): StaggeredReveal {
 // ==========================================
 // SPLASH SCREEN COMPONENT
 // ==========================================
-const SplashScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+const SplashScreen: React.FC<{ onComplete: () => void; t: (en: string, ka: string) => string }> = ({ onComplete, t }) => {
   const [count, setCount] = useState(0);
   const [exiting, setExiting] = useState(false);
 
@@ -891,13 +879,13 @@ const App: React.FC = () => {
     ? ['Advanced Dentistry', 'High Quality Equipment', 'Friendly Staff']
     : ['თანამედროვე სტომატოლოგია', 'უახლესი აპარატურა', 'მეგობრული გარემო'];
 
-  const s1Reveal = useStaggeredReveal(4);
-  const s2Reveal = useStaggeredReveal(4);
-  const s3Reveal = useStaggeredReveal(4);
+  const s1Reveal = useStaggeredReveal();
+  const s2Reveal = useStaggeredReveal();
+  const s3Reveal = useStaggeredReveal();
 
   return (
     <div className="min-h-screen bg-[#e0e8f3] text-neutral-700 select-none font-sans overflow-x-hidden">
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} t={t} />}
       
       <Navbar 
         lang={lang} 
