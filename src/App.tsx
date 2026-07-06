@@ -685,6 +685,34 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
   );
 };
 
+// Synthesis helper for a satisfying Neumorphic tactile click ("tkup" pop sound)
+const playPopSound = () => {
+  try {
+    // @ts-ignore
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.type = 'sine';
+    // Frequency slide from 280Hz to 80Hz in 0.05 seconds creates a clean acoustic pop
+    osc.frequency.setValueAtTime(280, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.05);
+    
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+    
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.05);
+  } catch (e) {
+    // Fail silently to prevent crashing UI if browser blocks context
+  }
+};
+
 // ==========================================
 // CHATBOT ASSISTANT WIDGET
 // ==========================================
@@ -725,6 +753,18 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
   useEffect(() => {
     initChat();
   }, [lang]);
+
+  // Auto-open chatbot once per session after 1.5 seconds delay
+  useEffect(() => {
+    const hasClosed = sessionStorage.getItem('chat_closed');
+    if (!hasClosed) {
+      const timer = setTimeout(() => {
+        initChat();
+        setIsOpen(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -802,7 +842,10 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
               </div>
             </div>
             <button 
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                sessionStorage.setItem('chat_closed', 'true');
+              }}
               className="text-white hover:text-neutral-300 font-bold text-sm focus:outline-none"
             >
               ✕
@@ -845,7 +888,11 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
       {/* Launcher */}
       <button 
         onClick={() => {
-          if (!isOpen) initChat();
+          if (isOpen) {
+            sessionStorage.setItem('chat_closed', 'true');
+          } else {
+            initChat();
+          }
           setIsOpen(!isOpen);
         }}
         className="w-14 h-14 bg-[#e0e8f3] hover:scale-105 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] border border-white/20 transition-all relative"
@@ -882,6 +929,28 @@ const App: React.FC = () => {
   const s1Reveal = useStaggeredReveal();
   const s2Reveal = useStaggeredReveal();
   const s3Reveal = useStaggeredReveal();
+
+  // Attach global tactile "tkup" sound effect to all clickable element interactions
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isInteractive = 
+        target.closest('button') || 
+        target.closest('a') || 
+        target.closest('[role="button"]') || 
+        target.closest('.cursor-pointer') ||
+        window.getComputedStyle(target).cursor === 'pointer';
+        
+      if (isInteractive) {
+        playPopSound();
+      }
+    };
+    
+    document.addEventListener('click', handleGlobalClick);
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#e0e8f3] text-neutral-700 select-none font-sans overflow-x-hidden">
