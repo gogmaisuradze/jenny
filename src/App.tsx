@@ -648,7 +648,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
               <span className="w-8 h-8 rounded-full bg-[#e0e8f3] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📞</span>
               <div>
                 <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Phone', 'ტელეფონი')}</p>
-                <a href="tel:+995599001122" className="text-neutral-800 font-black hover:underline">+995 599 00-11-22</a>
+                <a href="tel:+995593567998" className="text-neutral-800 font-black hover:underline">+995 593 56-79-98</a>
               </div>
             </div>
             
@@ -664,7 +664,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
               <span className="w-8 h-8 rounded-full bg-[#e0e8f3] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📍</span>
               <div>
                 <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Address', 'მისამართი')}</p>
-                <span className="text-neutral-800 font-black">{t('Chavchavadze Ave, Tbilisi', 'ჭავჭავაძის გამზირი, თბილისი')}</span>
+                <span className="text-neutral-800 font-black">{t('14 Meliton and Andria Balanchivadze St, Tbilisi', 'მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი')}</span>
               </div>
             </div>
           </div>
@@ -672,7 +672,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
           {/* Grayscale Map with Neumorphic bezel */}
           <div className="relative w-full h-[180px] rounded-3xl overflow-hidden shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2978.8953181825835!2d44.75704177656363!3d41.7066060761614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40440cd2be32e3cb%3A0xcad456e7e44be2!2sIlia%20Chavchavadze%20Avenue%2C%20T&#39;bilisi!5e0!3m2!1sen!2sge!4v1717320000000!5m2!1sen!2sge" 
+              src="https://maps.google.com/maps?q=14%20Meliton%20and%20Andria%20Balanchivadze%20St,%20Tbilisi&t=&z=16&ie=UTF8&iwloc=&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0, filter: 'grayscale(90%) contrast(1.1) brightness(0.95)' }} 
@@ -795,8 +795,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
       botReply = {
         sender: 'bot',
         text: t(
-          '📞 Phone: +995 599 00-11-22\n✉️ Email: info@jenny.ge\n📍 Address: Chavchavadze Ave, Tbilisi',
-          '📞 ტელეფონი: +995 599 00-11-22\n✉️ ელ-ფოსტა: info@jenny.ge\n📍 მისამართი: ჭავჭავაძის გამზირი, თბილისი'
+          '📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n📍 Address: 14 Meliton and Andria Balanchivadze St, Tbilisi',
+          '📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი'
         ),
         options: [
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
