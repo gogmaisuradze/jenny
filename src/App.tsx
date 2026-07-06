@@ -174,7 +174,8 @@ const SplashScreen: React.FC<{ onComplete: () => void; t: (en: string, ka: strin
             <span className="text-4xl font-extrabold text-neutral-800 tabular-nums">{count}%</span>
           </div>
         </div>
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center gap-2">
+          <img src="/assets/logo.png" alt="Jenny Logo" className="w-16 h-16 object-contain mb-1" />
           <span className="text-2xl font-black uppercase tracking-wider text-neutral-800">{t('JENNY PIRTSKHALAVA', 'ჯენი ფირცხალავა')}</span>
           <span className="block text-xs font-bold text-neutral-500 uppercase tracking-widest mt-1">QUALITY CLINIC</span>
         </div>
@@ -216,14 +217,16 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick }) => {
     <>
       {/* Neumorphic floating pill navbar */}
       <header className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 bg-[#e0e8f3] rounded-full shadow-[6px_6px_15px_rgba(163,177,198,0.5),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20">
-        {/* Logo */}
-        <div className="flex flex-col select-none cursor-pointer">
-          <span className="text-lg md:text-xl font-black uppercase tracking-tight leading-none text-neutral-800">
-            {t('Jenny', 'ჯენი')}
-          </span>
-          <span className="text-lg md:text-xl font-black uppercase tracking-tight leading-none text-neutral-800 -mt-1">
-            {t('Pirtskhalava', 'ფირცხალავა')}
-          </span>
+        <div className="flex items-center gap-2 select-none cursor-pointer">
+          <img src="/assets/logo.png" alt="Jenny Logo" className="w-10 h-10 object-contain rounded-lg bg-white/20 p-0.5" />
+          <div className="flex flex-col">
+            <span className="text-sm md:text-base font-black uppercase tracking-tight leading-none text-neutral-800">
+              {t('Jenny', 'ჯენი')}
+            </span>
+            <span className="text-sm md:text-base font-black uppercase tracking-tight leading-none text-neutral-800 -mt-0.5">
+              {t('Pirtskhalava', 'ფირცხალავა')}
+            </span>
+          </div>
         </div>
 
         {/* Action controllers */}
@@ -685,7 +688,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
   );
 };
 
-// Synthesis helper for a satisfying Neumorphic tactile click ("tkup" pop sound)
+// Synthesis helper for a satisfying Neumorphic tactile click ("tk" click sound)
 const playPopSound = () => {
   try {
     // @ts-ignore
@@ -698,16 +701,17 @@ const playPopSound = () => {
     osc.connect(gain);
     gain.connect(ctx.destination);
     
-    osc.type = 'sine';
-    // Frequency slide from 280Hz to 80Hz in 0.05 seconds creates a clean acoustic pop
-    osc.frequency.setValueAtTime(280, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.05);
+    // Using triangle wave for a crisp, slightly metallic mechanical click texture
+    osc.type = 'triangle';
+    // Frequency slide from 1000Hz down to 250Hz in 0.025s represents the mechanical transient
+    osc.frequency.setValueAtTime(1000, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(250, ctx.currentTime + 0.025);
     
-    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.025);
     
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.05);
+    osc.stop(ctx.currentTime + 0.025);
   } catch (e) {
     // Fail silently to prevent crashing UI if browser blocks context
   }
@@ -1244,8 +1248,9 @@ const App: React.FC = () => {
           FOOTER / SOCIAL CHANNELS
           ========================================== */}
       <footer id="contact" className="py-12 bg-neutral-900 text-neutral-400 text-center flex flex-col items-center gap-6">
-        <div className="flex flex-col select-none">
-          <span className="text-2xl font-black uppercase tracking-widest text-white leading-none">JENNY PIRTSKHALAVA</span>
+        <div className="flex flex-col items-center select-none">
+          <img src="/assets/logo.png" alt="Jenny Logo" className="w-14 h-14 object-contain mb-2 rounded-xl bg-white/5 p-1 backdrop-blur-sm" />
+          <span className="text-xl font-black uppercase tracking-widest text-white leading-none">JENNY PIRTSKHALAVA</span>
           <span className="text-[10px] font-bold tracking-wider text-neutral-500 uppercase mt-1">{t('premium dental care', 'პრემიუმ კლასის სტომატოლოგია')}</span>
         </div>
 
