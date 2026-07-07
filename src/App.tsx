@@ -113,11 +113,11 @@ const SplashScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   }, [onComplete]);
 
   return (
-    <div className={`fixed inset-0 bg-[#e0e8f3] z-[100] flex items-center justify-center transition-all duration-700 ${exiting ? 'opacity-0 scale-95' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 bg-[#f6f7f1] z-[100] flex items-center justify-center transition-all duration-700 ${exiting ? 'opacity-0 scale-95' : 'opacity-100'}`}>
       <div className="flex flex-col items-center gap-6">
         {/* Soft Neumorphic Loading Circle */}
-        <div className="w-40 h-40 rounded-full bg-[#e0e8f3] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.8)] flex items-center justify-center relative animate-[pulse_2s_infinite]">
-          <div className="w-28 h-28 rounded-full bg-[#e0e8f3] shadow-[inset_6px_6px_12px_rgba(163,177,198,0.5),inset_-6px_-6px_12px_rgba(255,255,255,0.85)] flex items-center justify-center">
+        <div className="w-40 h-40 rounded-full bg-[#f6f7f1] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.8)] flex items-center justify-center relative animate-[pulse_2s_infinite]">
+          <div className="w-28 h-28 rounded-full bg-[#f6f7f1] shadow-[inset_6px_6px_12px_rgba(163,177,198,0.5),inset_-6px_-6px_12px_rgba(255,255,255,0.85)] flex items-center justify-center">
             <span className="text-4xl font-extrabold text-neutral-800 tabular-nums">{count}%</span>
           </div>
         </div>
@@ -163,7 +163,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
   return (
     <>
       {/* Neumorphic floating pill navbar */}
-      <header className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 bg-[#e0e8f3] rounded-full shadow-[6px_6px_15px_rgba(163,177,198,0.5),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20">
+      <header className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 bg-[#f6f7f1]/85 backdrop-blur-md rounded-full shadow-[6px_6px_15px_rgba(163,177,198,0.4),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20">
         {/* Logo */}
         <div className="flex items-center select-none cursor-pointer hover:scale-105 transition-all">
           <img 
@@ -192,7 +192,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
           </nav>
 
           {/* Neumorphic Language Switcher */}
-          <div className="flex gap-1 bg-[#e0e8f3] p-1 rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.8)]">
+          <div className="flex gap-1 bg-[#f6f7f1] p-1 rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.8)]">
             <button 
               onClick={() => setLang('ka')} 
               className={`px-3 py-1 rounded-full text-xs font-black transition-all ${lang === 'ka' ? 'bg-neutral-800 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-800'}`}
@@ -212,14 +212,14 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
             {/* Neumorphic styled Booking Button */}
             <button 
               onClick={onBookClick}
-              className="px-5 py-2.5 bg-[#e0e8f3] rounded-full text-xs font-black text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 hover:scale-105 active:shadow-inner transition-all"
+              className="px-5 py-2.5 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 hover:scale-105 active:shadow-inner transition-all"
             >
               {t('Book Appointment', 'ვიზიტის დაჯავშნა')}
             </button>
             
             <button 
               onClick={() => setIsOpen(true)}
-              className="w-10 h-10 bg-[#e0e8f3] rounded-full flex items-center justify-center shadow-[4px_4px_8px_rgba(163,177,198,0.5),-4px_-4px_8px_rgba(255,255,255,0.8)] border border-white/20 text-neutral-700 hover:text-black lg:hidden"
+              className="w-10 h-10 bg-[#f6f7f1] rounded-full flex items-center justify-center shadow-[4px_4px_8px_rgba(163,177,198,0.5),-4px_-4px_8px_rgba(255,255,255,0.8)] border border-white/20 text-neutral-700 hover:text-black lg:hidden"
             >
               ☰
             </button>
@@ -233,7 +233,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
           onClick={() => setIsOpen(false)}
           className={`absolute inset-0 bg-neutral-900/10 backdrop-blur-sm transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`} 
         />
-        <div className={`absolute top-0 right-0 h-full w-[80%] max-w-sm bg-[#e0e8f3] shadow-2xl border-l border-white/20 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className={`absolute top-0 right-0 h-full w-[80%] max-w-sm bg-[#f6f7f1] shadow-2xl border-l border-white/20 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           <div className="flex flex-col justify-center h-full px-8 gap-4 pt-16">
             {activeNavLinks.map((link, i) => (
               <a 
@@ -309,11 +309,11 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
   };
 
   return (
-    <div className="fixed inset-0 bg-[#e0e8f3]/60 backdrop-blur-md z-[80] flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-[#e0e8f3] rounded-[36px] w-full max-w-5xl overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/30 flex flex-col md:flex-row relative">
+    <div className="fixed inset-0 bg-[#f6f7f1]/60 backdrop-blur-md z-[80] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-[#f6f7f1] rounded-[36px] w-full max-w-5xl overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/30 flex flex-col md:flex-row relative">
         <button 
           onClick={onClose}
-          className="absolute top-5 right-5 w-10 h-10 bg-[#e0e8f3] hover:shadow-[inset_2px_2px_5px_rgba(163,177,198,0.5)] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.9)] border border-white/20 rounded-full flex items-center justify-center text-neutral-700 z-20 font-black text-sm transition-all"
+          className="absolute top-5 right-5 w-10 h-10 bg-[#f6f7f1] hover:shadow-[inset_2px_2px_5px_rgba(163,177,198,0.5)] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.9)] border border-white/20 rounded-full flex items-center justify-center text-neutral-700 z-20 font-black text-sm transition-all"
         >
           ✕
         </button>
@@ -325,7 +325,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
               {[1, 2, 3].map((num) => (
                 <div 
                   key={num}
-                  className={`h-2 flex-1 rounded-full transition-all duration-300 ${step >= num ? 'bg-neutral-800 shadow-sm' : 'bg-[#e0e8f3] shadow-[inset_2px_2px_4px_rgba(163,177,198,0.5)]'}`}
+                  className={`h-2 flex-1 rounded-full transition-all duration-300 ${step >= num ? 'bg-neutral-800 shadow-sm' : 'bg-[#f6f7f1] shadow-[inset_2px_2px_4px_rgba(163,177,198,0.5)]'}`}
                 />
               ))}
             </div>
@@ -338,7 +338,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
                 </h3>
                 
                 {/* Specialty Toggle */}
-                <div className="flex gap-2 bg-[#e0e8f3] p-1.5 rounded-2xl shadow-[inset_3px_3px_6px_rgba(163,177,198,0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.8)] mb-6">
+                <div className="flex gap-2 bg-[#f6f7f1] p-1.5 rounded-2xl shadow-[inset_3px_3px_6px_rgba(163,177,198,0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.8)] mb-6">
                   <button 
                     onClick={() => { setSpecialty('dentistry'); setTreatment(''); }}
                     className={`flex-1 py-3.5 rounded-xl text-xs font-black transition-all ${specialty === 'dentistry' ? 'bg-neutral-800 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-800'}`}
@@ -384,7 +384,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
                   {t('July 2026', 'ივლისი 2026')}
                 </div>
 
-                <div className="mb-6 p-4 rounded-2xl bg-[#e0e8f3] shadow-[inset_4px_4px_8px_rgba(163,177,198,0.5),inset_-4px_-4px_8px_rgba(255,255,255,0.85)] border border-white/25">
+                <div className="mb-6 p-4 rounded-2xl bg-[#f6f7f1] shadow-[inset_4px_4px_8px_rgba(163,177,198,0.5),inset_-4px_-4px_8px_rgba(255,255,255,0.85)] border border-white/25">
                   <div className="grid grid-cols-7 gap-1.5 text-center font-bold text-[10px] md:text-xs text-neutral-400 mb-3">
                     {weekdays.map((w) => <div key={w}>{w}</div>)}
                   </div>
@@ -400,7 +400,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
                           key={day}
                           disabled={isPast}
                           onClick={() => setSelectedDay(day)}
-                          className={`aspect-square text-xs md:text-sm font-black rounded-full flex items-center justify-center transition-all ${isPast ? 'text-neutral-300 cursor-not-allowed shadow-none' : isSelected ? 'bg-neutral-800 text-white shadow-inner scale-[0.93]' : 'bg-[#e0e8f3] text-neutral-800 shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] hover:scale-105 border border-white/20'}`}
+                          className={`aspect-square text-xs md:text-sm font-black rounded-full flex items-center justify-center transition-all ${isPast ? 'text-neutral-300 cursor-not-allowed shadow-none' : isSelected ? 'bg-neutral-800 text-white shadow-inner scale-[0.93]' : 'bg-[#f6f7f1] text-neutral-800 shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] hover:scale-105 border border-white/20'}`}
                         >
                           {day}
                         </button>
@@ -416,7 +416,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
                         <button
                           key={time}
                           onClick={() => setSelectedTime(time)}
-                          className={`py-3 rounded-xl text-xs md:text-sm font-black transition-all ${selectedTime === time ? 'bg-neutral-800 text-white shadow-inner scale-[0.95]' : 'bg-[#e0e8f3] text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.9)] border border-white/20 hover:scale-[1.02]'}`}
+                          className={`py-3 rounded-xl text-xs md:text-sm font-black transition-all ${selectedTime === time ? 'bg-neutral-800 text-white shadow-inner scale-[0.95]' : 'bg-[#f6f7f1] text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.9)] border border-white/20 hover:scale-[1.02]'}`}
                         >
                           {time}
                         </button>
@@ -444,7 +444,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder={t('Giorgi Kalandadze', 'მაგ: გიორგი კალანდაძე')}
-                      className="w-full px-5 py-4 rounded-2xl bg-[#e0e8f3] shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] focus:outline-none text-sm font-bold text-neutral-800 border border-white/10"
+                      className="w-full px-5 py-4 rounded-2xl bg-[#f6f7f1] shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] focus:outline-none text-sm font-bold text-neutral-800 border border-white/10"
                     />
                   </div>
                   
@@ -458,7 +458,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="593567998"
-                      className="w-full px-5 py-4 rounded-2xl bg-[#e0e8f3] shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] focus:outline-none text-sm font-bold text-neutral-800 border border-white/10"
+                      className="w-full px-5 py-4 rounded-2xl bg-[#f6f7f1] shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] focus:outline-none text-sm font-bold text-neutral-800 border border-white/10"
                     />
                   </div>
                 </div>
@@ -482,7 +482,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
             {/* Step 4: Success Message */}
             {step === 4 && (
               <div className="flex flex-col items-center justify-center text-center py-10 animate-[scaleUp_0.4s_cubic-bezier(0.16,1,0.3,1)]">
-                <div className="w-20 h-20 bg-[#e0e8f3] rounded-full shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center text-green-500 mb-6 text-3xl font-black">
+                <div className="w-20 h-20 bg-[#f6f7f1] rounded-full shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center text-green-500 mb-6 text-3xl font-black">
                   ✓
                 </div>
                 <h3 className="text-2xl font-black text-neutral-800 mb-3">
@@ -508,7 +508,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
             <div className="flex justify-between mt-6">
               <button
                 onClick={() => setStep(step - 1)}
-                className="px-6 py-2.5 rounded-full bg-[#e0e8f3] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 text-xs font-black text-neutral-700 hover:scale-105 transition-transform"
+                className="px-6 py-2.5 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 text-xs font-black text-neutral-700 hover:scale-105 transition-transform"
               >
                 {t('Back', 'უკან')}
               </button>
@@ -525,9 +525,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
         </div>
 
         {/* Right Column: Contact info & map */}
-        <div className="w-full md:w-[400px] bg-[#e0e8f3]/80 border-t md:border-t-0 md:border-l border-neutral-300 p-6 md:p-10 flex flex-col justify-between">
+        <div className="w-full md:w-[400px] bg-[#f6f7f1]/80 border-t md:border-t-0 md:border-l border-neutral-300 p-6 md:p-10 flex flex-col justify-between">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full bg-[#e0e8f3] p-1 shadow-[4px_4px_8px_rgba(163,177,198,0.5),-4px_-4px_8px_rgba(255,255,255,0.9)] border border-white/30 shrink-0 overflow-hidden">
+            <div className="w-16 h-16 rounded-full bg-[#f6f7f1] p-1 shadow-[4px_4px_8px_rgba(163,177,198,0.5),-4px_-4px_8px_rgba(255,255,255,0.9)] border border-white/30 shrink-0 overflow-hidden">
               <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Pirtskhalava" className="w-full h-full object-cover rounded-full" />
             </div>
             <div>
@@ -538,21 +538,21 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
 
           <div className="flex flex-col gap-4 text-xs font-black text-neutral-600 mb-6">
             <div className="flex gap-3 items-center">
-              <span className="w-8 h-8 rounded-full bg-[#e0e8f3] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📞</span>
+              <span className="w-8 h-8 rounded-full bg-[#f6f7f1] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📞</span>
               <div>
                 <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Phone', 'ტელეფონი')}</p>
                 <a href="tel:+995593567998" className="text-neutral-800 font-black hover:underline">+995 593 56-79-98</a>
               </div>
             </div>
             <div className="flex gap-3 items-center">
-              <span className="w-8 h-8 rounded-full bg-[#e0e8f3] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">✉️</span>
+              <span className="w-8 h-8 rounded-full bg-[#f6f7f1] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">✉️</span>
               <div>
                 <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Email', 'ელ-ფოსტა')}</p>
                 <a href="mailto:info@jenny.ge" className="text-neutral-800 font-black hover:underline">info@jenny.ge</a>
               </div>
             </div>
             <div className="flex gap-3 items-center">
-              <span className="w-8 h-8 rounded-full bg-[#e0e8f3] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📍</span>
+              <span className="w-8 h-8 rounded-full bg-[#f6f7f1] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📍</span>
               <div>
                 <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Address', 'მისამართი')}</p>
                 <span className="text-neutral-800 font-black">{t('14 Meliton and Andria Balanchivadze St, Tbilisi', 'მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი')}</span>
@@ -693,7 +693,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {isOpen && (
-        <div className="w-[320px] md:w-[350px] h-[450px] bg-[#e0e8f3] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
+        <div className="w-[320px] md:w-[350px] h-[450px] bg-[#f6f7f1] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
           <div className="bg-neutral-800 text-white p-4 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full overflow-hidden border border-white/20 bg-neutral-700">
@@ -715,14 +715,14 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-[#e0e8f3]">
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-[#f6f7f1]">
             {messages.map((msg, i) => (
               <div 
                 key={i} 
                 className={`flex flex-col max-w-[85%] ${msg.sender === 'user' ? 'self-end items-end' : 'self-start items-start'}`}
               >
                 <div 
-                  className={`p-3.5 rounded-2xl text-xs font-bold leading-relaxed ${msg.sender === 'user' ? 'bg-neutral-800 text-white rounded-tr-none shadow-md' : 'bg-[#e0e8f3] border border-white/30 text-neutral-800 rounded-tl-none shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.85)]'}`}
+                  className={`p-3.5 rounded-2xl text-xs font-bold leading-relaxed ${msg.sender === 'user' ? 'bg-neutral-800 text-white rounded-tr-none shadow-md' : 'bg-[#f6f7f1] border border-white/30 text-neutral-800 rounded-tl-none shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.85)]'}`}
                 >
                   {msg.text}
                 </div>
@@ -732,7 +732,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
                       <button
                         key={opt.action}
                         onClick={() => handleAction(opt.action, opt.label)}
-                        className="w-full py-3 px-4 bg-[#e0e8f3] border border-white/20 hover:scale-[1.02] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] rounded-xl text-left text-xs font-black text-neutral-800 transition-all"
+                        className="w-full py-3 px-4 bg-[#f6f7f1] border border-white/20 hover:scale-[1.02] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] rounded-xl text-left text-xs font-black text-neutral-800 transition-all"
                       >
                         {opt.label}
                       </button>
@@ -755,7 +755,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           }
           setIsOpen(!isOpen);
         }}
-        className="w-14 h-14 bg-[#e0e8f3] hover:scale-105 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] border border-white/20 transition-all relative"
+        className="w-14 h-14 bg-[#f6f7f1] hover:scale-105 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] border border-white/20 transition-all relative"
         aria-label="Open chat assistant"
       >
         {isOpen ? (
@@ -834,7 +834,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#e0e8f3] text-neutral-800 select-none font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#f6f7f1] text-neutral-800 select-none font-sans overflow-x-hidden" style={{ backgroundImage: "url('/assets/paper_texture.jpg')", backgroundRepeat: "repeat" }}>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       
       <Navbar 
@@ -860,7 +860,7 @@ const App: React.FC = () => {
               style={s1Reveal.getAnimStyle(0)}
               className="flex flex-col gap-6 items-start z-10"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#e0e8f3] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10">
                 ✨ {t('Jenny Pirtskhalava Clinic', 'ჯენი ფირცხალავას კლინიკა')}
               </div>
 
@@ -881,7 +881,7 @@ const App: React.FC = () => {
               <div className="flex gap-4 w-full sm:w-auto">
                 <button
                   onClick={() => setIsBookingOpen(true)}
-                  className="px-8 py-4 bg-[#e0e8f3] hover:scale-105 rounded-full font-black text-neutral-800 shadow-[6px_6px_15px_rgba(163,177,198,0.5),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20 active:shadow-inner transition-all text-xs uppercase tracking-wider"
+                  className="px-8 py-4 bg-[#f6f7f1] hover:scale-105 rounded-full font-black text-neutral-800 shadow-[6px_6px_15px_rgba(163,177,198,0.5),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20 active:shadow-inner transition-all text-xs uppercase tracking-wider"
                 >
                   {t('Book Visit Now', 'ვიზიტის დაჯავშნა')}
                 </button>
@@ -899,7 +899,7 @@ const App: React.FC = () => {
               style={s1Reveal.getAnimStyle(1)}
               className="relative flex justify-center items-center w-full aspect-square"
             >
-              <div className="absolute -z-10 w-[90%] h-[90%] bg-[#e0e8f3] rounded-full blur-3xl opacity-40" />
+              <div className="absolute -z-10 w-[90%] h-[90%] bg-[#f6f7f1] rounded-full blur-3xl opacity-40" />
               <div className="relative w-[80%] aspect-square">
                 <div className="absolute inset-0 rounded-full border border-dashed border-neutral-300 animate-[spin_60s_linear_infinite]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] rounded-full overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.5),-10px_-10px_25px_rgba(255,255,255,0.9)] border-[8px] border-white">
@@ -939,7 +939,7 @@ const App: React.FC = () => {
         <section 
           id="services"
           ref={s2Reveal.containerRef}
-          className="py-20 px-6 max-w-[1200px] mx-auto bg-[#e0e8f3] rounded-[36px] shadow-[inset_4px_4px_10px_rgba(163,177,198,0.5),inset_-4px_-4px_10px_rgba(255,255,255,0.85)] border border-white/20"
+          className="py-20 px-6 max-w-[1200px] mx-auto bg-[#f6f7f1] rounded-[36px] shadow-[inset_4px_4px_10px_rgba(163,177,198,0.5),inset_-4px_-4px_10px_rgba(255,255,255,0.85)] border border-white/20"
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-neutral-800 tracking-tight">
@@ -971,7 +971,7 @@ const App: React.FC = () => {
                 </p>
                 <button 
                   onClick={() => setIsBookingOpen(true)}
-                  className="px-6 py-3.5 bg-[#e0e8f3] hover:scale-105 text-neutral-800 font-black text-xs rounded-full shadow-md transition-all active:shadow-inner"
+                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 text-neutral-800 font-black text-xs rounded-full shadow-md transition-all active:shadow-inner"
                 >
                   {t('Book slots', 'სრულად ნახვა')}
                 </button>
@@ -984,7 +984,7 @@ const App: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
                 {/* Neumorphic accent label */}
-                <span className="px-4 py-2 bg-[#e0e8f3] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
+                <span className="px-4 py-2 bg-[#f6f7f1] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
                   {t('Dermatology', 'დერმატოლოგია')}
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-white leading-none">
@@ -995,7 +995,7 @@ const App: React.FC = () => {
                 </p>
                 <button 
                   onClick={() => setIsBookingOpen(true)}
-                  className="px-6 py-3.5 bg-[#e0e8f3] hover:scale-105 text-neutral-800 font-black text-xs rounded-full shadow-md transition-all active:shadow-inner"
+                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 text-neutral-800 font-black text-xs rounded-full shadow-md transition-all active:shadow-inner"
                 >
                   {t('Book slots', 'სრულად ნახვა')}
                 </button>
@@ -1097,8 +1097,8 @@ const App: React.FC = () => {
             
             {/* Arrows */}
             <div className="flex gap-2 shrink-0">
-              <button className="w-10 h-10 rounded-full border border-neutral-300 hover:bg-[#e0e8f3] flex items-center justify-center font-bold text-xs transition-colors">←</button>
-              <button className="w-10 h-10 rounded-full border border-neutral-300 hover:bg-[#e0e8f3] flex items-center justify-center font-bold text-xs transition-colors">→</button>
+              <button className="w-10 h-10 rounded-full border border-neutral-300 hover:bg-[#f6f7f1] flex items-center justify-center font-bold text-xs transition-colors">←</button>
+              <button className="w-10 h-10 rounded-full border border-neutral-300 hover:bg-[#f6f7f1] flex items-center justify-center font-bold text-xs transition-colors">→</button>
             </div>
           </div>
 
@@ -1125,7 +1125,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Gallery Item 3 - See More Card */}
-            <div className="rounded-2xl overflow-hidden aspect-[4/5] bg-[#e0e8f3] shadow-md p-8 flex flex-col justify-between items-center text-center">
+            <div className="rounded-2xl overflow-hidden aspect-[4/5] bg-[#f6f7f1] shadow-md p-8 flex flex-col justify-between items-center text-center">
               <span className="text-4xl mt-6">🖼️</span>
               <div>
                 <h4 className="font-black text-lg text-neutral-800 mb-1">{t('See More Cases', 'იხილეთ მეტი')}</h4>
@@ -1133,7 +1133,7 @@ const App: React.FC = () => {
               </div>
               <button 
                 onClick={() => setIsBookingOpen(true)}
-                className="w-full py-3.5 bg-[#e0e8f3] hover:scale-102 text-neutral-800 font-black text-xs rounded-xl shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 active:shadow-inner transition-all mb-4"
+                className="w-full py-3.5 bg-[#f6f7f1] hover:scale-102 text-neutral-800 font-black text-xs rounded-xl shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 active:shadow-inner transition-all mb-4"
               >
                 {t('Gallery', 'გალერეა')}
               </button>
@@ -1144,7 +1144,7 @@ const App: React.FC = () => {
         {/* ==========================================
             SECTION 5 - CLIENT REVIEWS
             ========================================== */}
-        <section className="py-20 px-6 bg-[#e0e8f3] border-t border-b border-white/10">
+        <section className="py-20 px-6 bg-[#f6f7f1] border-t border-b border-white/10">
           <div className="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-8">
             {/* Review 1 */}
             <div className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
@@ -1188,7 +1188,7 @@ const App: React.FC = () => {
       {/* ==========================================
           FOOTER
           ========================================== */}
-      <footer id="contact" className="bg-[#e0e8f3] border-t border-white/20 pt-16 pb-12">
+      <footer id="contact" className="bg-[#f6f7f1] border-t border-white/20 pt-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 max-w-[1200px] mx-auto">
           {/* Logo brand & socials */}
           <div className="flex flex-col gap-4 items-start">
@@ -1208,22 +1208,22 @@ const App: React.FC = () => {
             
             {/* Social icons row */}
             <div className="flex gap-3.5 mt-4">
-              <a href="https://www.facebook.com/MaRiAm.jenni.pirtskhalava" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#e0e8f3] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Facebook">
+              <a href="https://www.facebook.com/MaRiAm.jenni.pirtskhalava" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Facebook">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.8c4.56-.93 8-4.96 8-9.8z"/>
                 </svg>
               </a>
-              <a href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#e0e8f3] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Instagram">
+              <a href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Instagram">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                 </svg>
               </a>
-              <a href="https://www.tiktok.com/@jennypirtskhalava?_r=1" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#e0e8f3] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="TikTok">
+              <a href="https://www.tiktok.com/@jennypirtskhalava?_r=1" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="TikTok">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.52-4.06-1.41-.33-.25-.63-.53-.9-.85-.02 2.22.01 4.43-.02 6.65-.09 1.91-.73 3.86-2.07 5.24-1.63 1.76-4.22 2.62-6.57 2.23-2.31-.34-4.54-1.92-5.46-4.14-1.07-2.43-.65-5.5 1.12-7.51 1.5-1.77 3.96-2.63 6.22-2.22v4.18c-1.34-.34-2.88-.02-3.89.93-.97.9-.99 2.52-.16 3.55.77.99 2.14 1.34 3.32.96 1.07-.31 1.83-1.33 1.89-2.45.06-2.95.02-5.91.04-8.86v-.03z"/>
                 </svg>
               </a>
-              <a href="https://t.me/JennyDentbot" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#e0e8f3] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Telegram">
+              <a href="https://t.me/JennyDentbot" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Telegram">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.6.15-.15 2.72-2.5 2.77-2.7.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.25-.02-.11.02-1.85 1.17-5.23 3.45-.5.34-.95.5-1.35.5-.44-.01-1.29-.25-1.92-.45-.77-.25-1.39-.39-1.34-.83.03-.23.35-.47.97-.73 3.82-1.66 6.37-2.75 7.64-3.28 3.64-1.53 4.4-1.8 4.89-1.8.11 0 .35.03.5.15.13.1.17.24.18.35-.01.07.01.19 0 .28z"/>
                 </svg>
