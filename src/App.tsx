@@ -910,8 +910,8 @@ const App: React.FC = () => {
           className="relative min-h-[85vh] flex items-center overflow-hidden py-12 px-6 max-w-[1200px] mx-auto"
         >
           {/* Faint Calligraphic Fireworks in Hero background */}
-          <CalligraphicFirework className="absolute left-[10%] top-[15%] w-96 h-96 opacity-[0.03] text-neutral-800 -z-10" />
-          <CalligraphicFirework className="absolute right-[5%] bottom-[10%] w-80 h-80 opacity-[0.025] text-neutral-800 -z-10 animate-[spin_120s_linear_infinite]" />
+          <CalligraphicFirework className="absolute left-[10%] top-[15%] w-96 h-96 opacity-[0.03] text-neutral-800 z-0" />
+          <CalligraphicFirework className="absolute right-[5%] bottom-[10%] w-80 h-80 opacity-[0.025] text-neutral-800 z-0 animate-[spin_120s_linear_infinite]" />
           <div className="w-full grid md:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div 
@@ -922,7 +922,7 @@ const App: React.FC = () => {
               <img 
                 src="/assets/hands_drawing.png" 
                 alt="Hands holding dental tools watermark" 
-                className="absolute -left-16 top-16 w-[420px] max-w-none pointer-events-none select-none opacity-[0.22] -z-10"
+                className="absolute -left-16 top-16 w-[420px] max-w-none pointer-events-none select-none opacity-[0.22] z-0"
               />
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
                 ✨ DENTAL & CARE
@@ -1101,13 +1101,13 @@ const App: React.FC = () => {
           <img 
             src="/assets/tooth_braces.png" 
             alt="Tooth and braces watermark" 
-            className="absolute right-2 md:right-8 top-6 md:top-12 w-[240px] md:w-[340px] h-auto pointer-events-none select-none opacity-[0.36] -z-10"
+            className="absolute right-2 md:right-8 top-6 md:top-12 w-[240px] md:w-[340px] h-auto pointer-events-none select-none opacity-[0.36] z-0"
           />
           {/* Contour 2: Hands and tools next to biography text */}
           <img 
             src="/assets/hands_drawing.png" 
             alt="Hands and tools watermark" 
-            className="absolute right-2 md:right-8 bottom-4 w-[220px] md:w-[320px] h-auto pointer-events-none select-none opacity-[0.32] -z-10"
+            className="absolute right-2 md:right-8 bottom-4 w-[220px] md:w-[320px] h-auto pointer-events-none select-none opacity-[0.32] z-0"
           />
           {/* Portrait frame */}
           <div 
