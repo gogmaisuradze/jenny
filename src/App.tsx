@@ -725,7 +725,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-12 right-12 z-50 flex flex-col items-end">
       {/* Glow effect styles for Gold shining collapsed button */}
       <style>{`
         @keyframes pulse-gold {
