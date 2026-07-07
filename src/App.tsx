@@ -872,8 +872,8 @@ const App: React.FC = () => {
               style={s1Reveal.getAnimStyle(0)}
               className="flex flex-col gap-6 items-start z-10"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10">
-                ✨ {t('Jenny Pirtskhalava Clinic', 'ჯენი ფირცხალავას კლინიკა')}
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
+                ✨ DENTAL & CARE
               </div>
 
               <h1 className="text-4xl md:text-6xl font-black text-neutral-900 leading-tight tracking-tight">
@@ -919,7 +919,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Floating Glass Badges */}
-                <div className="absolute top-[10%] -left-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block">
+                <div className="absolute top-[10%] -left-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
                   <div className="flex items-center gap-3">
                     <span className="text-xl">🏆</span>
                     <div>
@@ -929,14 +929,17 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="absolute bottom-[10%] -right-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block">
+                <div className="absolute bottom-[10%] -right-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#F5D061]/25 flex items-center justify-center text-[#F5D061] text-lg font-black shrink-0">
+                    <div className="w-11 h-11 rounded-full bg-[#F5D061] flex items-center justify-center text-white text-xl font-black shrink-0 shadow-[0_2px_8px_rgba(245,208,97,0.4)]">
                       ★
                     </div>
-                    <div>
-                      <p className="text-xs font-black text-neutral-800">{t('5.0 Rating', '5.0 რეიტინგი')}</p>
-                      <p className="text-[10px] font-bold text-neutral-400">{t('Google Reviews', 'Google Reviews')}</p>
+                    <div className="flex flex-col">
+                      <p className="text-xs font-black text-neutral-800 leading-none">{t('5.0 Rating', '5.0 რეიტინგი')}</p>
+                      <div className="flex text-[#F5D061] text-[11px] tracking-tight leading-none mt-1">
+                        ★★★★★
+                      </div>
+                      <p className="text-[9px] font-bold text-neutral-400 mt-1">{t('Google Reviews', 'Google Reviews')}</p>
                     </div>
                   </div>
                 </div>
@@ -983,7 +986,7 @@ const App: React.FC = () => {
                 </p>
                 <button 
                   onClick={() => setIsBookingOpen(true)}
-                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 text-neutral-800 font-black text-xs rounded-full shadow-md transition-all active:shadow-inner"
+                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
                 >
                   {t('Book slots', 'სრულად ნახვა')}
                 </button>
@@ -1007,7 +1010,7 @@ const App: React.FC = () => {
                 </p>
                 <button 
                   onClick={() => setIsBookingOpen(true)}
-                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 text-neutral-800 font-black text-xs rounded-full shadow-md transition-all active:shadow-inner"
+                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
                 >
                   {t('Book slots', 'სრულად ნახვა')}
                 </button>
@@ -1062,19 +1065,19 @@ const App: React.FC = () => {
 
             {/* Checklist of 4 advantages */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
                 <span className="text-xs font-bold text-neutral-800">{t('International Certifications', 'საერთაშორისო სერტიფიკატები')}</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
                 <span className="text-xs font-bold text-neutral-800">{t('Advanced Equipment', 'თანამედროვე აპარატურა')}</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
                 <span className="text-xs font-bold text-neutral-800">{t('Personalized Treatment Plans', 'პერსონალური მკურნალობის გეგმა')}</span>
               </div>
-              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
                 <span className="text-xs font-bold text-neutral-800">{t('Guaranteed Results', 'გარანტირებული შედეგი')}</span>
               </div>
@@ -1082,7 +1085,7 @@ const App: React.FC = () => {
 
             <button 
               onClick={() => setIsBookingOpen(true)}
-              className="self-start px-8 py-4 bg-[#262626] hover:bg-neutral-800 text-white text-xs font-black rounded-2xl shadow-md hover:scale-102 transition-all"
+              className="self-start px-8 py-4 bg-[#262626] hover:bg-neutral-800 hover:-translate-y-1 text-white text-xs font-black rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-105 transition-all duration-300"
             >
               {t('Contact Me', 'დაწვრილებით ჩემს შესახებ')}
             </button>
