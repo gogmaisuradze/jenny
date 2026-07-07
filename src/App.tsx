@@ -726,16 +726,16 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
 
   return (
     <div className="fixed bottom-12 right-12 z-50 flex flex-col items-end">
-      {/* Glow effect styles for Gold shining collapsed button */}
+      {/* Glow effect styles for gray tactile collapsed button */}
       <style>{`
-        @keyframes pulse-gold {
+        @keyframes pulse-gray {
           0%, 100% {
-            box-shadow: 0 0 10px rgba(245, 208, 97, 0.45), 6px 6px 12px rgba(163, 177, 198, 0.45);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.08), 6px 6px 12px rgba(163, 177, 198, 0.45);
             transform: scale(1);
           }
           50% {
-            box-shadow: 0 0 25px rgba(245, 208, 97, 0.95), 6px 6px 12px rgba(163, 177, 198, 0.45);
-            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.16), 6px 6px 12px rgba(163, 177, 198, 0.45);
+            transform: scale(1.04);
           }
         }
       `}</style>
@@ -806,7 +806,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         className={`w-14 h-14 rounded-full flex items-center justify-center border border-white/20 transition-all relative ${
           isOpen 
             ? 'bg-[#f6f7f1] shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] hover:scale-105' 
-            : 'bg-[#F5D061] text-neutral-800 animate-[pulse-gold_2.5s_infinite] shadow-lg'
+            : 'bg-neutral-200 text-neutral-800 animate-[pulse-gray_2.5s_infinite] shadow-lg'
         }`}
         aria-label="Open chat assistant"
       >
