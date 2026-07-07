@@ -1097,6 +1097,12 @@ const App: React.FC = () => {
           ref={s3Reveal.containerRef}
           className="relative py-20 px-6 max-w-[1200px] mx-auto grid md:grid-cols-12 gap-12 items-center"
         >
+          {/* Contour 3: Tooth and braces in top-right corner next to title */}
+          <img 
+            src="/assets/tooth_braces.png" 
+            alt="Tooth and braces watermark" 
+            className="absolute right-2 md:right-8 top-6 md:top-12 w-[240px] md:w-[340px] h-auto pointer-events-none select-none opacity-[0.36] -z-10"
+          />
           {/* Contour 2: Hands and tools next to biography text */}
           <img 
             src="/assets/hands_drawing.png" 
@@ -1109,12 +1115,6 @@ const App: React.FC = () => {
             className="md:col-span-5 relative"
             id="about-portrait-container"
           >
-            {/* Contour 3: Tooth and braces next to portrait (Enlarged format) */}
-            <img 
-              src="/assets/tooth_braces.png" 
-              alt="Tooth and braces watermark" 
-              className="absolute -right-28 md:-right-44 top-12 md:top-20 w-[240px] md:w-[340px] max-w-none pointer-events-none select-none opacity-[0.36] -z-10"
-            />
             <div className="rounded-3xl overflow-hidden shadow-lg border-[12px] border-white">
               <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Pirtskhalava" className="w-full grayscale-0 hover:scale-102 transition-transform duration-500" />
             </div>
