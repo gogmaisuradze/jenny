@@ -834,7 +834,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-neutral-800 select-none font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#e0e8f3] text-neutral-800 select-none font-sans overflow-x-hidden">
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       
       <Navbar 
@@ -939,7 +939,7 @@ const App: React.FC = () => {
         <section 
           id="services"
           ref={s2Reveal.containerRef}
-          className="py-20 px-6 max-w-[1200px] mx-auto bg-white rounded-[36px] shadow-sm border border-neutral-100/50"
+          className="py-20 px-6 max-w-[1200px] mx-auto bg-[#e0e8f3] rounded-[36px] shadow-[inset_4px_4px_10px_rgba(163,177,198,0.5),inset_-4px_-4px_10px_rgba(255,255,255,0.85)] border border-white/20"
         >
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-neutral-800 tracking-tight">
@@ -1144,7 +1144,7 @@ const App: React.FC = () => {
         {/* ==========================================
             SECTION 5 - CLIENT REVIEWS
             ========================================== */}
-        <section className="py-20 px-6 bg-neutral-100/50 border-t border-b border-neutral-200/40">
+        <section className="py-20 px-6 bg-[#e0e8f3] border-t border-b border-white/10">
           <div className="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-8">
             {/* Review 1 */}
             <div className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
