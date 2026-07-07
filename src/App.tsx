@@ -1246,7 +1246,7 @@ const App: React.FC = () => {
           <img 
             src="/assets/tooth_implant.png" 
             alt="Tooth implant watermark" 
-            className="absolute left-1/2 bottom-[-180px] -translate-x-1/2 w-[320px] md:w-[440px] h-auto pointer-events-none select-none opacity-[0.32] z-0 rotate-[12deg]"
+            className="absolute left-1/2 bottom-[-270px] -translate-x-1/2 w-[320px] md:w-[440px] h-auto pointer-events-none select-none opacity-[0.32] z-0 rotate-[12deg]"
           />
           <div className="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-8">
             {/* Review 1 */}
