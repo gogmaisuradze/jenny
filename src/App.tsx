@@ -185,7 +185,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick }) => {
               <a 
                 key={link}
                 href={`#${hashLinks[i]}`}
-                className="font-bold text-xs md:text-sm text-neutral-700 hover:text-neutral-900 transition-colors"
+                className={`font-bold text-xs md:text-sm transition-all pb-1 ${i === 1 ? 'border-b-2 border-[#F5D061] text-neutral-900' : 'text-neutral-500 hover:text-neutral-800'}`}
               >
                 {link}
               </a>
@@ -892,7 +892,9 @@ const App: React.FC = () => {
 
                 <div className="absolute bottom-[10%] -right-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block">
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">⭐</span>
+                    <div className="w-10 h-10 rounded-full bg-[#F5D061]/25 flex items-center justify-center text-[#F5D061] text-lg font-black shrink-0">
+                      ★
+                    </div>
                     <div>
                       <p className="text-xs font-black text-neutral-800">{t('5.0 Rating', '5.0 რეიტინგი')}</p>
                       <p className="text-[10px] font-bold text-neutral-400">{t('Google Reviews', 'Google Reviews')}</p>
@@ -931,7 +933,7 @@ const App: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
                 {/* Neumorphic accent label */}
-                <span className="px-4 py-2 bg-[#e0e8f3] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
+                <span className="px-4 py-2 bg-[#F5D061] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
                   {t('Dentistry', 'სტომატოლოგია')}
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-white leading-none">
@@ -992,9 +994,9 @@ const App: React.FC = () => {
               <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Pirtskhalava" className="w-full grayscale-0 hover:scale-102 transition-transform duration-500" />
             </div>
             {/* Experience badge */}
-            <div className="absolute -bottom-4 -right-4 bg-[#e0e8f3] p-6 rounded-2xl shadow-[4px_4px_10px_rgba(163,177,198,0.5),-4px_-4px_10px_rgba(255,255,255,0.9)] border border-white/20 hidden md:block">
-              <p className="text-3xl font-black text-neutral-800 leading-none">15+</p>
-              <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mt-1">{t('Years Practice', 'წლიანი გამოცდილება')}</p>
+            <div className="absolute -bottom-4 -right-4 bg-[#F5D061] p-6 rounded-2xl shadow-lg border border-white/20 hidden md:block select-none">
+              <p className="text-3xl font-black text-neutral-900 leading-none">15+</p>
+              <p className="text-[10px] font-black text-neutral-900/80 uppercase tracking-widest mt-1">{t('Years Practice', 'წლიანი გამოცდილება')}</p>
             </div>
           </div>
 
@@ -1004,7 +1006,7 @@ const App: React.FC = () => {
             className="md:col-span-7 flex flex-col gap-6"
           >
             <div>
-              <span className="text-neutral-400 font-black tracking-widest text-[10px] uppercase block mb-1">
+              <span className="text-[#F5D061] font-black tracking-widest text-[10px] uppercase block mb-1">
                 {t('Personal Approach', 'პერსონალური მიდგომა')}
               </span>
               <h2 className="text-3xl md:text-5xl font-black text-neutral-800 tracking-tight">
@@ -1021,27 +1023,27 @@ const App: React.FC = () => {
 
             {/* Checklist of 4 advantages */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 bg-[#e0e8f3]/30 p-3 rounded-xl border border-white/40">
-                <span className="text-green-500 font-bold">✓</span>
-                <span className="text-xs font-black text-neutral-800">{t('International Certifications', 'საერთაშორისო სერტიფიკატები')}</span>
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+                <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
+                <span className="text-xs font-bold text-neutral-800">{t('International Certifications', 'საერთაშორისო სერტიფიკატები')}</span>
               </div>
-              <div className="flex items-center gap-3 bg-[#e0e8f3]/30 p-3 rounded-xl border border-white/40">
-                <span className="text-green-500 font-bold">✓</span>
-                <span className="text-xs font-black text-neutral-800">{t('Advanced Equipment', 'თანამედროვე აპარატურა')}</span>
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+                <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Advanced Equipment', 'თანამედროვე აპარატურა')}</span>
               </div>
-              <div className="flex items-center gap-3 bg-[#e0e8f3]/30 p-3 rounded-xl border border-white/40">
-                <span className="text-green-500 font-bold">✓</span>
-                <span className="text-xs font-black text-neutral-800">{t('Personalized Treatment Plans', 'პერსონალური მკურნალობის გეგმა')}</span>
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+                <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Personalized Treatment Plans', 'პერსონალური მკურნალობის გეგმა')}</span>
               </div>
-              <div className="flex items-center gap-3 bg-[#e0e8f3]/30 p-3 rounded-xl border border-white/40">
-                <span className="text-green-500 font-bold">✓</span>
-                <span className="text-xs font-black text-neutral-800">{t('Guaranteed Results', 'გარანტირებული შედეგი')}</span>
+              <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)]">
+                <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Guaranteed Results', 'გარანტირებული შედეგი')}</span>
               </div>
             </div>
 
             <button 
               onClick={() => setIsBookingOpen(true)}
-              className="self-start px-8 py-4 bg-[#e0e8f3] rounded-full text-xs font-black text-neutral-800 shadow-[4px_4px_10px_rgba(163,177,198,0.5),-4px_-4px_10px_rgba(255,255,255,0.9)] border border-white/20 active:shadow-inner hover:scale-102 transition-all"
+              className="self-start px-8 py-4 bg-[#262626] hover:bg-neutral-800 text-white text-xs font-black rounded-2xl shadow-md hover:scale-102 transition-all"
             >
               {t('Contact Me', 'დაწვრილებით ჩემს შესახებ')}
             </button>
