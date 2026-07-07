@@ -857,8 +857,6 @@ const App: React.FC = () => {
         activeSection={activeSection}
       />
 
-      <ScrollDrawingAnimation />
-
       <main className="pt-24">
         {/* ==========================================
             SECTION 1 - HERO
@@ -914,7 +912,7 @@ const App: React.FC = () => {
               className="relative flex justify-center items-center w-full aspect-square"
             >
               <div className="absolute -z-10 w-[90%] h-[90%] bg-[#f6f7f1] rounded-full blur-3xl opacity-40" />
-              <div id="hero-portrait-container" className="relative w-[80%] aspect-square">
+              <div className="relative w-[80%] aspect-square">
                 <div className="absolute inset-0 rounded-full border border-dashed border-neutral-300 animate-[spin_60s_linear_infinite]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] rounded-full overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.5),-10px_-10px_25px_rgba(255,255,255,0.9)] border-[8px] border-white">
                   <img src={HERO_IMAGE} alt="Jenny clinical portrait" className="w-full h-full object-cover scale-105" />
@@ -1031,7 +1029,7 @@ const App: React.FC = () => {
             style={s3Reveal.getAnimStyle(0)}
             className="md:col-span-5 relative"
           >
-            <div id="about-portrait-container" className="rounded-3xl overflow-hidden shadow-lg border-[12px] border-white">
+            <div className="rounded-3xl overflow-hidden shadow-lg border-[12px] border-white">
               <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Pirtskhalava" className="w-full grayscale-0 hover:scale-102 transition-transform duration-500" />
             </div>
             {/* Experience badge */}
@@ -1206,7 +1204,7 @@ const App: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 max-w-[1200px] mx-auto">
           {/* Logo brand & socials */}
           <div className="flex flex-col gap-4 items-start">
-            <div id="footer-logo-container" className="flex items-center gap-3 select-none hover:scale-102 transition-transform">
+            <div className="flex items-center gap-3 select-none hover:scale-102 transition-transform">
               <img 
                 src="/assets/logo_monogram.png" 
                 alt="Dr. Jenny Logo Icon" 
@@ -1292,261 +1290,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-// ==========================================
-// SCROLL DRAWING ANIMATION (Rough Pencil Path)
-// ==========================================
-const ScrollDrawingAnimation: React.FC = () => {
-  const [pathD, setPathD] = useState('');
-  const [pathLength, setPathLength] = useState(0);
-  const [dashOffset, setDashOffset] = useState(0);
-  const [showFireworks, setShowFireworks] = useState(false);
-  const pathRef = useRef<SVGPathElement>(null);
-  
-  const calculatePath = () => {
-    try {
-      const heroEl = document.getElementById('hero-portrait-container');
-      const servicesEl = document.getElementById('services');
-      const aboutEl = document.getElementById('about-portrait-container');
-      const footerLogoEl = document.getElementById('footer-logo-container');
-      
-      if (!heroEl || !servicesEl || !aboutEl || !footerLogoEl) return;
-      
-      const getCoords = (el: HTMLElement) => {
-        const rect = el.getBoundingClientRect();
-        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        return {
-          x: rect.left + scrollLeft + rect.width / 2,
-          y: rect.top + scrollTop + rect.height / 2,
-          width: rect.width,
-          height: rect.height,
-          left: rect.left + scrollLeft,
-          top: rect.top + scrollTop,
-        };
-      };
-      
-      const hero = getCoords(heroEl);
-      const services = getCoords(servicesEl);
-      const about = getCoords(aboutEl);
-      const footer = getCoords(footerLogoEl);
-      
-      // Start in the top header center, slightly offset
-      const startX = window.innerWidth / 2;
-      const startY = 110;
-      
-      // Segment 1: Curve from header to top of Hero Portrait circle
-      const r = hero.width / 2 + 10;
-      const circleTopX = hero.x;
-      const circleTopY = hero.y - r;
-      
-      let d = `M ${startX} ${startY} `;
-      d += `C ${startX - 50} ${startY + 60}, ${circleTopX - 120} ${circleTopY - 80}, ${circleTopX} ${circleTopY} `;
-      
-      // Loop around hero portrait circle
-      d += `A ${r} ${r} 0 1 1 ${circleTopX - 0.1} ${circleTopY} `;
-      
-      // Segment 2: Curve out of loop down to the Directions section (between Dentistry & Dermatology)
-      const dirTopY = services.top;
-      const dirCenterX = services.x;
-      const dirBottomY = services.top + services.height;
-      
-      d += `C ${hero.x + 80} ${hero.y + r + 80}, ${dirCenterX - 100} ${dirTopY - 120}, ${dirCenterX} ${dirTopY - 20} `;
-      
-      // Segment 3: Pass straight down between direction cards
-      d += `L ${dirCenterX} ${dirBottomY - 80} `;
-      
-      // Segment 4: Curve to the left towards About photo container
-      const aboutX = about.left - 40;
-      const aboutY = about.top + about.height / 2;
-      
-      d += `C ${dirCenterX + 50} ${dirBottomY + 30}, ${aboutX - 120} ${aboutY - 140}, ${aboutX} ${aboutY} `;
-      
-      // Segment 5: Descend in vertical waves down towards the Footer logo
-      const footerX = footer.x;
-      const footerY = footer.top - 40;
-      
-      d += `C ${aboutX + 80} ${aboutY + 220}, ${footerX - 180} ${footerY - 180}, ${footerX} ${footerY} `;
-      
-      // Segment 6: Loop around the footer logo
-      const fr = footer.width / 2 + 12;
-      const logoTopX = footer.x;
-      const logoTopY = footer.y - fr;
-      
-      d += `C ${footer.x - 30} ${footerY}, ${logoTopX - 35} ${logoTopY - 10}, ${logoTopX} ${logoTopY} `;
-      d += `A ${fr} ${fr} 0 1 1 ${logoTopX - 0.1} ${logoTopY} `;
-      
-      // Segment 7: Underline strokes underneath the logo
-      const lineY1 = footer.y + fr + 10;
-      const lineY2 = lineY1 + 8;
-      d += `M ${footer.x - 60} ${lineY1} L ${footer.x + 60} ${lineY1} `;
-      d += `M ${footer.x - 45} ${lineY2} L ${footer.x + 45} ${lineY2} `;
-      
-      setPathD(d);
-    } catch (e) {
-      console.warn("Coordinate path calculation failed:", e);
-    }
-  };
-
-  useEffect(() => {
-    // Delay slightly to ensure page assets are fully drawn & coordinates settle
-    const timer = setTimeout(calculatePath, 500);
-    
-    window.addEventListener('resize', calculatePath);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', calculatePath);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!pathRef.current) return;
-    const length = pathRef.current.getTotalLength();
-    setPathLength(length);
-  }, [pathD]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollTotal <= 0) return;
-      
-      const scrollPercent = window.scrollY / scrollTotal;
-      // Complete path drawing slightly early to align with viewport reach
-      const drawPercent = Math.min(scrollPercent * 1.12, 1.0);
-      setDashOffset(pathLength * (1 - drawPercent));
-      
-      // Trigger firework explosion when scrolled near the About section
-      const aboutEl = document.getElementById('about-portrait-container');
-      if (aboutEl) {
-        const rect = aboutEl.getBoundingClientRect();
-        const isInView = rect.top < window.innerHeight * 0.7 && rect.bottom > 0;
-        setShowFireworks(isInView);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathLength]);
-
-  return (
-    <>
-      <svg className="absolute top-0 left-0 w-full pointer-events-none select-none z-0" style={{ height: document.documentElement.scrollHeight }}>
-        <defs>
-          <filter id="rough-pencil" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-        
-        {pathD && (
-          <path 
-            ref={pathRef}
-            d={pathD} 
-            fill="none" 
-            stroke="#404040" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            filter="url(#rough-pencil)"
-            strokeDasharray={pathLength}
-            strokeDashoffset={dashOffset}
-            className="transition-[stroke-dashoffset] duration-150 ease-out opacity-25"
-          />
-        )}
-      </svg>
-      
-      {showFireworks && <FireworkEffect />}
-    </>
-  );
-};
-
-// ==========================================
-// RADIAL FIREWORKS EXPLOSION EFFECT
-// ==========================================
-const FireworkEffect: React.FC = () => {
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
-  
-  useEffect(() => {
-    const aboutEl = document.getElementById('about-portrait-container');
-    if (aboutEl) {
-      const rect = aboutEl.getBoundingClientRect();
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setCoords({
-        x: rect.right + scrollLeft - 10,
-        y: rect.top + scrollTop - 15,
-      });
-    }
-  }, []);
-  
-  if (coords.x === 0) return null;
-  
-  return (
-    <>
-      <style>{`
-        @keyframes spark {
-          0% {
-            stroke-dasharray: 0, 100;
-            stroke-dashoffset: 0;
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          65% {
-            stroke-dasharray: 20, 100;
-            stroke-dashoffset: -15;
-            opacity: 0.9;
-          }
-          100% {
-            stroke-dasharray: 0, 100;
-            stroke-dashoffset: -40;
-            opacity: 0;
-          }
-        }
-      `}</style>
-      
-      <svg 
-        className="absolute pointer-events-none select-none z-10 w-40 h-40 -translate-x-1/2 -translate-y-1/2" 
-        style={{ left: coords.x, top: coords.y }}
-        viewBox="0 0 100 100"
-      >
-        <defs>
-          <filter id="firework-pencil" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-        
-        <g filter="url(#firework-pencil)" stroke="#F5D061" strokeWidth="2.5" strokeLinecap="round">
-          {[...Array(8)].map((_, i) => {
-            const angle = (i * 45) * (Math.PI / 180);
-            const x1 = 50 + Math.cos(angle) * 10;
-            const y1 = 50 + Math.sin(angle) * 10;
-            const x2 = 50 + Math.cos(angle) * 36;
-            const y2 = 50 + Math.sin(angle) * 36;
-            return (
-              <line 
-                key={i} 
-                x1={x1} 
-                y1={y1} 
-                x2={x2} 
-                y2={y2} 
-                className="animate-[spark_1.4s_ease-out_infinite]"
-                style={{ animationDelay: `${i * 0.08}s` }}
-              />
-            );
-          })}
-        </g>
-        
-        <g filter="url(#firework-pencil)" fill="#404040">
-          <circle cx="30" cy="30" r="1.5" className="animate-ping" style={{ animationDuration: '2s' }} />
-          <circle cx="70" cy="70" r="1.5" className="animate-ping" style={{ animationDuration: '2.4s' }} />
-          <circle cx="65" cy="25" r="1.2" className="animate-ping" style={{ animationDuration: '1.7s' }} />
-        </g>
-      </svg>
-    </>
-  );
-};
