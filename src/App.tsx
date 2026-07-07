@@ -122,7 +122,7 @@ const SplashScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
           </div>
         </div>
         <div className="text-center flex flex-col items-center gap-3 animate-[scaleUp_0.5s_ease-out]">
-          <img src="/assets/logo.png" alt="Dr. Jenny Dental Care Logo" className="w-56 h-auto object-contain filter drop-shadow-[3px_3px_6px_rgba(163,177,198,0.8)]" />
+          <img src="/assets/logo.png" alt="Dr. Jenny Dental Care Logo" className="w-64 h-auto object-contain filter drop-shadow-[4px_4px_8px_rgba(163,177,198,0.95)] drop-shadow-[-2px_-2px_4px_rgba(255,255,255,0.95)]" />
           <span className="block text-xs font-bold text-neutral-400 uppercase tracking-widest mt-1">QUALITY CLINIC</span>
         </div>
       </div>
@@ -169,7 +169,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
           <img 
             src="/assets/logo.png" 
             alt="Dr. Jenny Dental Care" 
-            className="h-11 w-auto object-contain filter drop-shadow-[2px_2px_4px_rgba(163,177,198,0.7)] active:scale-95 transition-all" 
+            className="h-16 w-auto object-contain filter drop-shadow-[3px_3px_5px_rgba(163,177,198,0.9)] drop-shadow-[-1px_-1px_2px_rgba(255,255,255,0.9)] active:scale-95 transition-all duration-300" 
           />
         </div>
 
@@ -1196,7 +1196,7 @@ const App: React.FC = () => {
               <img 
                 src="/assets/logo.png" 
                 alt="Dr. Jenny Dental Care" 
-                className="w-48 h-auto object-contain filter drop-shadow-[2px_2px_4px_rgba(163,177,198,0.7)]" 
+                className="w-52 h-auto object-contain filter drop-shadow-[3px_3px_6px_rgba(163,177,198,0.9)] drop-shadow-[-1px_-1px_2px_rgba(255,255,255,0.9)]" 
               />
             </div>
             <p className="text-xs font-bold text-neutral-500 max-w-sm leading-relaxed mt-2">
