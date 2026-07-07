@@ -883,7 +883,7 @@ const App: React.FC = () => {
               <img 
                 src="/assets/hands_drawing.png" 
                 alt="Hands holding dental tools watermark" 
-                className="absolute -left-16 -top-8 w-[420px] max-w-none pointer-events-none select-none opacity-[0.055] -z-10"
+                className="absolute -left-16 -top-8 w-[420px] max-w-none pointer-events-none select-none opacity-[0.22] -z-10"
               />
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
                 ✨ DENTAL & CARE
