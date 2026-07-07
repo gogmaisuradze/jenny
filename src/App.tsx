@@ -623,6 +623,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
           { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
           { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
+          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
         ]
       }
     ]);
@@ -696,8 +697,28 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
           { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
           { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
+          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
         ]
       };
+    } else if (action === 'telegram') {
+      botReply = {
+        sender: 'bot',
+        text: t(
+          'For additional support and quick chat, you can access our automated Telegram Bot assistant: @JennyDentbot',
+          'დამატებითი მხარდაჭერისა და სწრაფი მიმოწერისთვის შეგიძლიათ ისარგებლოთ ჩვენი ავტომატიზებული ტელეგრამ ბოტით: @JennyDentbot'
+        ),
+        options: [
+          { label: t('✈️ Open Telegram Chat', '✈️ ტელეგრამზე გადასვლა'), action: 'open_tg' },
+          { label: t('🏠 Back to Options', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ]
+      };
+      // Auto-open in new window
+      setTimeout(() => {
+        window.open('https://t.me/JennyDentbot', '_blank');
+      }, 700);
+    } else if (action === 'open_tg') {
+      window.open('https://t.me/JennyDentbot', '_blank');
+      return;
     }
 
     setMessages((prev) => [...prev, userMsg, botReply]);
@@ -705,11 +726,25 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      {/* Glow effect styles for Gold shining collapsed button */}
+      <style>{`
+        @keyframes pulse-gold {
+          0%, 100% {
+            box-shadow: 0 0 10px rgba(245, 208, 97, 0.45), 6px 6px 12px rgba(163, 177, 198, 0.45);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 25px rgba(245, 208, 97, 0.95), 6px 6px 12px rgba(163, 177, 198, 0.45);
+            transform: scale(1.05);
+          }
+        }
+      `}</style>
+
       {isOpen && (
         <div className="w-[320px] md:w-[350px] h-[450px] bg-[#f6f7f1] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
-          <div className="bg-neutral-800 text-white p-4 flex items-center justify-between shadow-sm">
+          <div className="bg-black text-white p-4 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full overflow-hidden border border-white/20 bg-neutral-700 p-1">
+              <div className="w-9 h-9 rounded-full overflow-hidden border border-white/30 bg-black p-1">
                 <img src="/assets/logo_monogram.png" alt="Dr. Jenny Avatar" className="w-full h-full object-contain" />
               </div>
               <div>
@@ -768,13 +803,17 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           }
           setIsOpen(!isOpen);
         }}
-        className="w-14 h-14 bg-[#f6f7f1] hover:scale-105 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] border border-white/20 transition-all relative"
+        className={`w-14 h-14 rounded-full flex items-center justify-center border border-white/20 transition-all relative ${
+          isOpen 
+            ? 'bg-[#f6f7f1] shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] hover:scale-105' 
+            : 'bg-[#F5D061] text-neutral-800 animate-[pulse-gold_2.5s_infinite] shadow-lg'
+        }`}
         aria-label="Open chat assistant"
       >
         {isOpen ? (
           <span className="text-xl font-bold text-neutral-700">✕</span>
         ) : (
-          <div className="w-11 h-11 rounded-full overflow-hidden border border-white/30 p-1.5">
+          <div className="w-11 h-11 rounded-full overflow-hidden p-1">
             <img src="/assets/logo_monogram.png" alt="Dr. Jenny Chat Assistant" className="w-full h-full object-contain" />
           </div>
         )}
@@ -883,7 +922,7 @@ const App: React.FC = () => {
               <img 
                 src="/assets/hands_drawing.png" 
                 alt="Hands holding dental tools watermark" 
-                className="absolute -left-16 -top-8 w-[420px] max-w-none pointer-events-none select-none opacity-[0.22] -z-10"
+                className="absolute -left-16 top-16 w-[420px] max-w-none pointer-events-none select-none opacity-[0.22] -z-10"
               />
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
                 ✨ DENTAL & CARE
