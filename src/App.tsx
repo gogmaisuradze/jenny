@@ -1097,8 +1097,18 @@ const App: React.FC = () => {
           ref={s3Reveal.containerRef}
           className="relative py-20 px-6 max-w-[1200px] mx-auto grid md:grid-cols-12 gap-12 items-center"
         >
-          {/* Extremely faint Calligraphic float ornament in margin */}
-          <CalligraphicFloat right={20} top={60} reverse delay={2} />
+          {/* Contour 3: Tooth and braces next to portrait (Enlarged format) */}
+          <img 
+            src="/assets/tooth_braces.png" 
+            alt="Tooth and braces watermark" 
+            className="absolute -left-24 top-4 w-[380px] h-auto pointer-events-none select-none opacity-[0.22] -z-10"
+          />
+          {/* Contour 2: Hands and tools next to biography text */}
+          <img 
+            src="/assets/hands_drawing.png" 
+            alt="Hands and tools watermark" 
+            className="absolute right-4 bottom-4 w-[300px] h-auto pointer-events-none select-none opacity-[0.20] -z-10"
+          />
           {/* Portrait frame */}
           <div 
             style={s3Reveal.getAnimStyle(0)}
