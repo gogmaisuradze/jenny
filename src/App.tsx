@@ -121,9 +121,13 @@ const SplashScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
             <span className="text-4xl font-extrabold text-neutral-800 tabular-nums">{count}%</span>
           </div>
         </div>
-        <div className="text-center flex flex-col items-center gap-3 animate-[scaleUp_0.5s_ease-out]">
-          <img src="/assets/logo.png" alt="Dr. Jenny Dental Care Logo" className="w-64 h-auto object-contain filter drop-shadow-[4px_4px_8px_rgba(163,177,198,0.95)] drop-shadow-[-2px_-2px_4px_rgba(255,255,255,0.95)]" />
-          <span className="block text-xs font-bold text-neutral-400 uppercase tracking-widest mt-1">QUALITY CLINIC</span>
+        <div className="text-center flex flex-col items-center gap-2 animate-[scaleUp_0.5s_ease-out]">
+          <img src="/assets/logo_monogram.png" alt="Dr. Jenny Logo" className="w-20 h-auto object-contain filter drop-shadow-[3px_3px_5px_rgba(163,177,198,0.85)] drop-shadow-[-1px_-1px_2px_rgba(255,255,255,0.9)]" />
+          <div className="flex flex-col items-center mt-2 select-none">
+            <span className="text-2xl font-black text-neutral-800 tracking-tight leading-none">Dr. Jenny</span>
+            <span className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.25em] mt-1.5">DENTAL & CARE</span>
+          </div>
+          <span className="block text-[9px] font-black text-neutral-400 uppercase tracking-[0.3em] mt-3">QUALITY CLINIC</span>
         </div>
       </div>
     </div>
@@ -1200,12 +1204,16 @@ const App: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 max-w-[1200px] mx-auto">
           {/* Logo brand & socials */}
           <div className="flex flex-col gap-4 items-start">
-            <div className="flex items-center select-none hover:scale-102 transition-all">
+            <div className="flex items-center gap-3 select-none hover:scale-102 transition-transform">
               <img 
-                src="/assets/logo.png" 
-                alt="Dr. Jenny Dental Care" 
-                className="w-52 h-auto object-contain filter drop-shadow-[3px_3px_6px_rgba(163,177,198,0.9)] drop-shadow-[-1px_-1px_2px_rgba(255,255,255,0.9)]" 
+                src="/assets/logo_monogram.png" 
+                alt="Dr. Jenny Logo Icon" 
+                className="w-12 h-12 object-contain filter drop-shadow-[2px_2px_4px_rgba(163,177,198,0.7)]" 
               />
+              <div className="flex flex-col">
+                <span className="text-lg font-black text-neutral-800 leading-none">Dr. Jenny</span>
+                <span className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.2em] mt-1">DENTAL & CARE</span>
+              </div>
             </div>
             <p className="text-xs font-bold text-neutral-500 max-w-sm leading-relaxed mt-2">
               {t(
