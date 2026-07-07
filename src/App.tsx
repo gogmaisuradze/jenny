@@ -879,13 +879,12 @@ const App: React.FC = () => {
               style={s1Reveal.getAnimStyle(0)}
               className="flex flex-col gap-6 items-start z-10 relative"
             >
-              {/* Calligraphic Tooth watermark sketch behind text */}
-              <svg className="absolute -left-16 -top-8 w-[320px] h-auto pointer-events-none select-none opacity-[0.045] text-neutral-900 -z-10" viewBox="0 0 100 160" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M 50 35 C 38 18, 25 22, 28 45 C 32 68, 45 75, 50 78 C 55 75, 68 68, 72 45 C 75 22, 62 18, 50 35 Z" />
-                <path d="M 42 30 C 46 25, 54 25, 58 30" />
-                <path d="M 35 40 C 45 42, 55 42, 65 40" />
-                <path d="M 50 78 C 45 88, 55 98, 50 108 C 45 118, 55 128, 50 138 C 45 145, 52 148, 50 152" />
-              </svg>
+              {/* Hand-drawn dental tools watermark sketch behind text */}
+              <img 
+                src="/assets/hands_drawing.png" 
+                alt="Hands holding dental tools watermark" 
+                className="absolute -left-16 -top-8 w-[420px] max-w-none pointer-events-none select-none opacity-[0.055] -z-10"
+              />
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
                 ✨ DENTAL & CARE
               </div>
