@@ -1241,13 +1241,7 @@ const App: React.FC = () => {
         {/* ==========================================
             SECTION 5 - CLIENT REVIEWS
             ========================================== */}
-        <section className="py-20 px-6 bg-[#f6f7f1] border-t border-b border-white/10 relative overflow-hidden">
-          {/* Contour 4: Tooth implant watermark (Enlarged and slightly tilted) */}
-          <img 
-            src="/assets/tooth_implant.png" 
-            alt="Tooth implant watermark" 
-            className="absolute left-1/2 bottom-[-270px] -translate-x-1/2 w-[320px] md:w-[440px] h-auto pointer-events-none select-none opacity-[0.32] z-0 rotate-[12deg]"
-          />
+        <section className="py-20 px-6 bg-[#f6f7f1] border-t border-b border-white/10">
           <div className="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-8">
             {/* Review 1 */}
             <div className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
@@ -1291,7 +1285,13 @@ const App: React.FC = () => {
       {/* ==========================================
           FOOTER
           ========================================== */}
-      <footer id="contact" className="bg-[#f6f7f1] border-t border-white/20 pt-16 pb-12">
+      <footer id="contact" className="bg-[#f6f7f1] border-t border-white/20 pt-16 pb-12 relative overflow-hidden">
+        {/* Contour 4: Tooth implant watermark in the bottom row */}
+        <img 
+          src="/assets/tooth_implant.png" 
+          alt="Tooth implant watermark" 
+          className="absolute left-1/2 bottom-[-110px] -translate-x-1/2 w-[300px] md:w-[420px] h-auto pointer-events-none select-none opacity-[0.32] z-0 rotate-[12deg]"
+        />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 max-w-[1200px] mx-auto">
           {/* Logo brand & socials */}
           <div className="flex flex-col gap-4 items-start">
