@@ -858,6 +858,9 @@ const App: React.FC = () => {
         activeSection={activeSection}
       />
 
+      {/* Extremely faint, hand-sketched scroll-following calligraphic guide line */}
+      <ScrollDrawingAnimation />
+
       <main className="pt-24">
         {/* ==========================================
             SECTION 1 - HERO
@@ -867,12 +870,22 @@ const App: React.FC = () => {
           ref={s1Reveal.containerRef}
           className="relative min-h-[85vh] flex items-center overflow-hidden py-12 px-6 max-w-[1200px] mx-auto"
         >
+          {/* Faint Calligraphic Fireworks in Hero background */}
+          <CalligraphicFirework className="absolute left-[10%] top-[15%] w-96 h-96 opacity-[0.03] text-neutral-800 -z-10" />
+          <CalligraphicFirework className="absolute right-[5%] bottom-[10%] w-80 h-80 opacity-[0.025] text-neutral-800 -z-10 animate-[spin_120s_linear_infinite]" />
           <div className="w-full grid md:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div 
               style={s1Reveal.getAnimStyle(0)}
-              className="flex flex-col gap-6 items-start z-10"
+              className="flex flex-col gap-6 items-start z-10 relative"
             >
+              {/* Calligraphic Tooth watermark sketch behind text */}
+              <svg className="absolute -left-16 -top-8 w-[320px] h-auto pointer-events-none select-none opacity-[0.045] text-neutral-900 -z-10" viewBox="0 0 100 160" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M 50 35 C 38 18, 25 22, 28 45 C 32 68, 45 75, 50 78 C 55 75, 68 68, 72 45 C 75 22, 62 18, 50 35 Z" />
+                <path d="M 42 30 C 46 25, 54 25, 58 30" />
+                <path d="M 35 40 C 45 42, 55 42, 65 40" />
+                <path d="M 50 78 C 45 88, 55 98, 50 108 C 45 118, 55 128, 50 138 C 45 145, 52 148, 50 152" />
+              </svg>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
                 ✨ DENTAL & CARE
               </div>
@@ -913,8 +926,24 @@ const App: React.FC = () => {
               className="relative flex justify-center items-center w-full aspect-square"
             >
               <div className="absolute -z-10 w-[90%] h-[90%] bg-[#f6f7f1] rounded-full blur-3xl opacity-40" />
-              <div className="relative w-[80%] aspect-square">
-                <div className="absolute inset-0 rounded-full border border-dashed border-neutral-300 animate-[spin_60s_linear_infinite]" />
+              <div id="hero-portrait-container" className="relative w-[80%] aspect-square">
+                {/* Hand-drawn delicate calligraphic orbit */}
+                <svg className="absolute inset-0 w-full h-full animate-[spin_50s_linear_infinite] opacity-[0.18] pointer-events-none select-none" viewBox="0 0 100 100">
+                  <path 
+                    d="M 50 2 C 76.5 2, 98 23.5, 98 50 C 98 76.5, 76.5 98, 50 98 C 23.5 98, 2 76.5, 2 50 C 2 23.5, 23.5 2, 50 2 Z M 48 4 C 74 2, 96 24, 94 48 C 92 72, 70 94, 48 94 C 24 94, 4 72, 6 48 C 8 24, 24 6, 48 4 Z" 
+                    fill="none" 
+                    stroke="#404040" 
+                    strokeWidth="0.5" 
+                    strokeLinecap="round" 
+                  />
+                  <path 
+                    d="M 52 1 C 79 3, 99 23, 97 52 C 95 79, 75 99, 52 97 C 23 95, 3 75, 5 52 C 7 23, 23 5, 52 1 Z" 
+                    fill="none" 
+                    stroke="#F5D061" 
+                    strokeWidth="0.3" 
+                    strokeLinecap="round" 
+                  />
+                </svg>
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] rounded-full overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.5),-10px_-10px_25px_rgba(255,255,255,0.9)] border-[8px] border-white">
                   <img src={HERO_IMAGE} alt="Jenny clinical portrait" className="w-full h-full object-cover scale-105" />
                 </div>
@@ -955,8 +984,10 @@ const App: React.FC = () => {
         <section 
           id="services"
           ref={s2Reveal.containerRef}
-          className="py-20 px-6 max-w-[1200px] mx-auto bg-[#f6f7f1] rounded-[36px] shadow-[inset_4px_4px_10px_rgba(163,177,198,0.5),inset_-4px_-4px_10px_rgba(255,255,255,0.85)] border border-white/20"
+          className="relative py-20 px-6 max-w-[1200px] mx-auto bg-[#f6f7f1] rounded-[36px] shadow-[inset_4px_4px_10px_rgba(163,177,198,0.5),inset_-4px_-4px_10px_rgba(255,255,255,0.85)] border border-white/20"
         >
+          {/* Extremely faint Calligraphic float ornament in margin */}
+          <CalligraphicFloat left={20} top={40} />
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-neutral-800 tracking-tight">
               {t('Our Specializations', 'ჩვენი მიმართულებები')}
@@ -1026,8 +1057,10 @@ const App: React.FC = () => {
         <section 
           id="about"
           ref={s3Reveal.containerRef}
-          className="py-20 px-6 max-w-[1200px] mx-auto grid md:grid-cols-12 gap-12 items-center"
+          className="relative py-20 px-6 max-w-[1200px] mx-auto grid md:grid-cols-12 gap-12 items-center"
         >
+          {/* Extremely faint Calligraphic float ornament in margin */}
+          <CalligraphicFloat right={20} top={60} reverse delay={2} />
           {/* Portrait frame */}
           <div 
             style={s3Reveal.getAnimStyle(0)}
@@ -1099,8 +1132,10 @@ const App: React.FC = () => {
         <section 
           id="results"
           ref={s4Reveal.containerRef}
-          className="py-20 px-6 max-w-[1200px] mx-auto"
+          className="relative py-20 px-6 max-w-[1200px] mx-auto"
         >
+          {/* Extremely faint Calligraphic float ornament in margin */}
+          <CalligraphicFloat left={20} top={20} delay={4} />
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
             <div>
               <h2 className="text-3xl md:text-5xl font-black text-neutral-800 tracking-tight">
@@ -1296,3 +1331,399 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+// ==========================================
+// SCROLL DRAWING ANIMATION (Calligraphic Brush Path)
+// ==========================================
+const ScrollDrawingAnimation: React.FC = () => {
+  const [pathD, setPathD] = useState('');
+  const [pathLength, setPathLength] = useState(0);
+  const [dashOffset, setDashOffset] = useState(0);
+  const [showFireworks, setShowFireworks] = useState(false);
+  const pathRef = useRef<SVGPathElement>(null);
+  
+  const calculatePath = () => {
+    try {
+      const heroEl = document.getElementById('hero-portrait-container');
+      const servicesEl = document.getElementById('services');
+      const aboutEl = document.getElementById('about-portrait-container');
+      const footerLogoEl = document.getElementById('footer-logo-container');
+      
+      if (!heroEl || !servicesEl || !aboutEl || !footerLogoEl) return;
+      
+      const getCoords = (el: HTMLElement) => {
+        const rect = el.getBoundingClientRect();
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return {
+          x: rect.left + scrollLeft + rect.width / 2,
+          y: rect.top + scrollTop + rect.height / 2,
+          width: rect.width,
+          height: rect.height,
+          left: rect.left + scrollLeft,
+          top: rect.top + scrollTop,
+        };
+      };
+      
+      const hero = getCoords(heroEl);
+      const services = getCoords(servicesEl);
+      const about = getCoords(aboutEl);
+      const footer = getCoords(footerLogoEl);
+      
+      // Start in the top header center, slightly offset
+      const startX = window.innerWidth / 2;
+      const startY = 110;
+      
+      // Segment 1: Calligraphic curve from header to Hero Portrait orbit
+      const r = hero.width / 2 + 10;
+      const circleTopX = hero.x;
+      const circleTopY = hero.y - r;
+      
+      let d = `M ${startX} ${startY} `;
+      d += `C ${startX - 60} ${startY + 80}, ${circleTopX - 140} ${circleTopY - 100}, ${circleTopX} ${circleTopY} `;
+      
+      // Loop around hero portrait circle twice to simulate calligraphic thread overlays
+      d += `A ${r} ${r} 0 1 1 ${circleTopX - 0.1} ${circleTopY} `;
+      d += `A ${r - 4} ${r - 4} 0 1 0 ${circleTopX + 0.1} ${circleTopY + 4} `;
+      
+      // Segment 2: Curve out of loop down to the Directions section
+      const dirTopY = services.top;
+      const dirCenterX = services.x;
+      const dirBottomY = services.top + services.height;
+      const midY1 = (hero.y + r + dirTopY) / 2;
+      
+      // Calligraphic cursive loop-de-loop
+      d += `C ${hero.x + 80} ${hero.y + r + 60}, ${dirCenterX + 120} ${midY1 - 60}, ${dirCenterX + 50} ${midY1} `;
+      d += `C ${dirCenterX - 40} ${midY1 + 60}, ${dirCenterX - 80} ${dirTopY - 80}, ${dirCenterX} ${dirTopY - 20} `;
+      
+      // Segment 3: Pass down between direction cards with wave flow
+      const midY2 = (dirTopY + dirBottomY) / 2;
+      d += `C ${dirCenterX + 40} ${dirTopY + 60}, ${dirCenterX - 40} ${midY2 - 60}, ${dirCenterX} ${midY2} `;
+      d += `C ${dirCenterX + 40} ${midY2 + 60}, ${dirCenterX - 40} ${dirBottomY - 60}, ${dirCenterX} ${dirBottomY - 40} `;
+      
+      // Segment 4: Curve to the left towards About photo container
+      const aboutX = about.left - 40;
+      const aboutY = about.top + about.height / 2;
+      const midY3 = (dirBottomY + about.top) / 2;
+      
+      d += `C ${dirCenterX + 80} ${dirBottomY + 30}, ${aboutX - 160} ${midY3 - 40}, ${aboutX - 60} ${midY3} `;
+      // Cursive loop flourish in empty space
+      d += `C ${aboutX + 20} ${midY3 + 40}, ${aboutX - 100} ${aboutY - 120}, ${aboutX} ${aboutY} `;
+      
+      // Segment 5: Wave down towards the Footer logo
+      const footerX = footer.x;
+      const footerY = footer.top - 40;
+      const midY4 = (aboutY + footerY) / 2;
+      
+      d += `C ${aboutX + 80} ${aboutY + 220}, ${footerX - 220} ${midY4 - 80}, ${footerX - 60} ${midY4} `;
+      d += `C ${footerX + 60} ${midY4 + 80}, ${footerX - 100} ${footerY - 80}, ${footerX} ${footerY} `;
+      
+      // Segment 6: Loop around the footer logo twice (calligraphic overlap)
+      const fr = footer.width / 2 + 12;
+      const logoTopX = footer.x;
+      const logoTopY = footer.y - fr;
+      
+      d += `C ${footer.x - 30} ${footerY}, ${logoTopX - 35} ${logoTopY - 10}, ${logoTopX} ${logoTopY} `;
+      d += `A ${fr} ${fr} 0 1 1 ${logoTopX - 0.1} ${logoTopY} `;
+      d += `A ${fr - 4} ${fr - 4} 0 1 0 ${logoTopX + 0.1} ${logoTopY + 4} `;
+      
+      // Segment 7: Calligraphic wave underlines underneath the logo
+      const lineY1 = footer.y + fr + 10;
+      const lineY2 = lineY1 + 8;
+      d += `M ${footer.x - 60} ${lineY1} C ${footer.x - 20} ${lineY1 - 4}, ${footer.x + 20} ${lineY1 + 4}, ${footer.x + 60} ${lineY1} `;
+      d += `M ${footer.x - 45} ${lineY2} C ${footer.x - 15} ${lineY2 - 3}, ${footer.x + 15} ${lineY2 + 3}, ${footer.x + 45} ${lineY2} `;
+      
+      setPathD(d);
+    } catch (e) {
+      console.warn("Calligraphic path calculation failed:", e);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(calculatePath, 600);
+    window.addEventListener('resize', calculatePath);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', calculatePath);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!pathRef.current) return;
+    const length = pathRef.current.getTotalLength();
+    setPathLength(length);
+  }, [pathD]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollTotal <= 0) return;
+      
+      const scrollPercent = window.scrollY / scrollTotal;
+      const drawPercent = Math.min(scrollPercent * 1.12, 1.0);
+      setDashOffset(pathLength * (1 - drawPercent));
+      
+      const aboutEl = document.getElementById('about-portrait-container');
+      if (aboutEl) {
+        const rect = aboutEl.getBoundingClientRect();
+        const isInView = rect.top < window.innerHeight * 0.7 && rect.bottom > 0;
+        setShowFireworks(isInView);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathLength]);
+
+  return (
+    <>
+      {/* Keyframe float animations block */}
+      <style>{`
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+          50% { transform: translateY(-15px) rotate(4deg) scale(1.02); }
+        }
+        @keyframes float-reverse {
+          0%, 100% { transform: translateY(0) rotate(0deg) scale(1.02); }
+          50% { transform: translateY(15px) rotate(-4deg) scale(1); }
+        }
+      `}</style>
+
+      <svg className="absolute top-0 left-0 w-full pointer-events-none select-none z-0" style={{ height: document.documentElement.scrollHeight }}>
+        <defs>
+          <filter id="rough-pencil" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        
+        {pathD && (
+          <path 
+            ref={pathRef}
+            d={pathD} 
+            fill="none" 
+            stroke="#404040" 
+            strokeWidth="1.2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            filter="url(#rough-pencil)"
+            strokeDasharray={pathLength}
+            strokeDashoffset={dashOffset}
+            className="transition-[stroke-dashoffset] duration-150 ease-out opacity-[0.08]"
+          />
+        )}
+      </svg>
+      
+      {showFireworks && <FireworkEffect />}
+    </>
+  );
+};
+
+// ==========================================
+// RADIAL FIREWORKS EXPLOSION EFFECT (Subtle Outline)
+// ==========================================
+const FireworkEffect: React.FC = () => {
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const aboutEl = document.getElementById('about-portrait-container');
+    if (aboutEl) {
+      const rect = aboutEl.getBoundingClientRect();
+      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setCoords({
+        x: rect.right + scrollLeft - 10,
+        y: rect.top + scrollTop - 15,
+      });
+    }
+  }, []);
+  
+  if (coords.x === 0) return null;
+  
+  return (
+    <>
+      <style>{`
+        @keyframes spark {
+          0% {
+            stroke-dasharray: 0, 100;
+            stroke-dashoffset: 0;
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.8;
+          }
+          65% {
+            stroke-dasharray: 20, 100;
+            stroke-dashoffset: -15;
+            opacity: 0.7;
+          }
+          100% {
+            stroke-dasharray: 0, 100;
+            stroke-dashoffset: -40;
+            opacity: 0;
+          }
+        }
+      `}</style>
+      
+      <svg 
+        className="absolute pointer-events-none select-none z-10 w-40 h-40 -translate-x-1/2 -translate-y-1/2" 
+        style={{ left: coords.x, top: coords.y }}
+        viewBox="0 0 100 100"
+      >
+        <defs>
+          <filter id="firework-pencil" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        
+        <g filter="url(#firework-pencil)" stroke="#F5D061" strokeWidth="2" strokeLinecap="round" opacity="0.6">
+          {[...Array(8)].map((_, i) => {
+            const angle = (i * 45) * (Math.PI / 180);
+            const x1 = 50 + Math.cos(angle) * 10;
+            const y1 = 50 + Math.sin(angle) * 10;
+            const x2 = 50 + Math.cos(angle) * 36;
+            const y2 = 50 + Math.sin(angle) * 36;
+            return (
+              <line 
+                key={i} 
+                x1={x1} 
+                y1={y1} 
+                x2={x2} 
+                y2={y2} 
+                className="animate-[spark_1.4s_ease-out_infinite]"
+                style={{ animationDelay: `${i * 0.08}s` }}
+              />
+            );
+          })}
+        </g>
+      </svg>
+    </>
+  );
+};
+
+// ==========================================
+// FLOATING CALLIGRAPHIC ORNAMENT BACKGROUNDS
+// ==========================================
+interface CalligraphicFloatProps {
+  top?: number;
+  left?: number;
+  right?: number;
+  delay?: number;
+  reverse?: boolean;
+}
+
+const CalligraphicFloat: React.FC<CalligraphicFloatProps> = ({ top = 20, left, right, delay = 0, reverse = false }) => {
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setInView(true);
+      }
+    }, { threshold: 0.05 });
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+  
+  const style: React.CSSProperties = {
+    position: 'absolute',
+    top: `${top}px`,
+    left: left !== undefined ? `${left}px` : 'auto',
+    right: right !== undefined ? `${right}px` : 'auto',
+    animation: `${reverse ? 'float-reverse' : 'float-slow'} 25s ease-in-out infinite`,
+    animationDelay: `${delay}s`,
+  };
+  
+  return (
+    <div 
+      ref={containerRef}
+      style={style}
+      className="pointer-events-none select-none z-0 hidden lg:block opacity-[0.035] text-neutral-800 transition-opacity duration-1000"
+    >
+      <svg className="w-56 h-auto" viewBox="0 0 100 160" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+        <defs>
+          <filter id="float-pencil" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        
+        <g filter="url(#float-pencil)">
+          <path 
+            d="M 50 35 C 38 18, 25 22, 28 45 C 32 68, 45 75, 50 78 C 55 75, 68 68, 72 45 C 75 22, 62 18, 50 35 Z" 
+            className="transition-all duration-[2000ms] ease-out"
+            style={{
+              strokeDasharray: '400',
+              strokeDashoffset: inView ? '0' : '400'
+            }}
+          />
+          <path 
+            d="M 42 30 C 46 25, 54 25, 58 30" 
+            className="transition-all duration-[2000ms] ease-out delay-300"
+            style={{
+              strokeDasharray: '100',
+              strokeDashoffset: inView ? '0' : '100'
+            }}
+          />
+          <path 
+            d="M 35 40 C 45 42, 55 42, 65 40" 
+            className="transition-all duration-[2000ms] ease-out delay-500"
+            style={{
+              strokeDasharray: '150',
+              strokeDashoffset: inView ? '0' : '150'
+            }}
+          />
+          <path 
+            d="M 50 78 C 45 88, 55 98, 50 108 C 45 118, 55 128, 50 138 C 45 145, 52 148, 50 152" 
+            className="transition-all duration-[2500ms] ease-out delay-700"
+            style={{
+              strokeDasharray: '300',
+              strokeDashoffset: inView ? '0' : '300'
+            }}
+          />
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+// ==========================================
+// CALLIGRAPHIC FIREWORK SPARKLE BACKGROUND
+// ==========================================
+interface CalligraphicFireworkProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const CalligraphicFirework: React.FC<CalligraphicFireworkProps> = ({ className, style }) => (
+  <svg className={`${className} pointer-events-none select-none`} viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" style={style}>
+    <defs>
+      <filter id="firework-bg-pencil" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+    <g filter="url(#firework-bg-pencil)">
+      {[...Array(12)].map((_, i) => {
+        const angle = (i * 30) * (Math.PI / 180);
+        const c1x = 50 + Math.cos(angle) * 12;
+        const c1y = 50 + Math.sin(angle) * 12;
+        const c2x = 50 + Math.cos(angle + 0.25) * 28;
+        const c2y = 50 + Math.sin(angle + 0.25) * 28;
+        const x2 = 50 + Math.cos(angle) * 45;
+        const y2 = 50 + Math.sin(angle) * 45;
+        return (
+          <path 
+            key={i} 
+            d={`M 50 50 Q ${c1x} ${c1y}, ${c2x} ${c2y} T ${x2} ${y2}`} 
+          />
+        );
+      })}
+    </g>
+  </svg>
+);
+
