@@ -160,8 +160,8 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
     };
   }, [isOpen]);
 
-  const navLinksEn = ['Home', 'Services', 'About', 'Results', 'Contact'];
-  const navLinksKa = ['მთავარი', 'სერვისები', 'ჩვენს შესახებ', 'შედეგები', 'კონტაქტი'];
+  const navLinksEn = ['Home', 'Services', 'About Me', 'Results', 'Contact'];
+  const navLinksKa = ['მთავარი', 'სერვისები', 'ჩემს შესახებ', 'შედეგები', 'კონტაქტი'];
   const activeNavLinks = lang === 'en' ? navLinksEn : navLinksKa;
   const hashLinks = ['home', 'services', 'about', 'results', 'contact'];
 
@@ -638,7 +638,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
       const timer = setTimeout(() => {
         initChat();
         setIsOpen(true);
-      }, 1500);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -709,8 +709,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         <div className="w-[320px] md:w-[350px] h-[450px] bg-[#f6f7f1] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
           <div className="bg-neutral-800 text-white p-4 flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full overflow-hidden border border-white/20 bg-neutral-700">
-                <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Avatar" className="w-full h-full object-cover" />
+              <div className="w-9 h-9 rounded-full overflow-hidden border border-white/20 bg-neutral-700 p-1">
+                <img src="/assets/logo_monogram.png" alt="Dr. Jenny Avatar" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h4 className="font-extrabold text-xs leading-none">{t('Jenny\'s Assistant', 'ჯენის ასისტენტი')}</h4>
@@ -774,8 +774,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         {isOpen ? (
           <span className="text-xl font-bold text-neutral-700">✕</span>
         ) : (
-          <div className="w-11 h-11 rounded-full overflow-hidden border border-white/30">
-            <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Chat Assistant" className="w-full h-full object-cover rounded-full" />
+          <div className="w-11 h-11 rounded-full overflow-hidden border border-white/30 p-1.5">
+            <img src="/assets/logo_monogram.png" alt="Dr. Jenny Chat Assistant" className="w-full h-full object-contain" />
           </div>
         )}
       </button>
