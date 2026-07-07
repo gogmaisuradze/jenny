@@ -638,7 +638,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
       const timer = setTimeout(() => {
         initChat();
         setIsOpen(true);
-      }, 5000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, []);
