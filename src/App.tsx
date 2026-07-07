@@ -225,7 +225,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
             {/* Neumorphic styled Booking Button */}
             <button 
               onClick={onBookClick}
-              className="px-5 py-2.5 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 hover:scale-105 active:shadow-inner transition-all"
+              className="hidden md:inline-block px-5 py-2.5 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 hover:scale-105 active:shadow-inner transition-all"
             >
               {t('Book Appointment', 'ვიზიტის დაჯავშნა')}
             </button>
@@ -725,7 +725,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
   };
 
   return (
-    <div className="fixed bottom-20 right-20 z-50 flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 md:bottom-20 md:right-20 z-50 flex flex-col items-end">
       {/* Glow effect styles for gray tactile collapsed button */}
       <style>{`
         @keyframes pulse-gray {
