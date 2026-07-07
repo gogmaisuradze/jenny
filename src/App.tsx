@@ -1143,9 +1143,8 @@ const App: React.FC = () => {
             {/* Gallery Item 3 - See More Card */}
             <div className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100">
               <img src={GALLERY_ITEM_3} alt="Full Orthodontic teeth model" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/40 to-transparent p-6 flex flex-col justify-between items-center text-center">
-                <span className="text-3xl mt-4 opacity-80 filter drop-shadow-md">🖼️</span>
-                <div className="mb-2">
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/50 to-transparent p-6 flex flex-col justify-end items-start gap-3 w-full">
+                <div>
                   <h4 className="font-black text-lg text-white mb-1 tracking-tight">{t('See More Cases', 'იხილეთ მეტი')}</h4>
                   <p className="text-neutral-300 text-[11px] font-bold">{t('500+ successful cosmetic cases', '500+ წარმატებული შემთხვევა')}</p>
                 </div>
