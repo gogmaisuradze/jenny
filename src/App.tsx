@@ -1103,12 +1103,7 @@ const App: React.FC = () => {
             alt="Tooth and braces watermark" 
             className="absolute right-2 md:right-8 top-6 md:top-12 w-[240px] md:w-[340px] h-auto pointer-events-none select-none opacity-[0.36] z-0"
           />
-          {/* Contour 2: Hands and tools next to biography text */}
-          <img 
-            src="/assets/hands_drawing.png" 
-            alt="Hands and tools watermark" 
-            className="absolute right-2 md:right-8 bottom-4 w-[220px] md:w-[320px] h-auto pointer-events-none select-none opacity-[0.32] z-0"
-          />
+
           {/* Portrait frame */}
           <div 
             style={s3Reveal.getAnimStyle(0)}
