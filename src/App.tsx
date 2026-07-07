@@ -139,9 +139,10 @@ interface NavbarProps {
   setLang: (lang: 'ka' | 'en') => void;
   t: (en: string, ka: string) => string;
   onBookClick: () => void;
+  activeSection: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSection }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -181,15 +182,18 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick }) => {
         <div className="flex items-center gap-4">
           {/* Navigation Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-6 mr-4">
-            {activeNavLinks.map((link, i) => (
-              <a 
-                key={link}
-                href={`#${hashLinks[i]}`}
-                className={`font-bold text-xs md:text-sm transition-all pb-1 ${i === 1 ? 'border-b-2 border-[#F5D061] text-neutral-900' : 'text-neutral-500 hover:text-neutral-800'}`}
-              >
-                {link}
-              </a>
-            ))}
+            {activeNavLinks.map((link, i) => {
+              const isActive = activeSection === hashLinks[i];
+              return (
+                <a 
+                  key={link}
+                  href={`#${hashLinks[i]}`}
+                  className={`font-bold text-xs md:text-sm transition-all pb-1 ${isActive ? 'border-b-2 border-[#F5D061] text-neutral-900' : 'text-neutral-500 hover:text-neutral-800'}`}
+                >
+                  {link}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Neumorphic Language Switcher */}
@@ -778,6 +782,7 @@ const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [lang, setLang] = useState<'ka' | 'en'>('ka');
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   const t = (en: string, ka: string) => (lang === 'en' ? en : ka);
 
@@ -785,6 +790,32 @@ const App: React.FC = () => {
   const s2Reveal = useStaggeredReveal();
   const s3Reveal = useStaggeredReveal();
   const s4Reveal = useStaggeredReveal();
+
+  useEffect(() => {
+    const sections = ['home', 'services', 'about', 'results', 'contact'];
+    const observers = sections.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          }
+        },
+        { threshold: 0.15, rootMargin: '-10% 0px -55% 0px' }
+      );
+      
+      observer.observe(el);
+      return { el, observer };
+    });
+    
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) obs.observer.unobserve(obs.el);
+      });
+    };
+  }, []);
 
   useEffect(() => {
     const handleGlobalClick = (e: MouseEvent) => {
@@ -816,6 +847,7 @@ const App: React.FC = () => {
         setLang={setLang} 
         t={t} 
         onBookClick={() => setIsBookingOpen(true)} 
+        activeSection={activeSection}
       />
 
       <main className="pt-24">
