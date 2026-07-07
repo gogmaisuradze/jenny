@@ -1101,7 +1101,7 @@ const App: React.FC = () => {
           <img 
             src="/assets/tooth_braces.png" 
             alt="Tooth and braces watermark" 
-            className="absolute right-2 md:right-8 top-6 md:top-12 w-[240px] md:w-[340px] h-auto pointer-events-none select-none opacity-[0.36] z-0"
+            className="absolute -right-16 md:-right-28 top-6 md:top-12 w-[240px] md:w-[340px] h-auto pointer-events-none select-none opacity-[0.36] z-0"
           />
 
           {/* Portrait frame */}
