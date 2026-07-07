@@ -909,20 +909,17 @@ const App: React.FC = () => {
           ref={s1Reveal.containerRef}
           className="relative min-h-[85vh] flex items-center overflow-hidden py-12 px-6 max-w-[1200px] mx-auto"
         >
-          {/* Faint Calligraphic Fireworks in Hero background */}
-          <CalligraphicFirework className="absolute left-[10%] top-[15%] w-96 h-96 opacity-[0.03] text-neutral-800 z-0" />
-          <CalligraphicFirework className="absolute right-[5%] bottom-[10%] w-80 h-80 opacity-[0.025] text-neutral-800 z-0 animate-[spin_120s_linear_infinite]" />
           <div className="w-full grid md:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div 
               style={s1Reveal.getAnimStyle(0)}
               className="flex flex-col gap-6 items-start z-10 relative"
             >
-              {/* Hand-drawn dental tools watermark sketch behind text */}
+              {/* Hand-drawn dental tools watermark sketch behind text (Enlarged) */}
               <img 
                 src="/assets/hands_drawing.png" 
                 alt="Hands holding dental tools watermark" 
-                className="absolute -left-16 top-16 w-[420px] max-w-none pointer-events-none select-none opacity-[0.22] z-0"
+                className="absolute -left-16 md:-left-24 top-6 w-[560px] md:w-[720px] max-w-none pointer-events-none select-none opacity-[0.24] z-0"
               />
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#f6f7f1] rounded-full text-xs font-black text-neutral-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.4),inset_-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/10 select-none">
                 ✨ DENTAL & CARE
@@ -1741,39 +1738,5 @@ const CalligraphicFloat: React.FC<CalligraphicFloatProps> = ({ top = 20, left, r
   );
 };
 
-// ==========================================
-// CALLIGRAPHIC FIREWORK SPARKLE BACKGROUND
-// ==========================================
-interface CalligraphicFireworkProps {
-  className?: string;
-  style?: React.CSSProperties;
-}
 
-const CalligraphicFirework: React.FC<CalligraphicFireworkProps> = ({ className, style }) => (
-  <svg className={`${className} pointer-events-none select-none`} viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" style={style}>
-    <defs>
-      <filter id="firework-bg-pencil" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </defs>
-    <g filter="url(#firework-bg-pencil)">
-      {[...Array(12)].map((_, i) => {
-        const angle = (i * 30) * (Math.PI / 180);
-        const c1x = 50 + Math.cos(angle) * 12;
-        const c1y = 50 + Math.sin(angle) * 12;
-        const c2x = 50 + Math.cos(angle + 0.25) * 28;
-        const c2y = 50 + Math.sin(angle + 0.25) * 28;
-        const x2 = 50 + Math.cos(angle) * 45;
-        const y2 = 50 + Math.sin(angle) * 45;
-        return (
-          <path 
-            key={i} 
-            d={`M 50 50 Q ${c1x} ${c1y}, ${c2x} ${c2y} T ${x2} ${y2}`} 
-          />
-        );
-      })}
-    </g>
-  </svg>
-);
 
