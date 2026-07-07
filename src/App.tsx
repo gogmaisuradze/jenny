@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // IMAGE & ASSET CONSTANTS
 // ==========================================
 const HERO_IMAGE = '/assets/jenny_hero.jpg';
-const DENTIST_PORTRAIT = '/assets/jenny_hero.jpg';
+const DENTIST_PORTRAIT = '/assets/jenny_about.jpg';
 
 const DENTISTRY_CARD_BG = '/assets/dentistry_bg.jpg';
 const DERMATOLOGY_CARD_BG = '/assets/dermatology_bg.jpg';
