@@ -1101,13 +1101,13 @@ const App: React.FC = () => {
           <img 
             src="/assets/tooth_braces.png" 
             alt="Tooth and braces watermark" 
-            className="absolute -left-24 top-4 w-[380px] h-auto pointer-events-none select-none opacity-[0.22] -z-10"
+            className="absolute left-2 md:-left-12 top-4 w-[280px] md:w-[380px] h-auto pointer-events-none select-none opacity-[0.35] -z-10"
           />
           {/* Contour 2: Hands and tools next to biography text */}
           <img 
             src="/assets/hands_drawing.png" 
             alt="Hands and tools watermark" 
-            className="absolute right-4 bottom-4 w-[300px] h-auto pointer-events-none select-none opacity-[0.20] -z-10"
+            className="absolute right-2 md:right-8 bottom-4 w-[220px] md:w-[320px] h-auto pointer-events-none select-none opacity-[0.32] -z-10"
           />
           {/* Portrait frame */}
           <div 
