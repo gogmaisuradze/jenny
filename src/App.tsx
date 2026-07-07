@@ -164,13 +164,21 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
     <>
       {/* Neumorphic floating pill navbar */}
       <header className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 bg-[#f6f7f1]/85 backdrop-blur-md rounded-full shadow-[6px_6px_15px_rgba(163,177,198,0.4),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20">
-        {/* Logo */}
-        <div className="flex items-center select-none cursor-pointer hover:scale-105 transition-all">
+        {/* Logo Monogram & Name */}
+        <div className="flex items-center gap-2 select-none cursor-pointer hover:scale-102 transition-transform">
           <img 
-            src="/assets/logo.png" 
-            alt="Dr. Jenny Dental Care" 
-            className="h-16 w-auto object-contain filter drop-shadow-[3px_3px_5px_rgba(163,177,198,0.9)] drop-shadow-[-1px_-1px_2px_rgba(255,255,255,0.9)] active:scale-95 transition-all duration-300" 
+            src="/assets/logo_monogram.png" 
+            alt="Dr. Jenny Logo Icon" 
+            className="w-10 h-10 object-contain filter drop-shadow-[2px_2px_4px_rgba(163,177,198,0.7)]" 
           />
+          <div className="flex flex-col">
+            <span className="text-sm md:text-base font-black uppercase tracking-tight leading-none text-neutral-800">
+              {t('Jenny', 'ჯენი')}
+            </span>
+            <span className="text-sm md:text-base font-black uppercase tracking-tight leading-none text-neutral-800 -mt-0.5">
+              {t('Pirtskhalava', 'ფირცხალავა')}
+            </span>
+          </div>
         </div>
 
         {/* Action controllers */}
