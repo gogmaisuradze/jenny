@@ -11,6 +11,7 @@ const DERMATOLOGY_CARD_BG = '/assets/dermatology_bg.jpg';
 
 const GALLERY_ITEM_1 = '/assets/gallery_1.jpg';
 const GALLERY_ITEM_2 = '/assets/gallery_2.jpg';
+const GALLERY_ITEM_3 = '/assets/gallery_3.jpg';
 
 // ==========================================
 // TACTILE CLICK SYNTHESIZER
@@ -1140,18 +1141,21 @@ const App: React.FC = () => {
             </div>
 
             {/* Gallery Item 3 - See More Card */}
-            <div className="rounded-2xl overflow-hidden aspect-[4/5] bg-[#f6f7f1] shadow-md p-8 flex flex-col justify-between items-center text-center">
-              <span className="text-4xl mt-6">🖼️</span>
-              <div>
-                <h4 className="font-black text-lg text-neutral-800 mb-1">{t('See More Cases', 'იხილეთ მეტი')}</h4>
-                <p className="text-neutral-400 text-xs font-bold">{t('500+ successful cosmetic cases', '500+ წარმატებული შემთხვევა')}</p>
+            <div className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100">
+              <img src={GALLERY_ITEM_3} alt="Full Orthodontic teeth model" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/40 to-transparent p-6 flex flex-col justify-between items-center text-center">
+                <span className="text-3xl mt-4 opacity-80 filter drop-shadow-md">🖼️</span>
+                <div className="mb-2">
+                  <h4 className="font-black text-lg text-white mb-1 tracking-tight">{t('See More Cases', 'იხილეთ მეტი')}</h4>
+                  <p className="text-neutral-300 text-[11px] font-bold">{t('500+ successful cosmetic cases', '500+ წარმატებული შემთხვევა')}</p>
+                </div>
+                <button 
+                  onClick={() => setIsBookingOpen(true)}
+                  className="w-full py-3 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-xl shadow-md transition-all duration-300"
+                >
+                  {t('Gallery', 'გალერეა')}
+                </button>
               </div>
-              <button 
-                onClick={() => setIsBookingOpen(true)}
-                className="w-full py-3.5 bg-[#f6f7f1] hover:scale-102 text-neutral-800 font-black text-xs rounded-xl shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.85)] border border-white/20 active:shadow-inner transition-all mb-4"
-              >
-                {t('Gallery', 'გალერეა')}
-              </button>
             </div>
           </div>
         </section>
