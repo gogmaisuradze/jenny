@@ -84,7 +84,7 @@ function useStaggeredReveal(threshold = 0.15): StaggeredReveal {
 // ==========================================
 // SPLASH SCREEN COMPONENT
 // ==========================================
-const SplashScreen: React.FC<{ onComplete: () => void; t: (en: string, ka: string) => string }> = ({ onComplete, t }) => {
+const SplashScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [count, setCount] = useState(0);
   const [exiting, setExiting] = useState(false);
 
@@ -121,10 +121,9 @@ const SplashScreen: React.FC<{ onComplete: () => void; t: (en: string, ka: strin
             <span className="text-4xl font-extrabold text-neutral-800 tabular-nums">{count}%</span>
           </div>
         </div>
-        <div className="text-center flex flex-col items-center gap-2">
-          <img src="/assets/logo.png" alt="Jenny Logo" className="w-16 h-16 object-contain mb-1" />
-          <span className="text-2xl font-black uppercase tracking-wider text-neutral-800">{t('JENNY PIRTSKHALAVA', 'ჯენი ფირცხალავა')}</span>
-          <span className="block text-xs font-bold text-neutral-500 uppercase tracking-widest mt-1">QUALITY CLINIC</span>
+        <div className="text-center flex flex-col items-center gap-3 animate-[scaleUp_0.5s_ease-out]">
+          <img src="/assets/logo.png" alt="Dr. Jenny Dental Care Logo" className="w-56 h-auto object-contain filter drop-shadow-[3px_3px_6px_rgba(163,177,198,0.8)]" />
+          <span className="block text-xs font-bold text-neutral-400 uppercase tracking-widest mt-1">QUALITY CLINIC</span>
         </div>
       </div>
     </div>
@@ -165,17 +164,13 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
     <>
       {/* Neumorphic floating pill navbar */}
       <header className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 bg-[#e0e8f3] rounded-full shadow-[6px_6px_15px_rgba(163,177,198,0.5),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20">
-        {/* Logo Monogram & Name */}
-        <div className="flex items-center gap-2 select-none cursor-pointer">
-          <img src="/assets/logo.png" alt="Jenny Logo" className="w-10 h-10 object-contain rounded-lg bg-white/20 p-0.5" />
-          <div className="flex flex-col">
-            <span className="text-sm md:text-base font-black uppercase tracking-tight leading-none text-neutral-800">
-              {t('Jenny', 'ჯენი')}
-            </span>
-            <span className="text-sm md:text-base font-black uppercase tracking-tight leading-none text-neutral-800 -mt-0.5">
-              {t('Pirtskhalava', 'ფირცხალავა')}
-            </span>
-          </div>
+        {/* Logo */}
+        <div className="flex items-center select-none cursor-pointer hover:scale-105 transition-all">
+          <img 
+            src="/assets/logo.png" 
+            alt="Dr. Jenny Dental Care" 
+            className="h-11 w-auto object-contain filter drop-shadow-[2px_2px_4px_rgba(163,177,198,0.7)] active:scale-95 transition-all" 
+          />
         </div>
 
         {/* Action controllers */}
@@ -840,7 +835,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-neutral-800 select-none font-sans overflow-x-hidden">
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} t={t} />}
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       
       <Navbar 
         lang={lang} 
@@ -1197,12 +1192,12 @@ const App: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 px-6 max-w-[1200px] mx-auto">
           {/* Logo brand & socials */}
           <div className="flex flex-col gap-4 items-start">
-            <div className="flex items-center gap-2 select-none">
-              <img src="/assets/logo.png" alt="Jenny Logo" className="w-14 h-14 object-contain rounded-xl bg-white/40 p-1" />
-              <div className="flex flex-col">
-                <span className="text-xl font-black uppercase tracking-tight text-neutral-800 leading-none">JENNY</span>
-                <span className="text-xl font-black uppercase tracking-tight text-neutral-800 leading-none">PIRTSKHALAVA</span>
-              </div>
+            <div className="flex items-center select-none hover:scale-102 transition-all">
+              <img 
+                src="/assets/logo.png" 
+                alt="Dr. Jenny Dental Care" 
+                className="w-48 h-auto object-contain filter drop-shadow-[2px_2px_4px_rgba(163,177,198,0.7)]" 
+              />
             </div>
             <p className="text-xs font-bold text-neutral-500 max-w-sm leading-relaxed mt-2">
               {t(
