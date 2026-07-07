@@ -623,7 +623,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
           { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
           { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
-          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
         ]
       }
     ]);
@@ -674,6 +673,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         ),
         options: [
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
           { label: t('🏠 Back to Options', '🏠 საწყისი მენიუ'), action: 'reset' }
         ]
       };
@@ -686,6 +686,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         ),
         options: [
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
           { label: t('🏠 Back to Options', '🏠 საწყისი მენიუ'), action: 'reset' }
         ]
       };
@@ -696,16 +697,15 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         options: [
           { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
           { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
-          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
-          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
+          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' }
         ]
       };
     } else if (action === 'telegram') {
       botReply = {
         sender: 'bot',
         text: t(
-          'For additional support and quick chat, you can access our automated Telegram Bot assistant: @JennyDentbot',
-          'დამატებითი მხარდაჭერისა და სწრაფი მიმოწერისთვის შეგიძლიათ ისარგებლოთ ჩვენი ავტომატიზებული ტელეგრამ ბოტით: @JennyDentbot'
+          'For comprehensive information and automated direct assistant, you can transition to our Telegram Bot:',
+          'ამომწურავი ინფორმაციისა და ავტომატური ასისტენტის მომსახურებისთვის შეგიძლიათ ისარგებლოთ ჩვენი ტელეგრამ ბოტით:'
         ),
         options: [
           { label: t('✈️ Open Telegram Chat', '✈️ ტელეგრამზე გადასვლა'), action: 'open_tg' },
