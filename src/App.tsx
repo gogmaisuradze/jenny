@@ -6,11 +6,11 @@ import React, { useState, useEffect, useRef } from 'react';
 const HERO_IMAGE = '/assets/jenny_hero.jpg';
 const DENTIST_PORTRAIT = '/assets/jenny_hero.jpg';
 
-const DENTISTRY_CARD_BG = 'https://lh3.googleusercontent.com/aida/AP1WRLv74x8-Ys0Pp3Ab2Rb634GqgZUAUceZbACtrYMH2Y8b834d5DMcq_f6LWN7EoSo1ebWl7E-i4qFRg1phmD5TjT7Siue2RosnvyqyAK-tFkj5VP7yMK1DbRitWWwCTgk5-X1ArF9Ii3L28FXJRS5TyDpm3GnTptycGOwyuDFZLL-d4SRwi687QsSJJL_2y0I5qgSa4guKvSsnvOCeuDMs6f7G-stGbrzVW4lmWhlIcIZCvZ1k7QH5a2eAIsE';
-const DERMATOLOGY_CARD_BG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcIJL_8OERsYc2znsEq6TLs-CbdWBZ2HwhhoaX5Tm9RRszzR2v6ZkywuMpteB2mFifthrGHhLqZ0bOvoBBchtIymdc64nq4loJQ-bKYM1UdCNaiJHSFlTfgeB-A-B1G5iMc2feH5wfTGzZEienDKpFo_dhwMpFno_6CNx0iTA-SfyFcfoo2MqLlp5yMtP0cGKK8cAcK4r4NXq2Tk_XnVqyJfA5Gv7PV0kUnSXUDmBQ6UOwUwTEgTdpQA';
+const DENTISTRY_CARD_BG = '/assets/dentistry_bg.jpg';
+const DERMATOLOGY_CARD_BG = '/assets/dermatology_bg.jpg';
 
-const GALLERY_ITEM_1 = 'https://lh3.googleusercontent.com/aida/AP1WRLtqoumq_jGDZAOf4bHKcMxT6NO7ItMcirDaVjEufIt9Q1iImlkm8nlgkQYa4XRGuTFd2HFo3UkTHjXpToQX4MAy1L18N5-dQAJ06IY9L1JJafUMU9JExLWf46QZr_LwYg0vobmtvVFk3_l8aZy-ZOaBrLPiGCV8bVBb12ebXLfaxyOmC2BbxABlzMyWeQi8sytJrrAGZ4Wa9hmt6U98NJAEl9tIPqx043QYIOn2uLxCEHX4otyWiKkImV6V';
-const GALLERY_ITEM_2 = 'https://lh3.googleusercontent.com/aida/AP1WRLukqCs918QM1KeNAJGL54w_51RVjiUG2MDSoq6j_xLIV6oAXyApOobILSmao-7jrAMunCTNJO8ytJmXejfV1SZuus-yw1vnDr2glYVDwiC2LxSPZC1fkTt884yZw4C7EGjtHNcC6Qq0KK3zbdCF65j9k6cTLse4vwMdchwm7Db8dDRxrvjMzEDp92h4Jp0ePpxwbn9U-HJlSRBpeg3fXWExDH6jpBVKU-EA4TFJ15AcGRCV6c60PnKH0OdT';
+const GALLERY_ITEM_1 = '/assets/gallery_1.jpg';
+const GALLERY_ITEM_2 = '/assets/gallery_2.jpg';
 
 // ==========================================
 // TACTILE CLICK SYNTHESIZER
