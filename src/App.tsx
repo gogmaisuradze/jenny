@@ -603,6 +603,8 @@ interface ChatbotWidgetProps {
 const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   interface Message {
@@ -647,7 +649,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isOpen]);
+  }, [messages, isTyping, isOpen]);
 
   const handleAction = (action: string, label: string) => {
     const userMsg: Message = { sender: 'user', text: label };
@@ -724,6 +726,215 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
     setMessages((prev) => [...prev, userMsg, botReply]);
   };
 
+  const handleUserText = (rawText: string) => {
+    const userMsg: Message = { sender: 'user', text: rawText };
+    setMessages((prev) => [...prev, userMsg]);
+    setIsTyping(true);
+
+    setTimeout(() => {
+      const lower = rawText.toLowerCase();
+      let replyText = '';
+      let replyOptions: { label: string; action: string }[] | undefined = undefined;
+
+      if (
+        lower.includes('ჯავშ') ||
+        lower.includes('ჩაწერ') ||
+        lower.includes('ვიზიტ') ||
+        lower.includes('კალენდ') ||
+        lower.includes('book') ||
+        lower.includes('appoint') ||
+        lower.includes('schedul') ||
+        lower.includes('visit')
+      ) {
+        replyText = t(
+          'You can book an appointment directly through our online calendar. Select a suitable date and procedure:',
+          'ვიზიტის დაჯავშნა შეგიძლიათ პირდაპირ ჩვენი ონლაინ კალენდრით. აირჩიეთ სასურველი თარიღი და პროცედურა:'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
+          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ];
+      } else if (
+        lower.includes('ფას') ||
+        lower.includes('ღირებულ') ||
+        lower.includes('ტარიფ') ||
+        lower.includes('რა ღირს') ||
+        lower.includes('რა ჯდება') ||
+        lower.includes('price') ||
+        lower.includes('cost') ||
+        lower.includes('fee') ||
+        lower.includes('rate') ||
+        lower.includes('how much')
+      ) {
+        replyText = t(
+          'Procedure pricing depends on individual clinical diagnosis and treatment complexity (e.g., aesthetic dentistry, veneers, dental implants, or dermatology). For full evaluation or exact quote, book a consultation or consult via Telegram:',
+          'მომსახურების ფასები დამოკიდებულია ინდივიდუალურ კლინიკურ მდგომარეობასა და პროცედურის სირთულეზე (ვენირები, იმპლანტები, თერაპია, დერმატოლოგია). ზუსტი გეგმისა და ღირებულებისთვის შეგიძლიათ დაჯავშნოთ ვიზიტი ან ისარგებლოთ ტელეგრამით:'
+        );
+        replyOptions = [
+          { label: t('📅 Book Consultation', '📅 კონსულტაციაზე ჩაწერა'), action: 'book' },
+          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
+          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' }
+        ];
+      } else if (
+        lower.includes('სერვის') ||
+        lower.includes('მომსახურებ') ||
+        lower.includes('კბილ') ||
+        lower.includes('იმპლანტ') ||
+        lower.includes('ვენირ') ||
+        lower.includes('ბრეკეტ') ||
+        lower.includes('თერაპი') ||
+        lower.includes('წმენდ') ||
+        lower.includes('გათეთრ') ||
+        lower.includes('კან') ||
+        lower.includes('დერმატოლოგ') ||
+        lower.includes('service') ||
+        lower.includes('teeth') ||
+        lower.includes('dental') ||
+        lower.includes('implant') ||
+        lower.includes('veneer') ||
+        lower.includes('derma') ||
+        lower.includes('skin')
+      ) {
+        replyText = t(
+          'Dr. Jenny Pirtskhalava provides comprehensive services across two main specialties:\n1. Aesthetic & Restorative Dentistry (Implants, Veneers, Orthodontics, Cleaning)\n2. Advanced Dermatology (Skin aesthetics and therapies).\nWould you like to schedule an appointment?',
+          'ექიმი ჯენი ფირცხალავა გთავაზობთ მომსახურებას ორ ძირითად მიმართულებაში:\n1. ესთეტიკური და აღდგენითი სტომატოლოგია (იმპლანტაცია, ვენირები, თერაპია, წმენდა/გათეთრება)\n2. თანამედროვე დერმატოლოგია (კანის მოვლა და ესთეტიკური თერაპიები).\nგსურთ ვიზიტის დაჯავშნა?'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
+          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' }
+        ];
+      } else if (
+        lower.includes('მისამართ') ||
+        lower.includes('სად ხართ') ||
+        lower.includes('სად მდებარეობს') ||
+        lower.includes('სად არის') ||
+        lower.includes('ლოკაცი') ||
+        lower.includes('ქუჩ') ||
+        lower.includes('address') ||
+        lower.includes('location') ||
+        lower.includes('where') ||
+        lower.includes('map')
+      ) {
+        replyText = t(
+          '📍 Clinic Location: 14 Meliton and Andria Balanchivadze St, Tbilisi, Georgia.\n📞 Phone: +995 593 56-79-98',
+          '📍 კლინიკის მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი.\n📞 ტელეფონი: +995 593 56-79-98'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
+          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ];
+      } else if (
+        lower.includes('საათ') ||
+        lower.includes('გრაფიკ') ||
+        lower.includes('როდის') ||
+        lower.includes('როდემდე') ||
+        lower.includes('დრო') ||
+        lower.includes('შაბათ') ||
+        lower.includes('კვირ') ||
+        lower.includes('hours') ||
+        lower.includes('schedule') ||
+        lower.includes('open') ||
+        lower.includes('time')
+      ) {
+        replyText = t(
+          '🕒 Working Hours:\nMonday - Friday: 10:00 - 19:00\nSaturday: 11:00 - 16:00\nSunday: Closed',
+          '🕒 სამუშაო საათები:\nორშაბათი - პარასკევი: 10:00 - 19:00\nშაბათი: 11:00 - 16:00\nკვირა: დასვენება'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
+          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ];
+      } else if (
+        lower.includes('ტელეფონ') ||
+        lower.includes('ნომერ') ||
+        lower.includes('კონტაქტ') ||
+        lower.includes('დარეკვ') ||
+        lower.includes('მეილ') ||
+        lower.includes('ფოსტ') ||
+        lower.includes('phone') ||
+        lower.includes('contact') ||
+        lower.includes('call') ||
+        lower.includes('email')
+      ) {
+        replyText = t(
+          '📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n📍 Address: 14 Meliton and Andria Balanchivadze St, Tbilisi',
+          '📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
+          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ];
+      } else if (
+        lower.includes('ტელეგრამ') ||
+        lower.includes('telegram') ||
+        lower.includes('tg')
+      ) {
+        replyText = t(
+          'You can connect directly with our automated Telegram assistant bot: @JennyDentbot',
+          'ჩვენი ოფიციალური ტელეგრამ ბოტი ხელმისაწვდომია აქ: @JennyDentbot'
+        );
+        replyOptions = [
+          { label: t('✈️ Open Telegram Chat', '✈️ ტელეგრამზე გადასვლა'), action: 'open_tg' },
+          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ];
+      } else if (
+        lower.includes('ჯენი') ||
+        lower.includes('ექიმ') ||
+        lower.includes('გამოცდილებ') ||
+        lower.includes('სერთიფიკატ') ||
+        lower.includes('jenny') ||
+        lower.includes('doctor') ||
+        lower.includes('experience')
+      ) {
+        replyText = t(
+          'Dr. Jenny Pirtskhalava has 15+ years of extensive clinical practice in aesthetic dentistry and dermatology with international certifications.',
+          'ექიმი ჯენი ფირცხალავა არის საერთაშორისო სერტიფიცირებული სპეციალისტი 15+ წლიანი პრაქტიკული გამოცდილებით ესთეტიკურ სტომატოლოგიასა და დერმატოლოგიაში.'
+        );
+        replyOptions = [
+          { label: t('📅 Book Consultation', '📅 კონსულტაციაზე ჩაწერა'), action: 'book' },
+          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
+          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
+        ];
+      } else if (
+        lower.includes('გამარჯობ') ||
+        lower.includes('სალამ') ||
+        lower.includes('დილა მშვიდობის') ||
+        lower.includes('საღამო მშვიდობის') ||
+        lower.includes('hello') ||
+        lower.includes('hi') ||
+        lower.includes('hey')
+      ) {
+        replyText = t(
+          'Hello! How can I assist you with your dental or skin care inquiry today?',
+          'მოგესალმებით! რით შემიძლია დაგეხმაროთ თქვენი ღიმილის ან კანის მოვლის საკითხებში?'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
+          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' }
+        ];
+      } else {
+        replyText = t(
+          'Thank you for your message! For direct booking, contact details, or more comprehensive assistance, please choose an option or visit our Telegram bot:',
+          'გმადლობთ შეტყობინებისთვის! დეტალური კონსულტაციისთვის, ვიზიტის დასაჯავშნად ან დამატებითი ინფორმაციისთვის შეგიძლიათ აირჩიოთ სასურველი ოფცია ან ისარგებლოთ ტელეგრამით:'
+        );
+        replyOptions = [
+          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
+          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' }
+        ];
+      }
+
+      setMessages((prev) => [...prev, { sender: 'bot', text: replyText, options: replyOptions }]);
+      setIsTyping(false);
+    }, 550);
+  };
+
   return (
     <div className="fixed bottom-6 right-6 md:bottom-20 md:right-20 z-50 flex flex-col items-end">
       {/* Glow effect styles for gray tactile collapsed button */}
@@ -741,8 +952,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
       `}</style>
 
       {isOpen && (
-        <div className="w-[320px] md:w-[350px] h-[450px] bg-[#f6f7f1] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
-          <div className="bg-black text-white p-4 flex items-center justify-between shadow-sm">
+        <div className="w-[320px] md:w-[360px] h-[480px] md:h-[520px] max-h-[85vh] bg-[#f6f7f1] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
+          <div className="bg-black text-white p-4 flex items-center justify-between shadow-sm flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full overflow-hidden border border-white/30 bg-black p-1">
                 <img src="/assets/logo_monogram.png" alt="Dr. Jenny Avatar" className="w-full h-full object-contain" />
@@ -770,7 +981,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
                 className={`flex flex-col max-w-[85%] ${msg.sender === 'user' ? 'self-end items-end' : 'self-start items-start'}`}
               >
                 <div 
-                  className={`p-3.5 rounded-2xl text-xs font-bold leading-relaxed ${msg.sender === 'user' ? 'bg-neutral-800 text-white rounded-tr-none shadow-md' : 'bg-[#f6f7f1] border border-white/30 text-neutral-800 rounded-tl-none shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.85)]'}`}
+                  className={`p-3.5 rounded-2xl text-xs font-bold leading-relaxed whitespace-pre-line ${msg.sender === 'user' ? 'bg-neutral-800 text-white rounded-tr-none shadow-md' : 'bg-[#f6f7f1] border border-white/30 text-neutral-800 rounded-tl-none shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.85)]'}`}
                 >
                   {msg.text}
                 </div>
@@ -789,8 +1000,47 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
                 )}
               </div>
             ))}
+            {isTyping && (
+              <div className="flex flex-col max-w-[85%] self-start items-start">
+                <div className="p-3 rounded-2xl text-xs font-bold leading-relaxed bg-[#f6f7f1] border border-white/30 text-neutral-500 rounded-tl-none shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.85)] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Chat Input Form */}
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!inputText.trim()) return;
+              const text = inputText.trim();
+              setInputText('');
+              handleUserText(text);
+            }}
+            className="p-3 bg-[#f6f7f1] border-t border-white/40 flex items-center gap-2 flex-shrink-0"
+          >
+            <input 
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder={t('Type a message...', 'დაწერეთ შეტყობინება...')}
+              className="flex-1 bg-white/90 border border-neutral-200/90 rounded-full px-4 py-2.5 text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#F5D061]/50 focus:bg-white transition-all shadow-[inset_2px_2px_4px_rgba(163,177,198,0.25)]"
+            />
+            <button 
+              type="submit"
+              disabled={!inputText.trim()}
+              className="w-9 h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center hover:bg-[#F5D061] hover:text-neutral-900 disabled:opacity-35 disabled:hover:bg-neutral-900 disabled:hover:text-white transition-all shadow-md active:scale-95 flex-shrink-0"
+              aria-label={t('Send message', 'შეტყობინების გაგზავნა')}
+            >
+              <svg className="w-4 h-4 -rotate-45 -translate-y-0.5 translate-x-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              </svg>
+            </button>
+          </form>
         </div>
       )}
 
