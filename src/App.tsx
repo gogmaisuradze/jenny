@@ -165,12 +165,22 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
   const activeNavLinks = lang === 'en' ? navLinksEn : navLinksKa;
   const hashLinks = ['home', 'services', 'about', 'results', 'contact'];
 
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       {/* Neumorphic floating pill navbar */}
       <header className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 bg-[#f6f7f1]/85 backdrop-blur-md rounded-full shadow-[6px_6px_15px_rgba(163,177,198,0.4),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20">
         {/* Logo Monogram & Name */}
-        <div className="flex items-center gap-2 select-none cursor-pointer hover:scale-102 transition-transform">
+        <div 
+          onClick={() => scrollTo('home')}
+          className="flex items-center gap-2 select-none cursor-pointer hover:scale-102 transition-transform"
+        >
           <img 
             src="/assets/logo_monogram.png" 
             alt="Dr. Jenny Logo Icon" 
@@ -193,13 +203,14 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
             {activeNavLinks.map((link, i) => {
               const isActive = activeSection === hashLinks[i];
               return (
-                <a 
+                <button 
                   key={link}
-                  href={`#${hashLinks[i]}`}
+                  type="button"
+                  onClick={() => scrollTo(hashLinks[i])}
                   className={`font-bold text-xs md:text-sm transition-all pb-1 ${isActive ? 'border-b-2 border-[#F5D061] text-neutral-900' : 'text-neutral-500 hover:text-neutral-800'}`}
                 >
                   {link}
-                </a>
+                </button>
               );
             })}
           </nav>
@@ -249,15 +260,18 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
         <div className={`absolute top-0 right-0 h-full w-[80%] max-w-sm bg-[#f6f7f1] shadow-2xl border-l border-white/20 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           <div className="flex flex-col justify-center h-full px-8 gap-4 pt-16">
             {activeNavLinks.map((link, i) => (
-              <a 
+              <button 
                 key={link}
-                href={`#${hashLinks[i]}`}
-                onClick={() => setIsOpen(false)}
-                className={`text-3xl font-black text-neutral-800 hover:text-neutral-500 transition-all duration-500 ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollTo(hashLinks[i]);
+                }}
+                className={`text-3xl font-black text-neutral-800 hover:text-neutral-500 text-left transition-all duration-500 ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
                 style={{ transitionDelay: `${100 + i * 50}ms` }}
               >
                 {link}
-              </a>
+              </button>
             ))}
           </div>
         </div>
@@ -1005,7 +1019,32 @@ const App: React.FC = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
+  const [visitorCount, setVisitorCount] = useState<string>('00001');
+
   const t = (en: string, ka: string) => (lang === 'en' ? en : ka);
+
+  useEffect(() => {
+    try {
+      const STORAGE_KEY = 'jenny_unique_visitors_total_v1';
+      const VISITED_KEY = 'jenny_has_visited_site_v1';
+
+      let count = parseInt(localStorage.getItem(STORAGE_KEY) || '1', 10);
+      if (isNaN(count) || count < 1) count = 1;
+
+      const hasVisited = localStorage.getItem(VISITED_KEY);
+      if (!hasVisited) {
+        localStorage.setItem(VISITED_KEY, 'true');
+        if (localStorage.getItem(STORAGE_KEY)) {
+          count += 1;
+        }
+        localStorage.setItem(STORAGE_KEY, count.toString());
+      }
+
+      setVisitorCount(String(count).padStart(5, '0'));
+    } catch {
+      setVisitorCount('00001');
+    }
+  }, []);
 
   const s1Reveal = useStaggeredReveal();
   const s2Reveal = useStaggeredReveal();
@@ -1120,12 +1159,16 @@ const App: React.FC = () => {
                 >
                   {t('Book Visit Now', 'ვიზიტის დაჯავშნა')}
                 </button>
-                <a
-                  href="#services"
-                  className="px-8 py-4 bg-transparent border-2 border-dashed border-neutral-300 hover:border-neutral-500 rounded-full font-black text-neutral-700 text-xs flex items-center justify-center transition-all"
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('services');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-8 py-4 bg-transparent border-2 border-dashed border-neutral-300 hover:border-neutral-500 rounded-full font-black text-neutral-700 text-xs flex items-center justify-center transition-all cursor-pointer"
                 >
                   {t('Services', 'მომსახურებები')}
-                </a>
+                </button>
               </div>
             </div>
 
@@ -1512,9 +1555,27 @@ const App: React.FC = () => {
           {/* Quick links */}
           <div className="flex flex-col gap-3.5 items-start">
             <span className="font-black text-neutral-800 text-sm mb-1">{t('Services Offered', 'მომსახურებები')}</span>
-            <a href="#services" className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors">{t('General Dentistry', 'სტომატოლოგია')}</a>
-            <a href="#services" className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors">{t('Dermatology Care', 'დერმატოლოგია')}</a>
-            <a href="#contact" className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors">{t('Clinic Location', 'კლინიკის მდებარეობა')}</a>
+            <button 
+              type="button"
+              onClick={() => { const el = document.getElementById('services'); el?.scrollIntoView({ behavior: 'smooth' }); }} 
+              className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors text-left cursor-pointer"
+            >
+              {t('General Dentistry', 'სტომატოლოგია')}
+            </button>
+            <button 
+              type="button"
+              onClick={() => { const el = document.getElementById('services'); el?.scrollIntoView({ behavior: 'smooth' }); }} 
+              className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors text-left cursor-pointer"
+            >
+              {t('Dermatology Care', 'დერმატოლოგია')}
+            </button>
+            <button 
+              type="button"
+              onClick={() => { const el = document.getElementById('contact'); el?.scrollIntoView({ behavior: 'smooth' }); }} 
+              className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors text-left cursor-pointer"
+            >
+              {t('Clinic Location', 'კლინიკის მდებარეობა')}
+            </button>
           </div>
 
           {/* Working hours */}
@@ -1528,8 +1589,18 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center text-[10px] font-bold text-neutral-400 mt-12 pt-6 border-t border-neutral-300 max-w-[1200px] mx-auto">
-          © 2026 Jenny Pirtskhalava. {t('All rights reserved.', 'ყველა უფლება დაცულია.')}
+        <div className="text-center text-[10px] font-bold text-neutral-400 mt-12 pt-6 border-t border-neutral-300 max-w-[1200px] mx-auto flex flex-col items-center gap-2.5">
+          <div>© 2026 Jenny Pirtskhalava. {t('All rights reserved.', 'ყველა უფლება დაცულია.')}</div>
+          <div className="flex items-center gap-2 select-none">
+            <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
+              {t('Unique Visitors:', 'უნიკალური ვიზიტორი:')}
+            </span>
+            <div className="inline-flex items-center px-2.5 py-0.5 bg-[#f6f7f1] rounded-md shadow-[inset_2px_2px_4px_rgba(163,177,198,0.45),inset_-2px_-2px_4px_rgba(255,255,255,0.9)] border border-white/40">
+              <span className="font-mono text-xs font-black tracking-[0.25em] text-neutral-800 tabular-nums">
+                {visitorCount}
+              </span>
+            </div>
+          </div>
         </div>
       </footer>
 
