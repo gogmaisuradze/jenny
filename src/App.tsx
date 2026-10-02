@@ -624,15 +624,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
   interface Message {
     sender: 'bot' | 'user';
     text: string;
-    options?: { label: string; action: string }[];
   }
-
-  const getMainOptions = () => [
-    { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-    { label: t('✨ Services', '✨ სერვისები'), action: 'services' },
-    { label: t('📞 Contact', '📞 კონტაქტი'), action: 'contact' },
-    { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
-  ];
 
   const initChat = () => {
     setMessages([
@@ -641,8 +633,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
         text: t(
           'Hello! I am Dr. Jenny Pirtskhalava\'s digital assistant. How can I help you today?',
           'მოგესალმებით! მე ვარ ექიმი ჯენი ფირცხალავას ციფრული ასისტენტი. რით შემიძლია დაგეხმაროთ?'
-        ),
-        options: getMainOptions()
+        )
       }
     ]);
   };
@@ -651,13 +642,18 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
     initChat();
   }, [lang]);
 
+  const handleClose = () => {
+    setIsOpen(false);
+    sessionStorage.setItem('chat_closed', 'true');
+    localStorage.setItem('chat_closed_manual', 'true');
+  };
+
   useEffect(() => {
-    const hasClosed = sessionStorage.getItem('chat_closed');
-    if (!hasClosed) {
+    const isClosed = sessionStorage.getItem('chat_closed') || localStorage.getItem('chat_closed_manual');
+    if (!isClosed) {
       const timer = setTimeout(() => {
-        initChat();
         setIsOpen(true);
-      }, 10000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -667,52 +663,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isTyping, isOpen]);
-
-  const handleAction = (action: string) => {
-    let questionText = '';
-    let replyText = '';
-
-    if (action === 'book') {
-      questionText = t('How can I book an appointment?', 'როგორ დავჯავშნო ვიზიტი?');
-      replyText = t(
-        'To book an appointment, you can use the booking button in the top menu of our website, or call us directly at +995 593 56-79-98. We will gladly choose the most convenient time for your visit!',
-        'ვიზიტის დასაჯავშნად შეგიძლიათ ისარგებლოთ საიტის ზედა მენიუში არსებული ონლაინ დაჯავშნის ღილაკით, ან პირდაპირ დაგვიკავშირდეთ ნომერზე: +995 593 56-79-98 და სიამოვნებით შეგირჩევთ თქვენთვის მოსახერხებელ დროს!'
-      );
-    } else if (action === 'services') {
-      questionText = t('What services do you offer?', 'რა სერვისებს გვთავაზობთ?');
-      replyText = t(
-        'Dr. Jenny Pirtskhalava offers professional care across two main directions:\n\n1. 🦷 Aesthetic & Restorative Dentistry:\n• Implants & Crown Restorations\n• Porcelain Veneers & Hollywood Smile\n• Orthodontics & Braces\n• Professional Teeth Cleaning & Whitening\n\n2. ✨ Advanced Dermatology:\n• Medical Skin Diagnostics\n• Anti-aging & Rejuvenation Therapies\n• Aesthetic Facial Procedures\n\nFeel free to write to us here about any specific procedure!',
-        'ექიმი ჯენი ფირცხალავა გთავაზობთ პროფესიონალურ მომსახურებას ორ ძირითად მიმართულებაში:\n\n1. 🦷 ესთეტიკური და აღდგენითი სტომატოლოგია:\n• იმპლანტები და გვირგვინები\n• ფაიფურის ვენირები და ჰოლივუდის ღიმილი\n• ორთოდონტია (ბრეკეტები)\n• პროფესიული წმენდა და გათეთრება\n\n2. ✨ თანამედროვე დერმატოლოგია:\n• კანის დიაგნოსტიკა\n• გაახალგაზრდავება და მოვლა\n• ესთეტიკური თერაპიები\n\nშეგიძლიათ მოგვწეროთ ნებისმიერ კონკრეტულ პროცედურაზე!'
-      );
-    } else if (action === 'contact') {
-      questionText = t('How can I contact the clinic?', 'როგორ დაგიკავშირდეთ?');
-      replyText = t(
-        '📍 Clinic Address: 14 Meliton and Andria Balanchivadze St, Tbilisi\n📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n\nWe are always glad to assist you!',
-        '📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი\n📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n\nსიამოვნებით გიპასუხებთ ნებისმიერ შეკითხვაზე!'
-      );
-    } else if (action === 'hours') {
-      questionText = t('What are your working hours?', 'როგორია სამუშაო საათები?');
-      replyText = t(
-        '🕒 Clinic Working Hours:\n• Monday - Friday: 10:00 - 19:00\n• Saturday: 11:00 - 16:00\n• Sunday: Closed',
-        '🕒 კლინიკის სამუშაო საათები:\n• ორშაბათი - პარასკევი: 10:00 - 19:00\n• შაბათი: 11:00 - 16:00\n• კვირა: დასვენება'
-      );
-    }
-
-    const userMsg: Message = { sender: 'user', text: questionText };
-    setMessages((prev) => [...prev, userMsg]);
-    setIsTyping(true);
-
-    setTimeout(() => {
-      const remainingOptions = getMainOptions().filter((opt) => opt.action !== action);
-      const botMsg: Message = {
-        sender: 'bot',
-        text: replyText,
-        options: remainingOptions
-      };
-      setMessages((prev) => [...prev, botMsg]);
-      setIsTyping(false);
-    }, 450);
-  };
 
   const handleUserText = (rawText: string) => {
     const userMsg: Message = { sender: 'user', text: rawText };
@@ -868,7 +818,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
         );
       }
 
-      setMessages((prev) => [...prev, { sender: 'bot', text: replyText, options: getMainOptions() }]);
+      setMessages((prev) => [...prev, { sender: 'bot', text: replyText }]);
       setIsTyping(false);
     }, 450);
   };
@@ -902,10 +852,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
               </div>
             </div>
             <button 
-              onClick={() => {
-                setIsOpen(false);
-                sessionStorage.setItem('chat_closed', 'true');
-              }}
+              onClick={handleClose}
               className="text-white hover:text-neutral-300 font-bold text-sm focus:outline-none"
             >
               ✕
@@ -923,19 +870,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
                 >
                   {msg.text}
                 </div>
-                {msg.options && (
-                  <div className="flex flex-col gap-2 mt-3 w-full">
-                    {msg.options.map((opt) => (
-                      <button
-                        key={opt.action}
-                        onClick={() => handleAction(opt.action)}
-                        className="w-full py-3 px-4 bg-[#f6f7f1] border border-white/20 hover:scale-[1.02] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] rounded-xl text-left text-xs font-black text-neutral-800 transition-all"
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
             {isTyping && (
@@ -985,11 +919,10 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
       <button 
         onClick={() => {
           if (isOpen) {
-            sessionStorage.setItem('chat_closed', 'true');
+            handleClose();
           } else {
-            initChat();
+            setIsOpen(true);
           }
-          setIsOpen(!isOpen);
         }}
         className={`w-14 h-14 rounded-full flex items-center justify-center border border-white/20 transition-all relative ${
           isOpen 
