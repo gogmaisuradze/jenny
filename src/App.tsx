@@ -620,6 +620,17 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const sessionIdRef = useRef<string>('');
+  const getSessionId = () => {
+    if (sessionIdRef.current) return sessionIdRef.current;
+    let s = '';
+    try {
+      s = localStorage.getItem('jenny_chat_sid') || '';
+      if (!s) { s = 'web-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9); localStorage.setItem('jenny_chat_sid', s); }
+    } catch { s = 'web-' + Date.now(); }
+    sessionIdRef.current = s;
+    return s;
+  };
 
   interface Message {
     sender: 'bot' | 'user';
@@ -669,158 +680,35 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
-    setTimeout(() => {
-      const lower = rawText.toLowerCase();
-      let replyText = '';
-
-      if (
-        lower.includes('ჯავშ') ||
-        lower.includes('ჩაწერ') ||
-        lower.includes('ვიზიტ') ||
-        lower.includes('კალენდ') ||
-        lower.includes('book') ||
-        lower.includes('appoint') ||
-        lower.includes('schedul') ||
-        lower.includes('visit')
-      ) {
-        replyText = t(
-          'To book an appointment, you can use the booking button in the top menu of our website, or call us directly at +995 593 56-79-98. We will gladly choose the most convenient time for your visit!',
-          'ვიზიტის დასაჯავშნად შეგიძლიათ ისარგებლოთ საიტის ზედა მენიუში არსებული ონლაინ დაჯავშნის ღილაკით, ან პირდაპირ დაგვიკავშირდეთ ნომერზე: +995 593 56-79-98 და სიამოვნებით შეგირჩევთ თქვენთვის მოსახერხებელ დროს!'
-        );
-      } else if (
-        lower.includes('ფას') ||
-        lower.includes('ღირებულ') ||
-        lower.includes('ტარიფ') ||
-        lower.includes('რა ღირს') ||
-        lower.includes('რა ჯდება') ||
-        lower.includes('price') ||
-        lower.includes('cost') ||
-        lower.includes('fee') ||
-        lower.includes('rate') ||
-        lower.includes('how much')
-      ) {
-        replyText = t(
-          'Procedure pricing depends on individual clinical diagnosis and treatment complexity (e.g., aesthetic dentistry, veneers, dental implants, or dermatology). For consultation details or exact quote, feel free to call us at +995 593 56-79-98.',
-          'მომსახურების ფასები დამოკიდებულია ინდივიდუალურ კლინიკურ მდგომარეობასა და პროცედურის სირთულეზე (ვენირები, იმპლანტები, თერაპია, დერმატოლოგია). დეტალური კონსულტაციისთვის დაგვიკავშირდით ნომერზე: +995 593 56-79-98.'
-        );
-      } else if (
-        lower.includes('სერვის') ||
-        lower.includes('მომსახურებ') ||
-        lower.includes('კბილ') ||
-        lower.includes('იმპლანტ') ||
-        lower.includes('ვენირ') ||
-        lower.includes('ბრეკეტ') ||
-        lower.includes('თერაპი') ||
-        lower.includes('წმენდ') ||
-        lower.includes('გათეთრ') ||
-        lower.includes('კან') ||
-        lower.includes('დერმატოლოგ') ||
-        lower.includes('service') ||
-        lower.includes('teeth') ||
-        lower.includes('dental') ||
-        lower.includes('implant') ||
-        lower.includes('veneer') ||
-        lower.includes('derma') ||
-        lower.includes('skin')
-      ) {
-        replyText = t(
-          'Dr. Jenny Pirtskhalava provides comprehensive services across two main specialties:\n1. Aesthetic & Restorative Dentistry (Implants, Veneers, Orthodontics, Cleaning)\n2. Advanced Dermatology (Skin aesthetics and therapies).\nFeel free to ask any specific question here!',
-          'ექიმი ჯენი ფირცხალავა გთავაზობთ მომსახურებას ორ ძირითად მიმართულებაში:\n1. ესთეტიკური და აღდგენითი სტომატოლოგია (იმპლანტაცია, ვენირები, თერაპია, წმენდა/გათეთრება)\n2. თანამედროვე დერმატოლოგია (კანის მოვლა და ესთეტიკური თერაპიები).\nშეგიძლიათ მოგვწეროთ ნებისმიერ შეკითხვაზე!'
-        );
-      } else if (
-        lower.includes('მისამართ') ||
-        lower.includes('სად ხართ') ||
-        lower.includes('სად მდებარეობს') ||
-        lower.includes('სად არის') ||
-        lower.includes('ლოკაცი') ||
-        lower.includes('ქუჩ') ||
-        lower.includes('address') ||
-        lower.includes('location') ||
-        lower.includes('where') ||
-        lower.includes('map')
-      ) {
-        replyText = t(
-          '📍 Clinic Location: 14 Meliton and Andria Balanchivadze St, Tbilisi, Georgia.\n📞 Phone: +995 593 56-79-98',
-          '📍 კლინიკის მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი.\n📞 ტელეფონი: +995 593 56-79-98'
-        );
-      } else if (
-        lower.includes('საათ') ||
-        lower.includes('გრაფიკ') ||
-        lower.includes('როდის') ||
-        lower.includes('როდემდე') ||
-        lower.includes('დრო') ||
-        lower.includes('შაბათ') ||
-        lower.includes('კვირ') ||
-        lower.includes('hours') ||
-        lower.includes('schedule') ||
-        lower.includes('open') ||
-        lower.includes('time')
-      ) {
-        replyText = t(
-          '🕒 Working Hours:\nMonday - Friday: 10:00 - 19:00\nSaturday: 11:00 - 16:00\nSunday: Closed',
-          '🕒 სამუშაო საათები:\nორშაბათი - პარასკევი: 10:00 - 19:00\nშაბათი: 11:00 - 16:00\nკვირა: დასვენება'
-        );
-      } else if (
-        lower.includes('ტელეფონ') ||
-        lower.includes('ნომერ') ||
-        lower.includes('კონტაქტ') ||
-        lower.includes('დარეკვ') ||
-        lower.includes('მეილ') ||
-        lower.includes('ფოსტ') ||
-        lower.includes('phone') ||
-        lower.includes('contact') ||
-        lower.includes('call') ||
-        lower.includes('email')
-      ) {
-        replyText = t(
-          '📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n📍 Address: 14 Meliton and Andria Balanchivadze St, Tbilisi',
-          '📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი'
-        );
-      } else if (
-        lower.includes('ტელეგრამ') ||
-        lower.includes('telegram') ||
-        lower.includes('tg')
-      ) {
-        replyText = t(
-          'Our automated Telegram bot assistant is: @JennyDentbot',
-          'ჩვენი ოფიციალური ტელეგრამ ბოტია: @JennyDentbot'
-        );
-      } else if (
-        lower.includes('ჯენი') ||
-        lower.includes('ექიმ') ||
-        lower.includes('გამოცდილებ') ||
-        lower.includes('სერთიფიკატ') ||
-        lower.includes('jenny') ||
-        lower.includes('doctor') ||
-        lower.includes('experience')
-      ) {
-        replyText = t(
-          'Dr. Jenny Pirtskhalava has 15+ years of extensive clinical practice in aesthetic dentistry and dermatology with international certifications.',
-          'ექიმი ჯენი ფირცხალავა არის საერთაშორისო სერტიფიცირებული სპეციალისტი 15+ წლიანი პრაქტიკული გამოცდილებით ესთეტიკურ სტომატოლოგიასა და დერმატოლოგიაში.'
-        );
-      } else if (
-        lower.includes('გამარჯობ') ||
-        lower.includes('სალამ') ||
-        lower.includes('დილა მშვიდობის') ||
-        lower.includes('საღამო მშვიდობის') ||
-        lower.includes('hello') ||
-        lower.includes('hi') ||
-        lower.includes('hey')
-      ) {
-        replyText = t(
-          'Hello! How can I assist you with your dental or skin care inquiry today?',
-          'მოგესალმებით! რით შემიძლია დაგეხმაროთ თქვენი ღიმილის ან კანის მოვლის საკითხებში?'
-        );
-      } else {
-        replyText = t(
-          'Thank you for your message! You can ask anything about our services, booking, contacts, or working hours right here in the chat.',
-          'გმადლობთ შეტყობინებისთვის! შეგიძლიათ პირდაპირ ჩათში მოგვწეროთ ნებისმიერ საკითხზე (სერვისები, დაჯავშნა, კონტაქტები, სამუშაო საათები).'
-        );
-      }
-
-      setMessages((prev) => [...prev, { sender: 'bot', text: replyText }]);
-      setIsTyping(false);
-    }, 450);
+    fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: rawText, sessionId: getSessionId() }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const reply =
+          (data && (data.output || data.text || data.message)) ||
+          t(
+            'Sorry, I could not process that. Please try again or call us: +995 593 56-79-98',
+            'ბოდიში, ვერ დავამუშავე. სცადეთ ხელახლა ან დაგვირეკეთ: +995 593 56-79-98'
+          );
+        setMessages((prev) => [...prev, { sender: 'bot', text: reply }]);
+        setIsTyping(false);
+      })
+      .catch(() => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: t(
+              'Connection error. Please try again or call us: +995 593 56-79-98',
+              'კავშირი ვერ დამყარდა. სცადეთ ხელახლა ან დაგვირეკეთ: +995 593 56-79-98'
+            ),
+          },
+        ]);
+        setIsTyping(false);
+      });
   };
 
   return (
