@@ -597,10 +597,10 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t })
 interface ChatbotWidgetProps {
   lang: 'ka' | 'en';
   t: (en: string, ka: string) => string;
-  onBookClick: () => void;
+  onBookClick?: () => void;
 }
 
-const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) => {
+const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
@@ -613,6 +613,13 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
     options?: { label: string; action: string }[];
   }
 
+  const getMainOptions = () => [
+    { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
+    { label: t('✨ Services', '✨ სერვისები'), action: 'services' },
+    { label: t('📞 Contact', '📞 კონტაქტი'), action: 'contact' },
+    { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
+  ];
+
   const initChat = () => {
     setMessages([
       {
@@ -621,11 +628,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           'Hello! I am Dr. Jenny Pirtskhalava\'s digital assistant. How can I help you today?',
           'მოგესალმებით! მე ვარ ექიმი ჯენი ფირცხალავას ციფრული ასისტენტი. რით შემიძლია დაგეხმაროთ?'
         ),
-        options: [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
-          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
-        ]
+        options: getMainOptions()
       }
     ]);
   };
@@ -651,79 +654,50 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
     }
   }, [messages, isTyping, isOpen]);
 
-  const handleAction = (action: string, label: string) => {
-    const userMsg: Message = { sender: 'user', text: label };
-    let botReply: Message = { sender: 'bot', text: '' };
+  const handleAction = (action: string) => {
+    let questionText = '';
+    let replyText = '';
 
     if (action === 'book') {
-      botReply = {
-        sender: 'bot',
-        text: t('Opening the booking calendar for you now...', 'ხსნით საჯავშნო კალენდარს...')
-      };
-      setMessages((prev) => [...prev, userMsg, botReply]);
-      setTimeout(() => {
-        setIsOpen(false);
-        onBookClick();
-      }, 700);
-      return;
+      questionText = t('How can I book an appointment?', 'როგორ დავჯავშნო ვიზიტი?');
+      replyText = t(
+        'To book an appointment, you can use the booking button in the top menu of our website, or call us directly at +995 593 56-79-98. We will gladly choose the most convenient time for your visit!',
+        'ვიზიტის დასაჯავშნად შეგიძლიათ ისარგებლოთ საიტის ზედა მენიუში არსებული ონლაინ დაჯავშნის ღილაკით, ან პირდაპირ დაგვიკავშირდეთ ნომერზე: +995 593 56-79-98 და სიამოვნებით შეგირჩევთ თქვენთვის მოსახერხებელ დროს!'
+      );
+    } else if (action === 'services') {
+      questionText = t('What services do you offer?', 'რა სერვისებს გვთავაზობთ?');
+      replyText = t(
+        'Dr. Jenny Pirtskhalava offers professional care across two main directions:\n\n1. 🦷 Aesthetic & Restorative Dentistry:\n• Implants & Crown Restorations\n• Porcelain Veneers & Hollywood Smile\n• Orthodontics & Braces\n• Professional Teeth Cleaning & Whitening\n\n2. ✨ Advanced Dermatology:\n• Medical Skin Diagnostics\n• Anti-aging & Rejuvenation Therapies\n• Aesthetic Facial Procedures\n\nFeel free to write to us here about any specific procedure!',
+        'ექიმი ჯენი ფირცხალავა გთავაზობთ პროფესიონალურ მომსახურებას ორ ძირითად მიმართულებაში:\n\n1. 🦷 ესთეტიკური და აღდგენითი სტომატოლოგია:\n• იმპლანტები და გვირგვინები\n• ფაიფურის ვენირები და ჰოლივუდის ღიმილი\n• ორთოდონტია (ბრეკეტები)\n• პროფესიული წმენდა და გათეთრება\n\n2. ✨ თანამედროვე დერმატოლოგია:\n• კანის დიაგნოსტიკა\n• გაახალგაზრდავება და მოვლა\n• ესთეტიკური თერაპიები\n\nშეგიძლიათ მოგვწეროთ ნებისმიერ კონკრეტულ პროცედურაზე!'
+      );
     } else if (action === 'contact') {
-      botReply = {
-        sender: 'bot',
-        text: t(
-          '📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n📍 Address: 14 Meliton and Andria Balanchivadze St, Tbilisi',
-          '📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი'
-        ),
-        options: [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
-          { label: t('🏠 Back to Options', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ]
-      };
+      questionText = t('How can I contact the clinic?', 'როგორ დაგიკავშირდეთ?');
+      replyText = t(
+        '📍 Clinic Address: 14 Meliton and Andria Balanchivadze St, Tbilisi\n📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n\nWe are always glad to assist you!',
+        '📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი\n📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n\nსიამოვნებით გიპასუხებთ ნებისმიერ შეკითხვაზე!'
+      );
     } else if (action === 'hours') {
-      botReply = {
-        sender: 'bot',
-        text: t(
-          '🕒 Monday - Friday: 10:00 - 19:00\nSaturday: 11:00 - 16:00\nSunday: Closed',
-          '🕒 ორშაბათი - პარასკევი: 10:00 - 19:00\nშაბათი: 11:00 - 16:00\nკვირა: დასვენება'
-        ),
-        options: [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
-          { label: t('🏠 Back to Options', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ]
-      };
-    } else if (action === 'reset') {
-      botReply = {
-        sender: 'bot',
-        text: t('How else can I help you?', 'რით შემიძლია კიდევ დაგეხმაროთ?'),
-        options: [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
-          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' }
-        ]
-      };
-    } else if (action === 'telegram') {
-      botReply = {
-        sender: 'bot',
-        text: t(
-          'For comprehensive information and automated direct assistant, you can transition to our Telegram Bot:',
-          'ამომწურავი ინფორმაციისა და ავტომატური ასისტენტის მომსახურებისთვის შეგიძლიათ ისარგებლოთ ჩვენი ტელეგრამ ბოტით:'
-        ),
-        options: [
-          { label: t('✈️ Open Telegram Chat', '✈️ ტელეგრამზე გადასვლა'), action: 'open_tg' },
-          { label: t('🏠 Back to Options', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ]
-      };
-      // Auto-open in new window
-      setTimeout(() => {
-        window.open('https://t.me/JennyDentbot', '_blank');
-      }, 700);
-    } else if (action === 'open_tg') {
-      window.open('https://t.me/JennyDentbot', '_blank');
-      return;
+      questionText = t('What are your working hours?', 'როგორია სამუშაო საათები?');
+      replyText = t(
+        '🕒 Clinic Working Hours:\n• Monday - Friday: 10:00 - 19:00\n• Saturday: 11:00 - 16:00\n• Sunday: Closed',
+        '🕒 კლინიკის სამუშაო საათები:\n• ორშაბათი - პარასკევი: 10:00 - 19:00\n• შაბათი: 11:00 - 16:00\n• კვირა: დასვენება'
+      );
     }
 
-    setMessages((prev) => [...prev, userMsg, botReply]);
+    const userMsg: Message = { sender: 'user', text: questionText };
+    setMessages((prev) => [...prev, userMsg]);
+    setIsTyping(true);
+
+    setTimeout(() => {
+      const remainingOptions = getMainOptions().filter((opt) => opt.action !== action);
+      const botMsg: Message = {
+        sender: 'bot',
+        text: replyText,
+        options: remainingOptions
+      };
+      setMessages((prev) => [...prev, botMsg]);
+      setIsTyping(false);
+    }, 450);
   };
 
   const handleUserText = (rawText: string) => {
@@ -734,7 +708,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
     setTimeout(() => {
       const lower = rawText.toLowerCase();
       let replyText = '';
-      let replyOptions: { label: string; action: string }[] | undefined = undefined;
 
       if (
         lower.includes('ჯავშ') ||
@@ -747,14 +720,9 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         lower.includes('visit')
       ) {
         replyText = t(
-          'You can book an appointment directly through our online calendar. Select a suitable date and procedure:',
-          'ვიზიტის დაჯავშნა შეგიძლიათ პირდაპირ ჩვენი ონლაინ კალენდრით. აირჩიეთ სასურველი თარიღი და პროცედურა:'
+          'To book an appointment, you can use the booking button in the top menu of our website, or call us directly at +995 593 56-79-98. We will gladly choose the most convenient time for your visit!',
+          'ვიზიტის დასაჯავშნად შეგიძლიათ ისარგებლოთ საიტის ზედა მენიუში არსებული ონლაინ დაჯავშნის ღილაკით, ან პირდაპირ დაგვიკავშირდეთ ნომერზე: +995 593 56-79-98 და სიამოვნებით შეგირჩევთ თქვენთვის მოსახერხებელ დროს!'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
-          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ];
       } else if (
         lower.includes('ფას') ||
         lower.includes('ღირებულ') ||
@@ -768,14 +736,9 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         lower.includes('how much')
       ) {
         replyText = t(
-          'Procedure pricing depends on individual clinical diagnosis and treatment complexity (e.g., aesthetic dentistry, veneers, dental implants, or dermatology). For full evaluation or exact quote, book a consultation or consult via Telegram:',
-          'მომსახურების ფასები დამოკიდებულია ინდივიდუალურ კლინიკურ მდგომარეობასა და პროცედურის სირთულეზე (ვენირები, იმპლანტები, თერაპია, დერმატოლოგია). ზუსტი გეგმისა და ღირებულებისთვის შეგიძლიათ დაჯავშნოთ ვიზიტი ან ისარგებლოთ ტელეგრამით:'
+          'Procedure pricing depends on individual clinical diagnosis and treatment complexity (e.g., aesthetic dentistry, veneers, dental implants, or dermatology). For consultation details or exact quote, feel free to call us at +995 593 56-79-98.',
+          'მომსახურების ფასები დამოკიდებულია ინდივიდუალურ კლინიკურ მდგომარეობასა და პროცედურის სირთულეზე (ვენირები, იმპლანტები, თერაპია, დერმატოლოგია). დეტალური კონსულტაციისთვის დაგვიკავშირდით ნომერზე: +995 593 56-79-98.'
         );
-        replyOptions = [
-          { label: t('📅 Book Consultation', '📅 კონსულტაციაზე ჩაწერა'), action: 'book' },
-          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' }
-        ];
       } else if (
         lower.includes('სერვის') ||
         lower.includes('მომსახურებ') ||
@@ -797,14 +760,9 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
         lower.includes('skin')
       ) {
         replyText = t(
-          'Dr. Jenny Pirtskhalava provides comprehensive services across two main specialties:\n1. Aesthetic & Restorative Dentistry (Implants, Veneers, Orthodontics, Cleaning)\n2. Advanced Dermatology (Skin aesthetics and therapies).\nWould you like to schedule an appointment?',
-          'ექიმი ჯენი ფირცხალავა გთავაზობთ მომსახურებას ორ ძირითად მიმართულებაში:\n1. ესთეტიკური და აღდგენითი სტომატოლოგია (იმპლანტაცია, ვენირები, თერაპია, წმენდა/გათეთრება)\n2. თანამედროვე დერმატოლოგია (კანის მოვლა და ესთეტიკური თერაპიები).\nგსურთ ვიზიტის დაჯავშნა?'
+          'Dr. Jenny Pirtskhalava provides comprehensive services across two main specialties:\n1. Aesthetic & Restorative Dentistry (Implants, Veneers, Orthodontics, Cleaning)\n2. Advanced Dermatology (Skin aesthetics and therapies).\nFeel free to ask any specific question here!',
+          'ექიმი ჯენი ფირცხალავა გთავაზობთ მომსახურებას ორ ძირითად მიმართულებაში:\n1. ესთეტიკური და აღდგენითი სტომატოლოგია (იმპლანტაცია, ვენირები, თერაპია, წმენდა/გათეთრება)\n2. თანამედროვე დერმატოლოგია (კანის მოვლა და ესთეტიკური თერაპიები).\nშეგიძლიათ მოგვწეროთ ნებისმიერ შეკითხვაზე!'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' }
-        ];
       } else if (
         lower.includes('მისამართ') ||
         lower.includes('სად ხართ') ||
@@ -821,11 +779,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           '📍 Clinic Location: 14 Meliton and Andria Balanchivadze St, Tbilisi, Georgia.\n📞 Phone: +995 593 56-79-98',
           '📍 კლინიკის მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი.\n📞 ტელეფონი: +995 593 56-79-98'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' },
-          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ];
       } else if (
         lower.includes('საათ') ||
         lower.includes('გრაფიკ') ||
@@ -843,11 +796,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           '🕒 Working Hours:\nMonday - Friday: 10:00 - 19:00\nSaturday: 11:00 - 16:00\nSunday: Closed',
           '🕒 სამუშაო საათები:\nორშაბათი - პარასკევი: 10:00 - 19:00\nშაბათი: 11:00 - 16:00\nკვირა: დასვენება'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
-          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ];
       } else if (
         lower.includes('ტელეფონ') ||
         lower.includes('ნომერ') ||
@@ -864,24 +812,15 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           '📞 Phone: +995 593 56-79-98\n✉️ Email: info@jenny.ge\n📍 Address: 14 Meliton and Andria Balanchivadze St, Tbilisi',
           '📞 ტელეფონი: +995 593 56-79-98\n✉️ ელ-ფოსტა: info@jenny.ge\n📍 მისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
-          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ];
       } else if (
         lower.includes('ტელეგრამ') ||
         lower.includes('telegram') ||
         lower.includes('tg')
       ) {
         replyText = t(
-          'You can connect directly with our automated Telegram assistant bot: @JennyDentbot',
-          'ჩვენი ოფიციალური ტელეგრამ ბოტი ხელმისაწვდომია აქ: @JennyDentbot'
+          'Our automated Telegram bot assistant is: @JennyDentbot',
+          'ჩვენი ოფიციალური ტელეგრამ ბოტია: @JennyDentbot'
         );
-        replyOptions = [
-          { label: t('✈️ Open Telegram Chat', '✈️ ტელეგრამზე გადასვლა'), action: 'open_tg' },
-          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ];
       } else if (
         lower.includes('ჯენი') ||
         lower.includes('ექიმ') ||
@@ -895,11 +834,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           'Dr. Jenny Pirtskhalava has 15+ years of extensive clinical practice in aesthetic dentistry and dermatology with international certifications.',
           'ექიმი ჯენი ფირცხალავა არის საერთაშორისო სერტიფიცირებული სპეციალისტი 15+ წლიანი პრაქტიკული გამოცდილებით ესთეტიკურ სტომატოლოგიასა და დერმატოლოგიაში.'
         );
-        replyOptions = [
-          { label: t('📅 Book Consultation', '📅 კონსულტაციაზე ჩაწერა'), action: 'book' },
-          { label: t('✈️ Telegram Assistant', '✈️ ტელეგრამ ასისტენტი'), action: 'telegram' },
-          { label: t('🏠 Main Menu', '🏠 საწყისი მენიუ'), action: 'reset' }
-        ];
       } else if (
         lower.includes('გამარჯობ') ||
         lower.includes('სალამ') ||
@@ -913,26 +847,16 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
           'Hello! How can I assist you with your dental or skin care inquiry today?',
           'მოგესალმებით! რით შემიძლია დაგეხმაროთ თქვენი ღიმილის ან კანის მოვლის საკითხებში?'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' },
-          { label: t('🕒 Working Hours', '🕒 სამუშაო საათები'), action: 'hours' }
-        ];
       } else {
         replyText = t(
-          'Thank you for your message! For direct booking, contact details, or more comprehensive assistance, please choose an option or visit our Telegram bot:',
-          'გმადლობთ შეტყობინებისთვის! დეტალური კონსულტაციისთვის, ვიზიტის დასაჯავშნად ან დამატებითი ინფორმაციისთვის შეგიძლიათ აირჩიოთ სასურველი ოფცია ან ისარგებლოთ ტელეგრამით:'
+          'Thank you for your message! You can ask anything about our services, booking, contacts, or working hours right here in the chat.',
+          'გმადლობთ შეტყობინებისთვის! შეგიძლიათ პირდაპირ ჩათში მოგვწეროთ ნებისმიერ საკითხზე (სერვისები, დაჯავშნა, კონტაქტები, სამუშაო საათები).'
         );
-        replyOptions = [
-          { label: t('📅 Book Appointment', '📅 ვიზიტის დაჯავშნა'), action: 'book' },
-          { label: t('✈️ Comprehensive Info (Telegram)', '✈️ ამომწურავი ინფორმაცია (Telegram)'), action: 'telegram' },
-          { label: t('📞 Contact Info', '📞 კონტაქტები'), action: 'contact' }
-        ];
       }
 
-      setMessages((prev) => [...prev, { sender: 'bot', text: replyText, options: replyOptions }]);
+      setMessages((prev) => [...prev, { sender: 'bot', text: replyText, options: getMainOptions() }]);
       setIsTyping(false);
-    }, 550);
+    }, 450);
   };
 
   return (
@@ -990,7 +914,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t, onBookClick }) =
                     {msg.options.map((opt) => (
                       <button
                         key={opt.action}
-                        onClick={() => handleAction(opt.action, opt.label)}
+                        onClick={() => handleAction(opt.action)}
                         className="w-full py-3 px-4 bg-[#f6f7f1] border border-white/20 hover:scale-[1.02] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] rounded-xl text-left text-xs font-black text-neutral-800 transition-all"
                       >
                         {opt.label}
