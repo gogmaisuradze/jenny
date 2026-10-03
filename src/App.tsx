@@ -1222,26 +1222,37 @@ const App: React.FC = () => {
   const t = (en: string, ka: string) => (lang === 'en' ? en : ka);
 
   useEffect(() => {
-    try {
-      const STORAGE_KEY = 'jenny_unique_visitors_total_v1';
-      const VISITED_KEY = 'jenny_has_visited_site_v1';
-
-      let count = parseInt(localStorage.getItem(STORAGE_KEY) || '1', 10);
-      if (isNaN(count) || count < 1) count = 1;
-
-      const hasVisited = localStorage.getItem(VISITED_KEY);
-      if (!hasVisited) {
-        localStorage.setItem(VISITED_KEY, 'true');
-        if (localStorage.getItem(STORAGE_KEY)) {
-          count += 1;
-        }
-        localStorage.setItem(STORAGE_KEY, count.toString());
-      }
-
-      setVisitorCount(String(count).padStart(5, '0'));
-    } catch {
-      setVisitorCount('00001');
+    const STORAGE_KEY = 'jenny_unique_visitors_total_v2';
+    const cached = localStorage.getItem(STORAGE_KEY);
+    if (cached) {
+      setVisitorCount(cached);
     }
+
+    // Real-time global counter across all visitors and devices
+    fetch('https://hits.dwyl.com/gogmaisuradze/jenny.json')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.message) {
+          const num = parseInt(data.message, 10);
+          if (!isNaN(num) && num > 0) {
+            const formatted = String(num).padStart(5, '0');
+            setVisitorCount(formatted);
+            localStorage.setItem(STORAGE_KEY, formatted);
+          }
+        }
+      })
+      .catch(() => {
+        try {
+          let count = parseInt(localStorage.getItem(STORAGE_KEY) || '1', 10);
+          if (isNaN(count)) count = 1;
+          count += 1;
+          const formatted = String(count).padStart(5, '0');
+          setVisitorCount(formatted);
+          localStorage.setItem(STORAGE_KEY, formatted);
+        } catch {
+          setVisitorCount('00001');
+        }
+      });
   }, []);
 
   const s1Reveal = useStaggeredReveal();
