@@ -273,6 +273,16 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
                 {link}
               </button>
             ))}
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                onBookClick();
+              }}
+              className="mt-6 px-6 py-3.5 bg-neutral-900 text-white rounded-full text-sm font-black text-center shadow-lg active:scale-95 transition-all"
+            >
+              {t('Book Appointment', 'ვიზიტის დაჯავშნა')}
+            </button>
           </div>
         </div>
       </div>
@@ -281,369 +291,500 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
 };
 
 // ==========================================
-// INTERACTIVE BOOKING MODAL
+// DETAILED SERVICES MODAL (Knowledge Base)
 // ==========================================
-interface BookingModalProps {
+interface ServicesDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   lang: 'ka' | 'en';
   t: (en: string, ka: string) => string;
+  onBookVisit: () => void;
+  initialCategory?: string;
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, lang, t }) => {
-  const [step, setStep] = useState(1);
-  const [specialty, setSpecialty] = useState<'dentistry' | 'dermatology'>('dentistry');
-  const [treatment, setTreatment] = useState('');
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [selectedTime, setSelectedTime] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
+  isOpen,
+  onClose,
+  lang,
+  t,
+  onBookVisit,
+  initialCategory = 'all'
+}) => {
+  const [activeTab, setActiveTab] = useState(initialCategory);
 
   useEffect(() => {
     if (isOpen) {
-      setStep(1);
-      setSpecialty('dentistry');
-      setTreatment('');
-      setSelectedDay(null);
-      setSelectedTime('');
-      setName('');
-      setPhone('');
+      setActiveTab(initialCategory);
     }
-  }, [isOpen]);
+  }, [isOpen, initialCategory]);
 
   if (!isOpen) return null;
 
-  const dentistryTreatments = lang === 'en' 
-    ? ['Dental Veneers', 'Dental Crowns', 'Teeth Whitening', 'Dental Implants']
-    : ['ესთეტიკური ვინირები', 'სამკურნალო გვირგვინები', 'კბილების გათეთრება', 'კბილის იმპლანტები'];
+  const categories = [
+    { id: 'all', labelKa: 'ყველა', labelEn: 'All' },
+    { id: 'restoration', labelKa: 'მხატვრული რესტავრაცია', labelEn: 'Restoration' },
+    { id: 'cleaning', labelKa: 'წმენდა და გათეთრება', labelEn: 'Cleaning & Whitening' },
+    { id: 'therapy', labelKa: 'თერაპია და ორთოპედია', labelEn: 'Therapy & Crowns' },
+    { id: 'surgery', labelKa: 'იმპლანტები და ორთოდონტია', labelEn: 'Surgery & Ortho' },
+    { id: 'tech', labelKa: 'ციფრული ტექნოლოგიები', labelEn: 'Digital Tech' },
+  ];
 
-  const dermatologyTreatments = lang === 'en'
-    ? ['Skin Rejuvenation', 'Skin Diagnostics', 'Aesthetic Procedures', 'Laser Therapy']
-    : ['კანის გაახალგაზრდავება', 'კანის დიაგნოსტიკა', 'ესთეტიკური პროცედურები', 'ლაზერული თერაპია'];
-
-  const activeTreatmentsList = specialty === 'dentistry' ? dentistryTreatments : dermatologyTreatments;
-  const timeSlots = ['10:00', '11:30', '13:00', '15:00', '16:30', '18:00'];
-  const calendarDays = Array.from({ length: 31 }, (_, i) => i + 1);
-  const weekdays = lang === 'en' 
-    ? ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-    : ['კვ', 'ორ', 'სამ', 'ოთხ', 'ხუ', 'პარ', 'შაბ'];
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name.trim() && phone.trim()) {
-      setStep(4);
+  const services = [
+    {
+      id: 'consultation',
+      category: 'restoration',
+      titleKa: 'პირველადი კონსულტაცია',
+      titleEn: 'Initial Oral Consultation',
+      priceKa: 'უფასო',
+      priceEn: 'Free',
+      badgeKa: 'სრული დიაგნოსტიკა',
+      badgeEn: 'Full Diagnostics',
+      featuresKa: [
+        'პირის ღრუს სრული კომპლექსური შეფასება',
+        'პაციენტის ანკეტის შედგენა და დაავადებების შესახებ ინფორმაციის დაფიქსირება',
+        'ფოტოპროტოკოლის გადაღება ციფრული ფიქსაციით'
+      ],
+      featuresEn: [
+        'Comprehensive clinical oral assessment',
+        'Medical history charting & records registration',
+        'Digital high-resolution photo protocol'
+      ]
+    },
+    {
+      id: 'restoration',
+      category: 'restoration',
+      titleKa: 'მხატვრული რესტავრაცია (ერთი კბილი)',
+      titleEn: 'Artistic Dental Restoration (Per Tooth)',
+      priceKa: '250 ₾ – 350 ₾',
+      priceEn: '250 ₾ – 350 ₾',
+      badgeKa: '2-თვიანი გარანტია',
+      badgeEn: '2-Month Warranty',
+      subPricesKa: [
+        { name: 'საღებავების გარეშე', price: '250 ₾' },
+        { name: 'მხატვრული საღებავებით', price: '350 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Without tints', price: '250 ₾' },
+        { name: 'With artistic tints', price: '350 ₾' }
+      ],
+      featuresKa: [
+        'ფოტოპროტოკოლი — სამუშაო პროცესისა და შედეგის ფოტოგადაღება',
+        'კბილის ბუნებრივი ფორმისა და ანატომიის ინდივიდუალური დაგეგმვა',
+        'კბილთა რკალის პროპორციების ინდივიდუალური გამოთვლა სპეციალური ფორმულით',
+        'პრემიუმ კლასის კომპოზიტით (Estelite Asteria) და მხატვრული საღებავებით შესრულებული რესტავრაცია',
+        'ფინალური დამუშავება — ფინირება და პოლირება',
+        '2-თვიანი გარანტია (საჭიროების შემთხვევაში კორექცია უფასოა)'
+      ],
+      featuresEn: [
+        'High-resolution photo protocol before and after',
+        'Individual tooth anatomy and shape design',
+        'Personalized dental arch proportion formula',
+        'Premium Estelite Asteria composite & artistic layering',
+        'Fine finishing and high-gloss polishing',
+        '2-month warranty with free touch-ups'
+      ]
+    },
+    {
+      id: 'cleaning',
+      category: 'cleaning',
+      titleKa: 'პროფესიული წმენდა',
+      titleEn: 'Professional Teeth Cleaning',
+      priceKa: '150 ₾ – 230 ₾',
+      priceEn: '150 ₾ – 230 ₾',
+      badgeKa: 'Air Flow & ჰიგიენა',
+      badgeEn: 'Air Flow & Hygiene',
+      subPricesKa: [
+        { name: 'საბაზისო (ნადების შეღებვა, ქვებისა და ნადების მოცილება, პოლირება)', price: '150 ₾' },
+        { name: 'ღრმა (+ Air Flow აირჭავლით წმენდა, ენის წმენდა)', price: '180 ₾' },
+        { name: 'პაროდონტოლოგიური (+ ფტორირება, ღრძილების მკურნალობა 1 სეანსი)', price: '230 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Basic (plaque indicator, tartar & plaque removal, polish)', price: '150 ₾' },
+        { name: 'Deep (+ Air Flow spray, tongue cleaning, polish)', price: '180 ₾' },
+        { name: 'Periodontal (+ fluoridation, gum therapy 1 session)', price: '230 ₾' }
+      ],
+      featuresKa: [
+        'ინდიკატორით ნადების შეღებვა და დიაგნოსტიკა',
+        'ულტრაბგერითი სკალინგი — ქვებისა და ნადების უმტკივნეულო მოცილება',
+        'Air Flow აირჭავლით მიკრონაწილაკების უსაფრთხო მოცილება',
+        'ენის ჰიგიენა და მინანქრის სარკისებური პოლირება'
+      ],
+      featuresEn: [
+        'Plaque indicator application and hygiene scoring',
+        'Ultrasonic scaling for painless tartar removal',
+        'Air Flow gentle polish with soft micro-particles',
+        'Tongue cleansing and enamel glaze polishing'
+      ]
+    },
+    {
+      id: 'whitening',
+      category: 'cleaning',
+      titleKa: 'კბილების პროფესიონალური გათეთრება',
+      titleEn: 'Professional Teeth Whitening',
+      priceKa: '450 ₾ – 800 ₾',
+      priceEn: '450 ₾ – 800 ₾',
+      badgeKa: 'Zoom & Boost',
+      badgeEn: 'Zoom & Boost',
+      subPricesKa: [
+        { name: 'Zoom-ით გათეთრება (მოიცავს პროფესიულ წმენდას + Zoom სისტემა)', price: '450 ₾' },
+        { name: 'ბუსტით გათეთრება (მოიცავს პროფესიულ წმენდას + 45-წუთიანი ბუსტი)', price: '550 ₾' },
+        { name: 'კაპებით გათეთრება სახლში (ინდ. კაპები + 2 გელი + წმენდა)', price: '800 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Zoom Whitening (includes cleaning + Zoom device)', price: '450 ₾' },
+        { name: 'Boost Whitening (includes cleaning + 45-min boost)', price: '550 ₾' },
+        { name: 'Home Whitening Trays (custom trays + 2 gels + cleaning)', price: '800 ₾' }
+      ],
+      featuresKa: [
+        'ყველა პაკეტი მოიცავს წინასწარ პროფესიულ წმენდას',
+        'მინანქრისთვის უსაფრთხო, კლინიკურად დამტკიცებული ტექნოლოგია',
+        'დეტალური პერსონალური ინსტრუქცია შემდგომი მოვლისა და თეთრი დიეტისთვის'
+      ],
+      featuresEn: [
+        'Every package includes complimentary prior cleaning',
+        'Clinically proven enamel-safe whitening protocols',
+        'Detailed aftercare advice and white diet instructions'
+      ]
+    },
+    {
+      id: 'therapy',
+      category: 'therapy',
+      titleKa: 'თერაპიული და ენდოდონტიური მკურნალობა',
+      titleEn: 'Therapeutic Dentistry & Endodontics',
+      priceKa: '120 ₾ – 250 ₾',
+      priceEn: '120 ₾ – 250 ₾',
+      badgeKa: 'Guttafusion & SybronEndo',
+      badgeEn: 'Guttafusion & SybronEndo',
+      subPricesKa: [
+        { name: 'კბილის დაბჟენვა (გერმანული / იაპონური მასალით)', price: '150 – 250 ₾' },
+        { name: 'ფესვის არხების მკურნალობა (ენდოდონტია)', price: '120 – 250 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Tooth filling (German / Japanese composites)', price: '150 – 250 ₾' },
+        { name: 'Root canal therapy (endodontics)', price: '120 – 250 ₾' }
+      ],
+      featuresKa: [
+        'უმაღლესი ხარისხის ნანოჰიბრიდული ბჟენები',
+        'არხების 3D ჰერმეტული დაბჟენა Guttafusion Oven და SybronEndo აპარატურით',
+        'სრულიად უმტკივნეულო კომპიუტერული ანესთეზია'
+      ],
+      featuresEn: [
+        'Top-grade Japanese & German nanohybrid composites',
+        'Hermetic 3D canal filling with Guttafusion & SybronEndo',
+        'Completely painless modern anesthesia techniques'
+      ]
+    },
+    {
+      id: 'prosthetics',
+      category: 'therapy',
+      titleKa: 'ორთოპედიული სტომატოლოგია და ვინირები',
+      titleEn: 'Prosthodontics & Veneers',
+      priceKa: '150 ₾ – 600 ₾',
+      priceEn: '150 ₾ – 600 ₾',
+      badgeKa: 'ცირკონო-კერამიკა',
+      badgeEn: 'Zirconia & Ceramics',
+      subPricesKa: [
+        { name: 'მეტალო-კერამიკის გვირგვინი', price: '150 – 220 ₾' },
+        { name: 'ცირკონო-კერამიკის გვირგვინი (უმაღლესი ესთეტიკა)', price: '350 – 500 ₾' },
+        { name: 'კერამიკული ვინირი', price: '400 – 600 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Metal-ceramic crown', price: '150 – 220 ₾' },
+        { name: 'Zirconia-ceramic crown (highest aesthetics)', price: '350 – 500 ₾' },
+        { name: 'Ceramic veneer', price: '400 – 600 ₾' }
+      ],
+      featuresKa: [
+        'იდეალური ანატომიური თანხვედრა Planmeca Emerald S ციფრული სკანერით',
+        'ბუნებრივი გამჭვირვალობა, ფერი და გამძლეობა',
+        'ანაბეჭდის აღება უსიამოვნო მასების გარეშე'
+      ],
+      featuresEn: [
+        'Precise digital design via Planmeca Emerald S scanner',
+        'Natural optical translucency and superior durability',
+        'Clean process with no uncomfortable impression molds'
+      ]
+    },
+    {
+      id: 'surgery',
+      category: 'surgery',
+      titleKa: 'ქირურგია და იმპლანტაცია',
+      titleEn: 'Oral Surgery & Implants',
+      priceKa: '50 ₾ – 1 500 ₾',
+      priceEn: '50 ₾ – 1 500 ₾',
+      badgeKa: 'პრემიუმ იმპლანტები',
+      badgeEn: 'Premium Implants',
+      subPricesKa: [
+        { name: 'კბილის ექსტრაქცია (მარტივი / რთული)', price: '50 – 150 ₾' },
+        { name: 'სიბრძნის კბილის ექსტრაქცია (რეტენირებული)', price: '100 – 300 ₾' },
+        { name: 'დენტალური იმპლანტი (პრემიუმ სისტემები)', price: '700 – 1 500 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Tooth extraction (simple / complex)', price: '50 – 150 ₾' },
+        { name: 'Wisdom tooth extraction (impacted)', price: '100 – 300 ₾' },
+        { name: 'Dental implant (premium systems)', price: '700 – 1 500 ₾' }
+      ],
+      featuresKa: [
+        'ატრავმული ქირურგია ძვლის მაქსიმალური შენარჩუნებით',
+        'Planmeca ProMax 3D Plus რენტგენოგრაფიული დაგეგმარება',
+        'მსოფლიო წამყვანი იმპლანტოლოგიური ბრენდები'
+      ],
+      featuresEn: [
+        'Atraumatic bone-preserving surgical techniques',
+        'High-precision 3D planning with Planmeca ProMax 3D Plus',
+        'World-leading certified implant systems'
+      ]
+    },
+    {
+      id: 'ortho',
+      category: 'surgery',
+      titleKa: 'ორთოდონტია და ბავშვთა სტომატოლოგია',
+      titleEn: 'Orthodontics & Pediatric Dentistry',
+      priceKa: '60 ₾ – 2 000 ₾+',
+      priceEn: '60 ₾ – 2 000 ₾+',
+      badgeKa: 'ბრეკეტები და ადაპტაცია',
+      badgeEn: 'Braces & Child Care',
+      subPricesKa: [
+        { name: 'მეტალის ბრეკეტ-სისტემა (ორივე ყბა)', price: '1 200 ₾-დან' },
+        { name: 'კერამიკული / საფირონის ბრეკეტები (ორივე ყბა)', price: '2 000 ₾-დან' },
+        { name: 'ბავშვთა დაბჟენა (ფერადი ან სტანდარტული)', price: '60 – 150 ₾' },
+        { name: 'სარძევე კბილის ექსტრაქცია', price: '30 – 50 ₾' },
+        { name: 'ფტორირება / რემინერალიზაცია', price: '50 – 80 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Metal braces system (both jaws)', price: 'from 1,200 ₾' },
+        { name: 'Ceramic / Sapphire braces (both jaws)', price: 'from 2,000 ₾' },
+        { name: 'Pediatric filling (colored or standard)', price: '60 – 150 ₾' },
+        { name: 'Baby tooth extraction', price: '30 – 50 ₾' },
+        { name: 'Fluoridation / remineralization', price: '50 – 80 ₾' }
+      ],
+      featuresKa: [
+        'თანკბილვის გასწორება მოზარდებსა და მოზრდილებში',
+        'ბავშვებთან თბილი, მეგობრული ადაპტაციური მიდგომა უსტრესო გარემოში',
+        'კარიესის ადრეული პრევენცია და მინანქრის გამაგრება'
+      ],
+      featuresEn: [
+        'Bite correction with advanced orthodontic systems',
+        'Warm child adaptation and stress-free appointment pacing',
+        'Caries prevention and enamel strengthening therapies'
+      ]
+    },
+    {
+      id: 'tech',
+      category: 'tech',
+      titleKa: 'მსოფლიო დონის ციფრული ტექნოლოგიები',
+      titleEn: 'State-of-the-Art Digital Technologies',
+      priceKa: 'Smile Agency Tech',
+      priceEn: 'Smile Agency Tech',
+      badgeKa: 'Planmeca ციფრული ცენტრი',
+      badgeEn: 'Planmeca Suite',
+      featuresKa: [
+        'Planmeca ProMax 3D Plus — უახლესი თაობის 3D რენტგენოგრაფია მაქსიმალური სიზუსტით',
+        'Planmeca Emerald S — შიდაპირის ციფრული სკანერი (აღარ არის საჭირო მასით ანაბეჭდის დისკომფორტული აღება)',
+        'Guttafusion Oven და SybronEndo — არხების უმაღლესი ხარისხით და სრული ჰერმეტულობით მკურნალობა',
+        'Estelite Asteria — უმაღლესი კლასის იაპონური კომპოზიტი მხატვრული რესტავრაციისთვის'
+      ],
+      featuresEn: [
+        'Planmeca ProMax 3D Plus — Latest generation ultra-precise 3D CBCT',
+        'Planmeca Emerald S — High-speed intraoral scanner (no uncomfortable paste molds)',
+        'Guttafusion Oven & SybronEndo — Gold standard hermetic 3D root canal obturation',
+        'Estelite Asteria — Premium Japanese aesthetic composite for natural artistic smiles'
+      ]
     }
-  };
+  ];
+
+  const filteredServices = activeTab === 'all' 
+    ? services 
+    : services.filter(s => s.category === activeTab);
 
   return (
-    <div className="fixed inset-0 bg-[#f6f7f1]/60 backdrop-blur-md z-[80] flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-[#f6f7f1] rounded-[36px] w-full max-w-5xl overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/30 flex flex-col md:flex-row relative">
-        <button 
-          onClick={onClose}
-          className="absolute top-5 right-5 w-10 h-10 bg-[#f6f7f1] hover:shadow-[inset_2px_2px_5px_rgba(163,177,198,0.5)] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.9)] border border-white/20 rounded-full flex items-center justify-center text-neutral-700 z-20 font-black text-sm transition-all"
-        >
-          ✕
-        </button>
-
-        {/* Left Column: Form Flow */}
-        <div className="flex-1 p-6 md:p-10 flex flex-col justify-between min-h-[480px]">
-          <div>
-            <div className="flex gap-3 mb-8">
-              {[1, 2, 3].map((num) => (
-                <div 
-                  key={num}
-                  className={`h-2 flex-1 rounded-full transition-all duration-300 ${step >= num ? 'bg-neutral-800 shadow-sm' : 'bg-[#f6f7f1] shadow-[inset_2px_2px_4px_rgba(163,177,198,0.5)]'}`}
-                />
-              ))}
-            </div>
-
-            {/* Step 1: Select Specialty & Treatment */}
-            {step === 1 && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
-                <h3 className="text-xl md:text-2xl font-black text-neutral-800 mb-4">
-                  {t('Select Direction', 'აირჩიეთ მიმართულება')}
-                </h3>
-                
-                {/* Specialty Toggle */}
-                <div className="flex gap-2 bg-[#f6f7f1] p-1.5 rounded-2xl shadow-[inset_3px_3px_6px_rgba(163,177,198,0.4),inset_-3px_-3px_6px_rgba(255,255,255,0.8)] mb-6">
-                  <button 
-                    onClick={() => { setSpecialty('dentistry'); setTreatment(''); }}
-                    className={`flex-1 py-3.5 rounded-xl text-xs font-black transition-all ${specialty === 'dentistry' ? 'bg-neutral-800 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-800'}`}
-                  >
-                    {t('🦷 Dentistry', '🦷 სტომატოლოგია')}
-                  </button>
-                  <button 
-                    onClick={() => { setSpecialty('dermatology'); setTreatment(''); }}
-                    className={`flex-1 py-3.5 rounded-xl text-xs font-black transition-all ${specialty === 'dermatology' ? 'bg-neutral-800 text-white shadow-md' : 'text-neutral-500 hover:text-neutral-800'}`}
-                  >
-                    {t('✨ Dermatology', '✨ დერმატოლოგია')}
-                  </button>
-                </div>
-
-                <span className="block text-[10px] font-black text-neutral-400 mb-3 uppercase tracking-widest">
-                  {t('Available Procedures', 'ხელმისაწვდომი პროცედურები')}
-                </span>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {activeTreatmentsList.map((tItem) => (
-                    <button
-                      key={tItem}
-                      onClick={() => {
-                        setTreatment(tItem);
-                        setStep(2);
-                      }}
-                      className={`p-5 text-left rounded-2xl border border-white/20 transition-all font-bold text-sm text-neutral-800 ${treatment === tItem ? 'shadow-[inset_4px_4px_8px_rgba(163,177,198,0.5),inset_-4px_-4px_8px_rgba(255,255,255,0.9)] bg-neutral-100/40' : 'shadow-[4px_4px_10px_rgba(163,177,198,0.5),-4px_-4px_10px_rgba(255,255,255,0.85)] hover:scale-[1.01]'}`}
-                    >
-                      {tItem}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Date Grid */}
-            {step === 2 && (
-              <div className="animate-[fadeIn_0.3s_ease-out]">
-                <h3 className="text-xl font-black text-neutral-800 mb-4">
-                  {t('Select Date & Time', 'აირჩიეთ თარიღი და დრო')}
-                </h3>
-                <div className="text-center font-bold text-xs text-neutral-500 uppercase tracking-widest mb-3">
-                  {t('July 2026', 'ივლისი 2026')}
-                </div>
-
-                <div className="mb-6 p-4 rounded-2xl bg-[#f6f7f1] shadow-[inset_4px_4px_8px_rgba(163,177,198,0.5),inset_-4px_-4px_8px_rgba(255,255,255,0.85)] border border-white/25">
-                  <div className="grid grid-cols-7 gap-1.5 text-center font-bold text-[10px] md:text-xs text-neutral-400 mb-3">
-                    {weekdays.map((w) => <div key={w}>{w}</div>)}
-                  </div>
-                  <div className="grid grid-cols-7 gap-1.5">
-                    {Array.from({ length: 3 }).map((_, idx) => (
-                      <div key={`offset-${idx}`} className="aspect-square" />
-                    ))}
-                    {calendarDays.map((day) => {
-                      const isPast = day < 6;
-                      const isSelected = selectedDay === day;
-                      return (
-                        <button
-                          key={day}
-                          disabled={isPast}
-                          onClick={() => setSelectedDay(day)}
-                          className={`aspect-square text-xs md:text-sm font-black rounded-full flex items-center justify-center transition-all ${isPast ? 'text-neutral-300 cursor-not-allowed shadow-none' : isSelected ? 'bg-neutral-800 text-white shadow-inner scale-[0.93]' : 'bg-[#f6f7f1] text-neutral-800 shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] hover:scale-105 border border-white/20'}`}
-                        >
-                          {day}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {selectedDay && (
-                  <div className="animate-[fadeIn_0.2s_ease-out]">
-                    <div className="grid grid-cols-3 gap-3">
-                      {timeSlots.map((time) => (
-                        <button
-                          key={time}
-                          onClick={() => setSelectedTime(time)}
-                          className={`py-3 rounded-xl text-xs md:text-sm font-black transition-all ${selectedTime === time ? 'bg-neutral-800 text-white shadow-inner scale-[0.95]' : 'bg-[#f6f7f1] text-neutral-800 shadow-[3px_3px_7px_rgba(163,177,198,0.5),-3px_-3px_7px_rgba(255,255,255,0.9)] border border-white/20 hover:scale-[1.02]'}`}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Step 3: Patient Form */}
-            {step === 3 && (
-              <form onSubmit={handleSubmit} className="animate-[fadeIn_0.3s_ease-out]">
-                <h3 className="text-xl md:text-2xl font-black text-neutral-800 mb-6">
-                  {t('Confirm Booking Info', 'დაადასტურეთ ჯავშანი')}
-                </h3>
-                <div className="flex flex-col gap-4 mb-6">
-                  <div>
-                    <label className="block text-[10px] font-black text-neutral-400 mb-2 uppercase tracking-widest">
-                      {t('Patient Name', 'პაციენტის სახელი და გვარი')}
-                    </label>
-                    <input 
-                      type="text" 
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={t('Giorgi Kalandadze', 'მაგ: გიორგი კალანდაძე')}
-                      className="w-full px-5 py-4 rounded-2xl bg-[#f6f7f1] shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] focus:outline-none text-sm font-bold text-neutral-800 border border-white/10"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-[10px] font-black text-neutral-400 mb-2 uppercase tracking-widest">
-                      {t('Phone Number', 'ტელეფონის ნომერი')}
-                    </label>
-                    <input 
-                      type="tel" 
-                      required
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="593567998"
-                      className="w-full px-5 py-4 rounded-2xl bg-[#f6f7f1] shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] focus:outline-none text-sm font-bold text-neutral-800 border border-white/10"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-neutral-100/40 border border-white/20 text-xs font-bold text-neutral-600 flex flex-col gap-2">
-                  <div>📋 {t('Specialty:', 'მიმართულება:')} <span className="text-neutral-800 font-extrabold">{specialty === 'dentistry' ? t('Dentistry', 'სტომატოლოგია') : t('Dermatology', 'დერმატოლოგია')}</span></div>
-                  <div>🦷 {t('Service:', 'მომსახურება:')} <span className="text-neutral-800 font-extrabold">{treatment}</span></div>
-                  <div>📅 {t('Date:', 'თარიღი:')} <span className="text-neutral-800 font-extrabold">{t(`July ${selectedDay}, 2026`, `${selectedDay} ივლისი, 2026`)}</span></div>
-                  <div>🕒 {t('Time Slot:', 'დრო:')} <span className="text-neutral-800 font-extrabold">{selectedTime}</span></div>
-                </div>
-
-                <button 
-                  type="submit"
-                  className="w-full py-4.5 bg-neutral-800 text-white text-sm font-bold rounded-full hover:bg-neutral-700 shadow-md transition-colors mt-6"
-                >
-                  {t('Confirm Booking', 'ჯავშნის დადასტურება')}
-                </button>
-              </form>
-            )}
-
-            {/* Step 4: Success Message */}
-            {step === 4 && (
-              <div className="flex flex-col items-center justify-center text-center py-10 animate-[scaleUp_0.4s_cubic-bezier(0.16,1,0.3,1)]">
-                <div className="w-20 h-20 bg-[#f6f7f1] rounded-full shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center text-green-500 mb-6 text-3xl font-black">
-                  ✓
-                </div>
-                <h3 className="text-2xl font-black text-neutral-800 mb-3">
-                  {t('Booking Confirmed!', 'ვიზიტი წარმატებით დაიჯავშნა!')}
-                </h3>
-                <p className="text-neutral-500 text-xs max-w-[280px] md:max-w-md mb-8 leading-relaxed font-bold">
-                  {t(
-                    `Thank you, ${name}. We look forward to seeing you on July ${selectedDay} at ${selectedTime}.`,
-                    `გმადლობთ, ${name}. გელოდებით კლინიკაში ${selectedDay} ივლისს, ${selectedTime} საათზე.`
-                  )}
-                </p>
-                <button
-                  onClick={onClose}
-                  className="px-10 py-3.5 bg-neutral-800 text-white text-xs font-bold rounded-full hover:bg-neutral-700 shadow-md transition-colors"
-                >
-                  {t('Close', 'დახურვა')}
-                </button>
-              </div>
-            )}
-          </div>
-
-          {step > 1 && step < 4 && (
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={() => setStep(step - 1)}
-                className="px-6 py-2.5 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 text-xs font-black text-neutral-700 hover:scale-105 transition-transform"
-              >
-                {t('Back', 'უკან')}
-              </button>
-              {step === 2 && selectedDay && selectedTime && (
-                <button
-                  onClick={() => setStep(3)}
-                  className="px-6 py-2.5 bg-neutral-800 text-white text-xs font-bold rounded-full shadow-md hover:bg-neutral-700 transition-colors"
-                >
-                  {t('Continue', 'გაგრძელება')}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right Column: Contact info & map */}
-        <div className="w-full md:w-[400px] bg-[#f6f7f1]/80 border-t md:border-t-0 md:border-l border-neutral-300 p-6 md:p-10 flex flex-col justify-between">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full bg-[#f6f7f1] p-1 shadow-[4px_4px_8px_rgba(163,177,198,0.5),-4px_-4px_8px_rgba(255,255,255,0.9)] border border-white/30 shrink-0 overflow-hidden">
-              <img src={DENTIST_PORTRAIT} alt="Dr. Jenny Pirtskhalava" className="w-full h-full object-cover rounded-full" />
+    <div className="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm z-[80] flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+      <div className="bg-[#f6f7f1] rounded-[28px] md:rounded-[36px] w-full max-w-4xl max-h-[92vh] overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/40 flex flex-col relative animate-[scaleUp_0.2s_ease-out]">
+        
+        {/* Header */}
+        <div className="p-5 md:p-7 pb-4 bg-[#f6f7f1] border-b border-neutral-200/80 flex items-start justify-between relative flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#f6f7f1] p-1.5 shadow-[3px_3px_6px_rgba(163,177,198,0.4),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/30 flex items-center justify-center shrink-0">
+              <img src="/assets/logo_monogram.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h4 className="font-black text-base text-neutral-800 leading-tight">{t('Dr. Jenny Pirtskhalava', 'ჯენი ფირცხალავა')}</h4>
-              <span className="text-[10px] font-black text-neutral-500 uppercase tracking-wider">{t('Dentist & Dermatologist', 'სტომატოლოგი და დერმატოლოგი')}</span>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/70 border border-white/40 text-[10px] font-black text-neutral-600 uppercase tracking-wider mb-1">
+                Smile Agency · {t('Dr. Jenny Pirtskhalava', 'ექიმი ჯენი ფირცხალავა')}
+              </div>
+              <h3 className="text-xl md:text-2xl font-black text-neutral-900 leading-tight">
+                {t('Services & Estimated Pricing', 'სერვისები და საორიენტაციო ფასები')}
+              </h3>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 text-xs font-black text-neutral-600 mb-6">
-            <div className="flex gap-3 items-center">
-              <span className="w-8 h-8 rounded-full bg-[#f6f7f1] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📞</span>
-              <div>
-                <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Phone', 'ტელეფონი')}</p>
-                <a href="tel:+995593567998" className="text-neutral-800 font-black hover:underline">+995 593 56-79-98</a>
-              </div>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span className="w-8 h-8 rounded-full bg-[#f6f7f1] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">✉️</span>
-              <div>
-                <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Email', 'ელ-ფოსტა')}</p>
-                <a href="mailto:info@jenny.ge" className="text-neutral-800 font-black hover:underline">info@jenny.ge</a>
-              </div>
-            </div>
-            <div className="flex gap-3 items-center">
-              <span className="w-8 h-8 rounded-full bg-[#f6f7f1] shadow-[2px_2px_5px_rgba(163,177,198,0.5),-2px_-2px_5px_rgba(255,255,255,0.9)] border border-white/20 flex items-center justify-center">📍</span>
-              <div>
-                <p className="text-[9px] text-neutral-400 uppercase tracking-widest font-black leading-none mb-1">{t('Address', 'მისამართი')}</p>
-                <span className="text-neutral-800 font-black">{t('14 Meliton and Andria Balanchivadze St, Tbilisi', 'მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი')}</span>
-              </div>
-            </div>
-          </div>
+          <button 
+            onClick={onClose}
+            className="w-10 h-10 bg-[#f6f7f1] hover:shadow-[inset_2px_2px_5px_rgba(163,177,198,0.5)] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.9)] border border-white/20 rounded-full flex items-center justify-center text-neutral-700 hover:text-black font-black text-sm transition-all shrink-0 ml-2"
+            aria-label="Close modal"
+          >
+            ✕
+          </button>
+        </div>
 
-          <div className="relative w-full h-[180px] rounded-3xl overflow-hidden shadow-[inset_3px_3px_6px_rgba(163,177,198,0.5),inset_-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20">
-            <iframe 
-              src="https://maps.google.com/maps?q=14%20Meliton%20and%20Andria%20Balanchivadze%20St,%20Tbilisi&t=&z=16&ie=UTF8&iwloc=&output=embed" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0, filter: 'grayscale(90%) contrast(1.1) brightness(0.95)' }} 
-              allowFullScreen={false} 
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Clinic location map"
-            />
+        {/* Disclaimer Banner */}
+        <div className="px-5 md:px-7 py-2.5 bg-[#fbfbf8] border-b border-neutral-200/60 flex items-center gap-2 flex-shrink-0">
+          <span className="text-base shrink-0">ℹ️</span>
+          <p className="text-[11px] md:text-xs font-bold text-neutral-600 leading-snug">
+            {t(
+              'Prices are indicative. Exact treatment plan and costs are determined during free initial consultation with Dr. Jenny.',
+              'ფასები საორიენტაციოა. ზუსტი ღირებულება დგინდება ექიმ ჯენი ფირცხალავასთან უფასო პირველად კონსულტაციაზე.'
+            )}
+          </p>
+        </div>
+
+        {/* Categories Tabs Filter */}
+        <div className="px-5 md:px-7 py-3 bg-[#f6f7f1] border-b border-neutral-200/60 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
+          {categories.map((cat) => {
+            const isSelected = activeTab === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveTab(cat.id)}
+                className={`px-4 py-2 rounded-full text-xs font-black transition-all whitespace-nowrap ${
+                  isSelected
+                    ? 'bg-neutral-900 text-white shadow-md'
+                    : 'bg-[#f6f7f1] text-neutral-600 hover:text-neutral-900 shadow-[2px_2px_4px_rgba(163,177,198,0.35),-2px_-2px_4px_rgba(255,255,255,0.85)] border border-white/30'
+                }`}
+              >
+                {lang === 'en' ? cat.labelEn : cat.labelKa}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Scrollable Content Body */}
+        <div className="flex-1 overflow-y-auto p-5 md:p-7 flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredServices.map((svc) => (
+              <div 
+                key={svc.id}
+                className="bg-[#f6f7f1] rounded-2xl p-5 border border-white/50 shadow-[4px_4px_10px_rgba(163,177,198,0.35),-4px_-4px_10px_rgba(255,255,255,0.9)] flex flex-col justify-between hover:shadow-[6px_6px_14px_rgba(163,177,198,0.45),-6px_-6px_14px_rgba(255,255,255,0.95)] transition-all"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <h4 className="font-black text-sm md:text-base text-neutral-900 leading-snug">
+                      {lang === 'en' ? svc.titleEn : svc.titleKa}
+                    </h4>
+                    <span className="px-3 py-1 bg-[#F5D061] text-neutral-900 font-black text-xs rounded-full shadow-sm whitespace-nowrap shrink-0">
+                      {lang === 'en' ? svc.priceEn : svc.priceKa}
+                    </span>
+                  </div>
+
+                  {svc.badgeKa && (
+                    <span className="inline-block px-2.5 py-0.5 bg-neutral-200/70 text-neutral-700 text-[10px] font-extrabold rounded-md mb-3">
+                      {lang === 'en' ? svc.badgeEn : svc.badgeKa}
+                    </span>
+                  )}
+
+                  {/* Sub-prices if applicable */}
+                  {svc.subPricesKa && (
+                    <div className="flex flex-col gap-1.5 mb-3 p-3 bg-white/60 rounded-xl border border-white/40">
+                      {(lang === 'en' && svc.subPricesEn ? svc.subPricesEn : svc.subPricesKa).map((sp, idx) => (
+                        <div key={idx} className="flex justify-between items-center text-xs font-bold">
+                          <span className="text-neutral-700">{sp.name}</span>
+                          <span className="text-neutral-900 font-black shrink-0 ml-2">{sp.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Bullet points */}
+                  <ul className="flex flex-col gap-1.5 text-xs font-semibold text-neutral-600">
+                    {(lang === 'en' ? svc.featuresEn : svc.featuresKa).map((f, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-[#d89f18] font-black shrink-0">✓</span>
+                        <span className="leading-snug">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
+
+        {/* Modal Sticky Bottom Actions */}
+        <div className="p-4 md:p-5 bg-[#f6f7f1] border-t border-neutral-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 text-xs font-bold text-neutral-600">
+            <span>📍 {t('14 Balanchivadze St, Tbilisi', 'მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი')}</span>
+            <span className="hidden sm:inline">•</span>
+            <span>📞 <a href="tel:+995593567998" className="text-neutral-900 font-black hover:underline">593 56 79 98</a></span>
+          </div>
+
+          <button
+            onClick={onBookVisit}
+            className="w-full sm:w-auto px-7 py-3.5 bg-neutral-900 hover:bg-[#F5D061] text-white hover:text-neutral-900 rounded-full font-black text-xs uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95"
+          >
+            <span>📅</span>
+            <span>{t('Book Appointment in Chat', 'ვიზიტის დაჯავშნა ექიმთან')}</span>
+          </button>
+        </div>
+
       </div>
     </div>
   );
 };
 
 // ==========================================
-// CHATBOT ASSISTANT WIDGET
+// CHATBOT ASSISTANT WIDGET (Knowledge Base)
 // ==========================================
 interface ChatbotWidgetProps {
   lang: 'ka' | 'en';
   t: (en: string, ka: string) => string;
-  onBookClick?: () => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  bookingTrigger?: number;
 }
 
-const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+interface ChatMessage {
+  sender: 'bot' | 'user';
+  text: string;
+}
+
+type BookingStep = 'idle' | 'awaiting_name' | 'awaiting_phone' | 'awaiting_datetime';
+
+const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ 
+  lang, 
+  t, 
+  isOpen, 
+  setIsOpen, 
+  bookingTrigger = 0 
+}) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [bookingStep, setBookingStep] = useState<BookingStep>('idle');
+  const [bookingData, setBookingData] = useState({ name: '', phone: '', datetime: '' });
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const prevTriggerRef = useRef(bookingTrigger);
   const sessionIdRef = useRef<string>('');
   const getSessionId = () => {
     if (sessionIdRef.current) return sessionIdRef.current;
     let s = '';
     try {
       s = localStorage.getItem('jenny_chat_sid') || '';
-      if (!s) { s = 'web-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9); localStorage.setItem('jenny_chat_sid', s); }
-    } catch { s = 'web-' + Date.now(); }
+      if (!s) {
+        s = 'web-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+        localStorage.setItem('jenny_chat_sid', s);
+      }
+    } catch {
+      s = 'web-' + Date.now();
+    }
     sessionIdRef.current = s;
     return s;
   };
-
-  interface Message {
-    sender: 'bot' | 'user';
-    text: string;
-  }
 
   const initChat = () => {
     setMessages([
       {
         sender: 'bot',
         text: t(
-          'Hello! I am Dr. Jenny Pirtskhalava\'s digital assistant. How can I help you today?',
-          'მოგესალმებით! მე ვარ ექიმი ჯენი ფირცხალავას ციფრული ასისტენტი. რით შემიძლია დაგეხმაროთ?'
+          'Hello! 🦷 I am Dr. Jenny Pirtskhalava\'s virtual assistant at Smile Agency. How can I help you?',
+          'მოგესალმებით! 🦷 მე ვარ ექიმ ჯენი ფირცხალავას ვირტუალური ასისტენტი, კლინიკა Smile Agency. რით შემიძლია დაგეხმაროთ?'
         )
       }
     ]);
@@ -659,6 +800,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
     localStorage.setItem('chat_closed_manual', 'true');
   };
 
+  // 5-second automatic popup on first visit
   useEffect(() => {
     const isClosed = sessionStorage.getItem('chat_closed') || localStorage.getItem('chat_closed_manual');
     if (!isClosed) {
@@ -669,6 +811,29 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
     }
   }, []);
 
+  // When external booking button is clicked
+  useEffect(() => {
+    if (bookingTrigger > 0 && bookingTrigger !== prevTriggerRef.current) {
+      prevTriggerRef.current = bookingTrigger;
+      setIsOpen(true);
+      setBookingStep('awaiting_name');
+      setBookingData({ name: '', phone: '', datetime: '' });
+
+      setTimeout(() => {
+        setMessages(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: t(
+              'I will gladly assist you in booking an appointment with Dr. Jenny. 🦷\n\nPlease enter your First and Last Name:',
+              'სიამოვნებით დაგეხმარებით ექიმ ჯენისთან ვიზიტის დაჯავშნაში. 🦷\n\nგთხოვთ მომწეროთ თქვენი სახელი და გვარი:'
+            )
+          }
+        ]);
+      }, 150);
+    }
+  }, [bookingTrigger, lang]);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -676,39 +841,238 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
   }, [messages, isTyping, isOpen]);
 
   const handleUserText = (rawText: string) => {
-    const userMsg: Message = { sender: 'user', text: rawText };
+    const userMsg: ChatMessage = { sender: 'user', text: rawText };
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
-    fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: rawText, sessionId: getSessionId() }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        const reply =
-          (data && (data.output || data.text || data.message)) ||
-          t(
-            'Sorry, I could not process that. Please try again or call us: +995 593 56-79-98',
-            'ბოდიში, ვერ დავამუშავე. სცადეთ ხელახლა ან დაგვირეკეთ: +995 593 56-79-98'
-          );
-        setMessages((prev) => [...prev, { sender: 'bot', text: reply }]);
-        setIsTyping(false);
-      })
-      .catch(() => {
-        setMessages((prev) => [
+    setTimeout(() => {
+      // 1. Interactive booking sequence
+      if (bookingStep === 'awaiting_name') {
+        setBookingData(prev => ({ ...prev, name: rawText }));
+        setBookingStep('awaiting_phone');
+        setMessages(prev => [
           ...prev,
           {
             sender: 'bot',
             text: t(
-              'Connection error. Please try again or call us: +995 593 56-79-98',
-              'კავშირი ვერ დამყარდა. სცადეთ ხელახლა ან დაგვირეკეთ: +995 593 56-79-98'
-            ),
-          },
+              `Thank you, ${rawText}! Please provide your contact phone number:`,
+              `გმადლობთ, ${rawText}! გთხოვთ მომწეროთ თქვენი საკონტაქტო ტელეფონის ნომერი:`
+            )
+          }
         ]);
         setIsTyping(false);
-      });
+        return;
+      }
+
+      if (bookingStep === 'awaiting_phone') {
+        setBookingData(prev => ({ ...prev, phone: rawText }));
+        setBookingStep('awaiting_datetime');
+        setMessages(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: t(
+              'Please specify your preferred day and time for your visit.\n\nWorking hours:\n• Mon, Tue, Thu, Fri: 15:00–20:00\n• Wed: 11:00–15:00\n• Sat & Sun: Closed',
+              'გთხოვთ მიუთითოთ თქვენთვის სასურველი დღე და საათი.\n\nსამუშაო საათები:\n• ორშაბათი, სამშაბათი, ხუთშაბათი, პარასკევი: 15:00–20:00\n• ოთხშაბათი: 11:00–15:00\n• შაბათი და კვირა: დასვენება'
+            )
+          }
+        ]);
+        setIsTyping(false);
+        return;
+      }
+
+      if (bookingStep === 'awaiting_datetime') {
+        const patientName = bookingData.name || rawText;
+        const patientPhone = bookingData.phone || '-';
+        const patientTime = rawText;
+
+        setBookingStep('idle');
+        setBookingData({ name: '', phone: '', datetime: '' });
+
+        // Forward booking details to the Pikapod webhook in background
+        fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: `[ახალი ჯავშანი საიტიდან]\nპაციენტი: ${patientName}\nტელეფონი: ${patientPhone}\nსასურველი დრო: ${patientTime}`, 
+            sessionId: getSessionId() 
+          }),
+        }).catch(() => {});
+
+        setMessages(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: t(
+              `Thank you! Your information has been forwarded to Dr. Jenny:\n\n• Patient: ${patientName}\n• Phone: ${patientPhone}\n• Preferred Time: ${patientTime}\n\nDr. Jenny looks forward to a painless and comfortable visit. See you soon!`,
+              `გმადლობთ! თქვენი მონაცემები გადავეცი ექიმ ჯენის:\n\n• პაციენტი: ${patientName}\n• ტელეფონი: ${patientPhone}\n• სასურველი დრო: ${patientTime}\n\nის უმტკივნეულო და კომფორტულ ვიზიტზე გელოდებათ. შეხვედრამდე.`
+            )
+          }
+        ]);
+        setIsTyping(false);
+        return;
+      }
+
+      // 2. Idle State: Natural Booking Trigger Detection
+      const lower = rawText.toLowerCase();
+
+      const isBookingIntent = 
+        lower.includes('ჯავშ') ||
+        lower.includes('ჩაწერ') ||
+        lower.includes('ვიზიტ') ||
+        lower.includes('კალენდ') ||
+        lower.includes('დაჯავშნ') ||
+        lower.includes('ჩამწერ') ||
+        lower.includes('book') ||
+        lower.includes('appoint') ||
+        lower.includes('schedul') ||
+        lower.includes('visit') ||
+        ((lower === 'კი' || lower === 'დიახ' || lower === 'მსურს' || lower === 'მინდა' || lower === 'yes' || lower === 'sure') &&
+          messages.some(m => m.sender === 'bot' && m.text.includes('ვიზიტის დრო')));
+
+      if (isBookingIntent) {
+        setBookingStep('awaiting_name');
+        setBookingData({ name: '', phone: '', datetime: '' });
+        setMessages(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: t(
+              'I will gladly help you book an appointment with Dr. Jenny. 🦷\n\nPlease enter your First and Last Name:',
+              'სიამოვნებით დაგეხმარებით ექიმ ჯენისთან ვიზიტის დაჯავშნაში. 🦷\n\nგთხოვთ მომწეროთ თქვენი სახელი და გვარი:'
+            )
+          }
+        ]);
+        setIsTyping(false);
+        return;
+      }
+
+      // 3. Knowledge Base Matching
+      let replyText = '';
+
+      if (lower.includes('კონსულტაცი') || lower.includes('უფასო') || lower.includes('პირველად') || lower.includes('consult')) {
+        replyText = t(
+          'First consultation is completely free! It includes a comprehensive oral examination, patient dental chart, and digital photo protocol.\n\nWould you like to schedule a visit?',
+          'პირველადი კონსულტაცია უფასოა. ის მოიცავს პირის ღრუს სრულ შეფასებას, პაციენტის ანკეტის შედგენას და ფოტოპროტოკოლის გადაღებას.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('მტკივ') || lower.includes('ტკივილ') || lower.includes('საშინელ') || lower.includes('ნემს') || lower.includes('pain') || lower.includes('hurt')) {
+        replyText = t(
+          'The clinic utilizes modern digital technology, ensuring treatments are painless and maximally comfortable for every patient.\n\nWould you like to book a consultation?',
+          'კლინიკა იყენებს უახლეს ციფრულ აპარატურას, რაც მკურნალობას ხდის უმტკივნეულოს და მაქსიმალურად კომფორტულს.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('ანაბეჭდ') || lower.includes('მასით') || lower.includes('სკანერ') || lower.includes('emerald') || lower.includes('impression') || lower.includes('scan')) {
+        replyText = t(
+          'We do not use paste impressions. We use the intraoral digital scanner Planmeca Emerald S for precise 3D scans.\n\nWould you like to schedule a visit?',
+          'არა, ანაბეჭდს მასით აღარ ვიღებთ. ვიყენებთ ციფრულ შიდაპირის სკანერს Planmeca Emerald S — უსიამოვნო მასებით ანაბეჭდის აღება აღარ არის საჭირო.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('გარანტი') || lower.includes('warranty') || lower.includes('guarantee')) {
+        replyText = t(
+          'Yes, artistic restorations come with a 2-month warranty. Corrections are free if ever needed.\n\nWould you like to book an appointment?',
+          'დიახ, მხატვრულ რესტავრაციას აქვს 2-თვიანი გარანტია. საჭიროების შემთხვევაში კორექცია უფასოა.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('რესტავრაცი') || lower.includes('მხატვრულ') || lower.includes('ასტერია') || lower.includes('restoration')) {
+        replyText = t(
+          'Artistic Restoration (Single Tooth) indicative pricing:\n• Without tints — 250 ₾\n• With artistic tints — 350 ₾\nIncludes: photo protocol, dental arch proportion calculation, Estelite Asteria composite, and 2-month warranty.\n\nExact plan and cost are determined during consultation with Dr. Jenny. Would you like to schedule a visit?',
+          'მხატვრული რესტავრაციის საორიენტაციო ღირებულება (ერთი კბილი):\n• საღებავების გარეშე — 250 ₾\n• საღებავებით — 350 ₾\nფასი მოიცავს: ფოტოპროტოკოლს, რკალის პროპორციების ინდივიდუალურ გამოთვლას, Estelite Asteria-ს მასალას და 2-თვიან გარანტიას.\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან პირის ღრუს ციფრული დათვალიერების შემდეგ. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('წმენდ') || lower.includes('გაწმენდ') || lower.includes('ნადებ') || lower.includes('ქვებ') || lower.includes('air flow') || lower.includes('აირჭავლ') || lower.includes('clean')) {
+        replyText = t(
+          'Professional oral cleaning indicative pricing:\n• Basic — 150 ₾ (plaque indicator, tartar & plaque removal, polish)\n• Deep — 180 ₾ (+ Air Flow, tongue cleaning)\n• Periodontal — 230 ₾ (+ fluoridation, gum therapy 1 session)\n\nExact plan is provided at consultation. Would you like to schedule a visit?',
+          'პროფესიული წმენდის საორიენტაციო ფასებია:\n• საბაზისო — 150 ₾ (ნადების შეღებვა, ქვებისა და ნადების მოცილება, პოლირება)\n• ღრმა — 180 ₾ (+ Air Flow აირჭავლი, ენის წმენდა)\n• პაროდონტოლოგიური — 230 ₾ (+ ფტორირება, ღრძილების მკურნალობა 1 სეანსი)\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('გათეთრ') || lower.includes('თეთრ') || lower.includes('zoom') || lower.includes('ზუმ') || lower.includes('whiten') || lower.includes('bleach')) {
+        replyText = t(
+          'Professional whitening indicative pricing:\n• Zoom Whitening — 450 ₾ (includes cleaning + Zoom device + care guide)\n• Boost Whitening — 550 ₾ (includes cleaning + 45-min boost + care guide)\n• Whitening Trays (Home) — 800 ₾ (custom trays + 2 gels + cleaning)\n\nExact cost is confirmed at consultation. Would you like to schedule a visit?',
+          'პროფესიონალური გათეთრების საორიენტაციო ფასებია:\n• Zoom-ით გათეთრება — 450 ₾ (მოიცავს წმენდას, Zoom სისტემას და ინსტრუქციას)\n• ბუსტით გათეთრება — 550 ₾ (მოიცავს წმენდას, 45-წთ ბუსტს და ინსტრუქციას)\n• კაპებით გათეთრება (სახლის პირობებში) — 800 ₾ (ინდივიდუალური კაპები, 2 გელი და ინსტრუქცია)\n\nზუსტი ღირებულება დგინდება უფასო კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('დაბჟენ') || lower.includes('ბჟენ') || lower.includes('პლომბ') || lower.includes('კარიეს') || lower.includes('არხ') || lower.includes('ენდოდონტ') || lower.includes('filling') || lower.includes('caries') || lower.includes('canal') || lower.includes('root')) {
+        replyText = t(
+          'Therapeutic dentistry indicative pricing:\n• Tooth Filling (German / Japanese materials) — 150–250 ₾\n• Root Canal Therapy (Endodontics) — 120–250 ₾ (using Guttafusion & SybronEndo)\n\nExact cost is determined at free consultation. Would you like to schedule a visit?',
+          'თერაპიული სერვისების საორიენტაციო ფასებია:\n• კბილის დაბჟენვა (გერმანული / იაპონური მასალით) — 150–250 ₾\n• ფესვის არხების მკურნალობა (ენდოდონტია) — 120–250 ₾ (ვიყენებთ Guttafusion Oven და SybronEndo სისტემებს)\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან უფასო კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('გვირგვინ') || lower.includes('ვინირ') || lower.includes('ცირკონ') || lower.includes('მეტალო') || lower.includes('crown') || lower.includes('veneer') || lower.includes('zircon')) {
+        replyText = t(
+          'Orthopedic crowns & veneers indicative pricing:\n• Metal-Ceramic Crown — 150–220 ₾\n• Zirconia-Ceramic Crown — 350–500 ₾\n• Ceramic Veneer — 400–600 ₾\n\nExact plan is tailored during consultation with Dr. Jenny. Would you like to schedule a visit?',
+          'ორთოპედიული სერვისების საორიენტაციო ფასები:\n• მეტალო-კერამიკის გვირგვინი — 150–220 ₾\n• ცირკონო-კერამიკის გვირგვინი (უმაღლესი ესთეტიკა) — 350–500 ₾\n• კერამიკული ვინირი — 400–600 ₾\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან პირის ღრუს ციფრული დათვალიერების შემდეგ. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('იმპლანტ') || lower.includes('ამოღებ') || lower.includes('ექსტრაქცი') || lower.includes('სიბრძნის') || lower.includes('implant') || lower.includes('extract') || lower.includes('surgery')) {
+        replyText = t(
+          'Surgery & Implantation indicative pricing:\n• Tooth Extraction — 50–150 ₾\n• Wisdom Tooth Extraction — 100–300 ₾\n• Dental Implant (premium systems) — 700–1500 ₾\n\nExact evaluation requires clinical consultation. Would you like to schedule a visit?',
+          'ქირურგიისა და იმპლანტაციის საორიენტაციო ფასები:\n• კბილის ექსტრაქცია — 50–150 ₾\n• სიბრძნის კბილის ექსტრაქცია — 100–300 ₾\n• დენტალური იმპლანტი (პრემიუმ სისტემები) — 700–1500 ₾\n\nზუსტი ღირებულება დგინდება ექიმთან კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('ბრეკეტ') || lower.includes('თანკბილვ') || lower.includes('ელაინერ') || lower.includes('brace') || lower.includes('aligner') || lower.includes('ortho')) {
+        replyText = t(
+          'Orthodontic treatment indicative pricing:\n• Metal Brackets (both jaws) — from 1,200 ₾\n• Ceramic / Sapphire Brackets (both jaws) — from 2,000 ₾\n\nIndividual calculation is done after digital scan. Would you like to schedule a visit?',
+          'ორთოდონტიული მკურნალობის საორიენტაციო ფასები:\n• მეტალის ბრეკეტ-სისტემა (ორივე ყბა) — 1 200 ₾-დან\n• კერამიკული / საფირონის ბრეკეტები (ორივე ყბა) — 2 000 ₾-დან\n\nზუსტი გათვლა ხდება ინდივიდუალურად. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('ბავშვ') || lower.includes('სარძევე') || lower.includes('pediatric') || lower.includes('kid') || lower.includes('child')) {
+        replyText = t(
+          'Pediatric dentistry indicative pricing:\n• Baby Tooth Filling (adaptation + colored/standard fillings) — 60–150 ₾\n• Baby Tooth Extraction — 30–50 ₾\n• Fluoridation / Remineralization — 50–80 ₾\n\nWould you like to schedule a visit?',
+          'ბავშვთა სტომატოლოგია:\n• სარძევე კბილის დაბჟენა (ადაპტაციით, ფერადი ან სტანდარტული ბჟენით) — 60–150 ₾\n• სარძევე კბილის ექსტრაქცია — 30–50 ₾\n• ფტორირება / რემინერალიზაცია — 50–80 ₾\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('ტექნოლოგი') || lower.includes('აპარატურ') || lower.includes('რენტგენ') || lower.includes('3d') || lower.includes('პრომაქს') || lower.includes('planmeca') || lower.includes('promax') || lower.includes('tech') || lower.includes('equip')) {
+        replyText = t(
+          'The clinic features world-class digital equipment:\n• Planmeca ProMax 3D Plus (high-resolution 3D CBCT)\n• Planmeca Emerald S (intraoral digital scanner, no paste impressions)\n• Guttafusion Oven & SybronEndo (advanced 3D canal obturation)\n• Estelite Asteria (premium Japanese aesthetic composites)',
+          'კლინიკა იყენებს მსოფლიო დონის ციფრულ აპარატურას:\n• Planmeca ProMax 3D Plus — უახლესი თაობის 3D რენტგენოგრაფია\n• Planmeca Emerald S — შიდაპირის ციფრული სკანერი (აღარ არის საჭირო მასით ანაბეჭდი)\n• Guttafusion Oven და SybronEndo — არხების უმაღლესი ხარისხით მკურნალობა\n• Estelite Asteria — უმაღლესი კლასის კომპოზიტი მხატვრული რესტავრაციისთვის'
+        );
+      } else if (lower.includes('საათ') || lower.includes('გრაფიკ') || lower.includes('როდის') || lower.includes('როდემდე') || lower.includes('დრო') || lower.includes('შაბათ') || lower.includes('კვირ') || lower.includes('hours') || lower.includes('schedule') || lower.includes('open') || lower.includes('time')) {
+        replyText = t(
+          'Working Hours:\n• Monday, Tuesday, Thursday, Friday: 15:00–20:00\n• Wednesday: 11:00–15:00\n• Saturday & Sunday: Closed',
+          'სამუშაო საათები:\n• ორშაბათი, სამშაბათი, ხუთშაბათი, პარასკევი: 15:00–20:00\n• ოთხშაბათი: 11:00–15:00\n• შაბათი და კვირა: დასვენება'
+        );
+      } else if (lower.includes('მისამართ') || lower.includes('სად ხართ') || lower.includes('სად მდებარეობს') || lower.includes('სად არის') || lower.includes('ლოკაცი') || lower.includes('ქუჩ') || lower.includes('address') || lower.includes('location') || lower.includes('where')) {
+        replyText = t(
+          'Clinic Address: 14 Meliton and Andria Balanchivadze St, Tbilisi (Smile Agency).\nPhone: 593 56 79 98',
+          'კლინიკის მისამართია: მელიტონ და ანდრია ბალანჩივაძეების ქუჩა №14, თბილისი (Smile Agency).\nტელეფონი: 593 56 79 98'
+        );
+      } else if (lower.includes('ტელეფონ') || lower.includes('ნომერ') || lower.includes('კონტაქტ') || lower.includes('დარეკვ') || lower.includes('მეილ') || lower.includes('ფოსტ') || lower.includes('phone') || lower.includes('contact') || lower.includes('call') || lower.includes('email')) {
+        replyText = t(
+          'Phone: 593 56 79 98\nAddress: 14 Meliton and Andria Balanchivadze St, Tbilisi\nEmail: info@jenny.ge',
+          'საკონტაქტო ნომერი: 593 56 79 98\nმისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქუჩა №14, თბილისი\nელ-ფოსტა: info@jenny.ge'
+        );
+      } else if (lower.includes('ჯენი') || lower.includes('ექიმ') || lower.includes('ფირცხალავა') || lower.includes('გამოცდილებ') || lower.includes('სერთიფიკატ') || lower.includes('jenny') || lower.includes('doctor')) {
+        replyText = t(
+          'Dr. Jenny Pirtskhalava is a dental surgeon and aesthetic specialist at Smile Agency with 15+ years of extensive clinical practice and international certifications.',
+          'ექიმი ჯენი ფირცხალავა — ექიმი-სტომატოლოგი, კლინიკა Smile Agency. 15+ წლიანი პრაქტიკული გამოცდილება ესთეტიკურ სტომატოლოგიასა და მხატვრულ რესტავრაციაში საერთაშორისო სერტიფიკატებით.'
+        );
+      } else if (lower.includes('ფას') || lower.includes('ღირებულ') || lower.includes('ტარიფ') || lower.includes('რა ღირს') || lower.includes('რა ჯდება') || lower.includes('price') || lower.includes('cost') || lower.includes('fee')) {
+        replyText = t(
+          'Prices are indicative. Exact plan and cost are determined during free initial consultation with Dr. Jenny after digital inspection. Would you like to choose a time for your visit?',
+          'ფასები საორიენტაციოა. ზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან პირის ღრუს ციფრული დათვალიერების შემდეგ (პირველადი კონსულტაცია უფასოა). გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('დიაგნოზ') || lower.includes('წამალ') || lower.includes('მედიკამენტ') || lower.includes('დანიშნულებ')) {
+        replyText = t(
+          'As a virtual assistant, I do not diagnose conditions or prescribe medications — that is strictly the doctor\'s prerogative. I recommend visiting Dr. Jenny for a free initial consultation. Would you like to choose a time for your visit?',
+          'როგორც ვირტუალური ასისტენტი, მე არ ვსვამ დიაგნოზს და არ ვიძლევი სამედიცინო დანიშნულებას — ეს მხოლოდ ექიმის პრეროგატივაა. გირჩევთ მობრძანდეთ ექიმ ჯენისთან პირველად უფასო კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('გამარჯობ') || lower.includes('სალამ') || lower.includes('დილა მშვიდობის') || lower.includes('საღამო მშვიდობის') || lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+        replyText = t(
+          'Hello! 🦷 How can I assist you today?',
+          'მოგესალმებით! 🦷 რით შემიძლია დაგეხმაროთ?'
+        );
+      } else {
+        replyText = t(
+          'Thank you for your message! I am Dr. Jenny Pirtskhalava\'s virtual assistant. You can ask about our services, pricing, technologies, working hours, or book a visit directly here.',
+          'გმადლობთ შეტყობინებისთვის! მე ვარ ექიმ ჯენი ფირცხალავას ასისტენტი. შეგიძლიათ მკითხოთ სერვისებზე, ფასებზე, ტექნოლოგიებზე, სამუშაო საათებზე ან დაჯავშნოთ ვიზიტი პირდაპირ აქ.'
+        );
+      }
+
+      fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: rawText, sessionId: getSessionId() }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          const remoteReply = data && (data.output || data.text || data.message);
+          setMessages((prev) => [...prev, { sender: 'bot', text: remoteReply || replyText }]);
+          setIsTyping(false);
+        })
+        .catch(() => {
+          setMessages((prev) => [...prev, { sender: 'bot', text: replyText }]);
+          setIsTyping(false);
+        });
+    }, 400);
   };
 
   return (
@@ -830,15 +1194,28 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ lang, t }) => {
     </div>
   );
 };
-
 // ==========================================
 // MAIN APP COMPONENT
 // ==========================================
 const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [lang, setLang] = useState<'ka' | 'en'>('ka');
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
+  const [servicesModalCategory, setServicesModalCategory] = useState('all');
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [bookingTrigger, setBookingTrigger] = useState(0);
   const [activeSection, setActiveSection] = useState('home');
+
+  const handleOpenServices = (category = 'all') => {
+    setServicesModalCategory(category);
+    setIsServicesModalOpen(true);
+  };
+
+  const handleStartBooking = () => {
+    setIsServicesModalOpen(false);
+    setIsChatOpen(true);
+    setBookingTrigger(prev => prev + 1);
+  };
 
   const [visitorCount, setVisitorCount] = useState<string>('00001');
 
@@ -927,7 +1304,7 @@ const App: React.FC = () => {
         lang={lang} 
         setLang={setLang} 
         t={t} 
-        onBookClick={() => setIsBookingOpen(true)} 
+        onBookClick={handleStartBooking} 
         activeSection={activeSection}
       />
 
@@ -975,18 +1352,15 @@ const App: React.FC = () => {
 
               <div className="flex gap-4 w-full sm:w-auto">
                 <button
-                  onClick={() => setIsBookingOpen(true)}
+                  onClick={handleStartBooking}
                   className="px-8 py-4 bg-[#f6f7f1] hover:scale-105 rounded-full font-black text-neutral-800 shadow-[6px_6px_15px_rgba(163,177,198,0.5),-6px_-6px_15px_rgba(255,255,255,0.85)] border border-white/20 active:shadow-inner transition-all text-xs uppercase tracking-wider"
                 >
                   {t('Book Visit Now', 'ვიზიტის დაჯავშნა')}
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    const el = document.getElementById('services');
-                    el?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="px-8 py-4 bg-transparent border-2 border-dashed border-neutral-300 hover:border-neutral-500 rounded-full font-black text-neutral-700 text-xs flex items-center justify-center transition-all cursor-pointer"
+                  onClick={() => handleOpenServices('all')}
+                  className="px-8 py-4 bg-transparent border-2 border-dashed border-neutral-300 hover:border-neutral-500 rounded-full font-black text-neutral-700 text-xs flex items-center justify-center transition-all cursor-pointer hover:bg-neutral-900 hover:text-white"
                 >
                   {t('Services', 'მომსახურებები')}
                 </button>
@@ -1075,7 +1449,10 @@ const App: React.FC = () => {
             className="grid md:grid-cols-2 gap-8 w-full"
           >
             {/* Dentistry Direction Card */}
-            <div className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100">
+            <div 
+              onClick={() => handleOpenServices('restoration')}
+              className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
+            >
               <img src={DENTISTRY_CARD_BG} alt="Dentistry showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
@@ -1090,16 +1467,23 @@ const App: React.FC = () => {
                   {t('Implants, porcelain veneers, crowns and aesthetic smile makeovers.', 'იმპლანტოლოგია, ორთოდონტია და ჰოლივუდის ღიმილი.')}
                 </p>
                 <button 
-                  onClick={() => setIsBookingOpen(true)}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenServices('restoration');
+                  }}
                   className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
                 >
-                  {t('Book slots', 'სრულად ნახვა')}
+                  {t('View Services', 'სრულად ნახვა')}
                 </button>
               </div>
             </div>
 
             {/* Dermatology Direction Card */}
-            <div className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100">
+            <div 
+              onClick={() => handleOpenServices('all')}
+              className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
+            >
               <img src={DERMATOLOGY_CARD_BG} alt="Dermatology showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
@@ -1114,10 +1498,14 @@ const App: React.FC = () => {
                   {t('Skin diagnostics, anti-aging therapies and aesthetic procedures.', 'კანის გაახალგაზრდავება, დიაგნოსტიკა და ესთეტიკური პროცედურები.')}
                 </p>
                 <button 
-                  onClick={() => setIsBookingOpen(true)}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenServices('all');
+                  }}
                   className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
                 >
-                  {t('Book slots', 'სრულად ნახვა')}
+                  {t('View Services', 'სრულად ნახვა')}
                 </button>
               </div>
             </div>
@@ -1180,28 +1568,31 @@ const App: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
-                <span className="text-xs font-bold text-neutral-800">{t('International Certifications', 'საერთაშორისო სერტიფიკატები')}</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Planmeca 3D & Emerald S Scanner', 'Planmeca 3D & Emerald S სკანერი')}</span>
               </div>
               <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
-                <span className="text-xs font-bold text-neutral-800">{t('Advanced Equipment', 'თანამედროვე აპარატურა')}</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Restorations with 2-Month Warranty', 'მხატვრული რესტავრაცია 2-თვიანი გარანტიით')}</span>
               </div>
               <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
-                <span className="text-xs font-bold text-neutral-800">{t('Personalized Treatment Plans', 'პერსონალური მკურნალობის გეგმა')}</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Endodontics with Guttafusion & Sybron', 'არხების მკურნალობა Guttafusion & SybronEndo-ით')}</span>
               </div>
               <div className="flex items-center gap-3 bg-white/60 p-3 rounded-xl border border-white/40 shadow-[2px_2px_5px_rgba(163,177,198,0.2)] hover:scale-105 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md transition-all duration-300 select-none cursor-pointer">
                 <span className="w-5 h-5 rounded-full border-2 border-[#F5D061] text-[#F5D061] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
-                <span className="text-xs font-bold text-neutral-800">{t('Guaranteed Results', 'გარანტირებული შედეგი')}</span>
+                <span className="text-xs font-bold text-neutral-800">{t('Free Consultation & Photo Protocol', 'უფასო პირველადი კონსულტაცია და ფოტოპროტოკოლი')}</span>
               </div>
             </div>
 
-            <button 
-              onClick={() => setIsBookingOpen(true)}
-              className="self-start px-8 py-4 bg-[#262626] hover:bg-neutral-800 hover:-translate-y-1 text-white text-xs font-black rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-105 transition-all duration-300"
+            <a 
+              href="https://www.facebook.com/MaRiAm.jenni.pirtskhalava"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="self-start px-8 py-4 bg-[#262626] hover:bg-neutral-800 hover:-translate-y-1 text-white text-xs font-black rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-105 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer"
             >
-              {t('Contact Me', 'დაწვრილებით ჩემს შესახებ')}
-            </button>
+              <span>{t('Learn More (Facebook)', 'დაწვრილებით ჩემს შესახებ')}</span>
+              <span>↗</span>
+            </a>
           </div>
         </section>
 
@@ -1237,39 +1628,59 @@ const App: React.FC = () => {
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full"
           >
             {/* Gallery Item 1 */}
-            <div className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100">
+            <a 
+              href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
+            >
               <img src={GALLERY_ITEM_1} alt="Dental Restoration Case" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Instagram</span> <span>↗</span>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end items-start gap-1">
                 <p className="text-white font-black text-sm">{t('Implantology', 'იმპლანტოლოგია')}</p>
                 <p className="text-neutral-300 text-[11px] font-bold">{t('Full mouth restoration', 'სრული რესტავრაცია')}</p>
               </div>
-            </div>
+            </a>
 
             {/* Gallery Item 2 */}
-            <div className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100">
+            <a 
+              href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
+            >
               <img src={GALLERY_ITEM_2} alt="Veneers Transformation Case" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Instagram</span> <span>↗</span>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end items-start gap-1">
                 <p className="text-white font-black text-sm">{t('Aesthetic Smile', 'ესთეტიკური ღიმილი')}</p>
                 <p className="text-neutral-300 text-[11px] font-bold">{t('After ceramic veneers placement', 'ვენირების შემდეგ')}</p>
               </div>
-            </div>
+            </a>
 
             {/* Gallery Item 3 - See More Card */}
-            <div className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100">
+            <a 
+              href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
+            >
               <img src={GALLERY_ITEM_3} alt="Full Orthodontic teeth model" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/50 to-transparent p-6 flex flex-col justify-end items-start gap-3 w-full">
                 <div>
                   <h4 className="font-black text-lg text-white mb-1 tracking-tight">{t('See More Cases', 'იხილეთ მეტი')}</h4>
                   <p className="text-neutral-300 text-[11px] font-bold">{t('500+ successful cosmetic cases', '500+ წარმატებული შემთხვევა')}</p>
                 </div>
-                <button 
-                  onClick={() => setIsBookingOpen(true)}
-                  className="w-full py-3 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-xl shadow-md transition-all duration-300"
+                <div 
+                  className="w-full py-3 bg-[#f6f7f1] group-hover:bg-neutral-800 group-hover:text-white text-neutral-800 font-black text-xs rounded-xl shadow-md transition-all duration-300 text-center"
                 >
-                  {t('Gallery', 'გალერეა')}
-                </button>
+                  {t('View on Instagram', 'გალერეა (Instagram)')} ↗
+                </div>
               </div>
-            </div>
+            </a>
           </div>
         </section>
 
@@ -1403,9 +1814,9 @@ const App: React.FC = () => {
           <div className="flex flex-col gap-3.5 items-start">
             <span className="font-black text-neutral-800 text-sm mb-1">{t('Working Hours', 'სამუშაო საათები')}</span>
             <div className="text-xs font-bold text-neutral-500 flex flex-col gap-2 w-full">
-              <div className="flex justify-between gap-4"><span>{t('Mon - Fri:', 'ორშაბათი - პარასკევი:')}</span> <span className="text-neutral-800 font-black">10:00 - 19:00</span></div>
-              <div className="flex justify-between gap-4"><span>{t('Saturday:', 'შაბათი:')}</span> <span className="text-neutral-800 font-black">11:00 - 16:00</span></div>
-              <div className="flex justify-between gap-4"><span>{t('Sunday:', 'კვირა:')}</span> <span className="text-red-500 font-black uppercase tracking-wider">{t('Closed', 'დასვენება')}</span></div>
+              <div className="flex justify-between gap-4"><span>{t('Mon, Tue, Thu, Fri:', 'ორშ, სამშ, ხუთ, პარ:')}</span> <span className="text-neutral-800 font-black">15:00 - 20:00</span></div>
+              <div className="flex justify-between gap-4"><span>{t('Wednesday:', 'ოთხშაბათი:')}</span> <span className="text-neutral-800 font-black">11:00 - 15:00</span></div>
+              <div className="flex justify-between gap-4"><span>{t('Saturday, Sunday:', 'შაბათი, კვირა:')}</span> <span className="text-red-500 font-black uppercase tracking-wider">{t('Closed', 'დასვენება')}</span></div>
             </div>
           </div>
         </div>
@@ -1425,19 +1836,23 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Booking Dialog */}
-      <BookingModal 
-        isOpen={isBookingOpen} 
-        onClose={() => setIsBookingOpen(false)} 
+      {/* Services Details Modal */}
+      <ServicesDetailsModal 
+        isOpen={isServicesModalOpen} 
+        onClose={() => setIsServicesModalOpen(false)} 
         lang={lang} 
         t={t} 
+        onBookVisit={handleStartBooking}
+        initialCategory={servicesModalCategory}
       />
 
       {/* Chatbot Widget */}
       <ChatbotWidget 
         lang={lang} 
         t={t} 
-        onBookClick={() => setIsBookingOpen(true)} 
+        isOpen={isChatOpen}
+        setIsOpen={setIsChatOpen}
+        bookingTrigger={bookingTrigger}
       />
     </div>
   );
