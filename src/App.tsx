@@ -1574,7 +1574,7 @@ const App: React.FC = () => {
         >
           {/* Extremely faint Calligraphic float ornament in margin */}
           <CalligraphicFloat left={20} top={40} />
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 md:mb-12">
             <h2 className="text-3xl md:text-5xl font-black text-neutral-800 tracking-tight">
               {t('Our Specializations', 'ჩვენი მიმართულებები')}
             </h2>
@@ -1593,18 +1593,23 @@ const App: React.FC = () => {
               className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
             >
               <img src={DENTISTRY_CARD_BG} alt="Dentistry showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
-                {/* Neumorphic accent label */}
-                <span className="px-4 py-2 bg-[#F5D061] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
-                  {t('Dentistry', 'სტომატოლოგია')}
-                </span>
-                <h3 className="text-2xl md:text-3xl font-black text-white leading-none">
-                  {t('Aesthetic Dentistry', 'ესთეტიკური და აღდგენითი სტომატოლოგია')}
-                </h3>
-                <p className="text-neutral-300 text-xs md:text-sm font-semibold max-w-sm">
-                  {t('Implants, porcelain veneers, crowns and artistic restoration.', 'იმპლანტოლოგია, ორთოდონტია, ვინირები და მხატვრული რესტავრაცია.')}
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/85 via-neutral-950/35 to-neutral-950/90" />
+              <div className="absolute inset-0 p-6 md:p-8 w-full flex flex-col justify-between items-start">
+                {/* Top content: Badge, Title & Description */}
+                <div className="flex flex-col items-start gap-3 md:gap-3.5 max-w-md">
+                  {/* Neumorphic accent label */}
+                  <span className="px-4 py-2 bg-[#F5D061] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
+                    {t('Dentistry', 'სტომატოლოგია')}
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                    {t('Aesthetic Dentistry', 'ესთეტიკური და აღდგენითი სტომატოლოგია')}
+                  </h3>
+                  <p className="text-neutral-200 text-xs md:text-sm font-semibold max-w-sm">
+                    {t('Implants, porcelain veneers, crowns and artistic restoration.', 'იმპლანტოლოგია, ორთოდონტია, ვინირები და მხატვრული რესტავრაცია.')}
+                  </p>
+                </div>
+
+                {/* Bottom CTA Button */}
                 <button 
                   type="button"
                   onClick={(e) => {
@@ -1624,18 +1629,23 @@ const App: React.FC = () => {
               className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
             >
               <img src={COSMETOLOGY_CARD_BG} alt="Injection cosmetology showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
-                {/* Neumorphic accent label */}
-                <span className="px-4 py-2 bg-[#f6f7f1] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
-                  {t('Injection Cosmetology', 'ინექციური კოსმეტოლოგია')}
-                </span>
-                <h3 className="text-2xl md:text-3xl font-black text-white leading-none">
-                  {t('Injection Cosmetology & Aesthetics', 'ინექციური კოსმეტოლოგია და დერმატოლოგია')}
-                </h3>
-                <p className="text-neutral-300 text-xs md:text-sm font-semibold max-w-sm">
-                  {t('Botox, dermal fillers, biorevitalization, mesotherapy & biostimulation.', 'ბოტოქსი, კონტურული პლასტიკა, ბიორევიტალიზაცია და ბიოსტიმულაცია.')}
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/85 via-neutral-950/35 to-neutral-950/90" />
+              <div className="absolute inset-0 p-6 md:p-8 w-full flex flex-col justify-between items-start">
+                {/* Top content: Badge, Title & Description */}
+                <div className="flex flex-col items-start gap-3 md:gap-3.5 max-w-md">
+                  {/* Neumorphic accent label */}
+                  <span className="px-4 py-2 bg-[#f6f7f1] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
+                    {t('Injection Cosmetology', 'ინექციური კოსმეტოლოგია')}
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                    {t('Injection Cosmetology & Aesthetics', 'ინექციური კოსმეტოლოგია და დერმატოლოგია')}
+                  </h3>
+                  <p className="text-neutral-200 text-xs md:text-sm font-semibold max-w-sm">
+                    {t('Botox, dermal fillers, biorevitalization, mesotherapy & biostimulation.', 'ბოტოქსი, კონტურული პლასტიკა, ბიორევიტალიზაცია და ბიოსტიმულაცია.')}
+                  </p>
+                </div>
+
+                {/* Bottom CTA Button */}
                 <button 
                   type="button"
                   onClick={(e) => {
