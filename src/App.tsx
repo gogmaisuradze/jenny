@@ -1574,54 +1574,48 @@ const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> =
 // ==========================================
 const RatingExpertiseBadge: React.FC<{ t: (en: string, ka: string) => string }> = ({ t }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isMobileAlt, setIsMobileAlt] = useState(false);
 
-  // On mobile/touch devices, automatically cycle between 5.0 Rating and 15+ Years Expertise
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px), (hover: none)');
-    if (!mediaQuery.matches) return;
+  const handleMouseEnter = () => {
+    if (window.matchMedia('(min-width: 768px) and (hover: hover)').matches) {
+      setIsHovered(true);
+    }
+  };
 
-    const interval = setInterval(() => {
-      setIsMobileAlt((prev) => !prev);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const showExpertise = isHovered || isMobileAlt;
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   return (
     <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setIsMobileAlt((prev) => !prev)}
-      className="absolute top-[2%] -left-[4%] md:top-[10%] md:-left-[5%] bg-white/85 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-lg border border-white/50 block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 hover:shadow-xl transition-all duration-300 cursor-pointer select-none z-20"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="absolute -top-[4%] -left-[8%] md:top-[10%] md:-left-[5%] bg-white/85 backdrop-blur-md px-2.5 py-1.5 md:p-4 rounded-xl md:rounded-2xl shadow-lg border border-white/50 block md:hover:-translate-y-2 md:hover:scale-105 md:hover:bg-white/95 md:hover:shadow-xl transition-all duration-300 cursor-pointer select-none z-20"
     >
-      {!showExpertise ? (
-        <div className="flex items-center gap-2.5 md:gap-3">
-          <div className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-[#F5D061] flex items-center justify-center text-white text-base md:text-xl font-black shrink-0 shadow-[0_2px_8px_rgba(245,208,97,0.4)]">
+      {!isHovered ? (
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-7 h-7 md:w-11 md:h-11 rounded-full bg-[#F5D061] flex items-center justify-center text-white text-xs md:text-xl font-black shrink-0 shadow-[0_2px_8px_rgba(245,208,97,0.4)]">
             ★
           </div>
           <div className="flex flex-col">
-            <p className="text-[11px] md:text-xs font-black text-neutral-800 leading-none">
+            <p className="text-[10px] md:text-xs font-black text-neutral-800 leading-none">
               {t('5.0 Rating', '5.0 რეიტინგი')}
             </p>
-            <div className="flex text-[#F5D061] text-[10px] md:text-[11px] tracking-tight leading-none mt-1">
+            <div className="flex text-[#F5D061] text-[9px] md:text-[11px] tracking-tight leading-none mt-0.5 md:mt-1">
               ★★★★★
             </div>
-            <p className="text-[8px] md:text-[9px] font-bold text-neutral-400 mt-1">
+            <p className="text-[7.5px] md:text-[9px] font-bold text-neutral-400 mt-0.5 md:mt-1">
               {t('Google Reviews', 'Google Reviews')}
             </p>
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-2.5 md:gap-3 py-0.5">
-          <span className="text-xl md:text-2xl leading-none">🏆</span>
+        <div className="flex items-center gap-3 py-0.5">
+          <span className="text-2xl leading-none">🏆</span>
           <div>
-            <p className="text-[11px] md:text-xs font-black text-neutral-800 leading-tight">
+            <p className="text-xs font-black text-neutral-800 leading-tight">
               {t('Expertise', 'ექსპერტული ცოდნა')}
             </p>
-            <p className="text-[9px] md:text-[10px] font-bold text-neutral-400 mt-0.5">
+            <p className="text-[10px] font-bold text-neutral-400 mt-0.5">
               {t('15+ Years Practice', '15+ წლიანი გამოცდილება')}
             </p>
           </div>
