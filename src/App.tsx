@@ -312,7 +312,7 @@ interface ServicesDetailsModalProps {
   onClose: () => void;
   lang: 'ka' | 'en';
   t: (en: string, ka: string) => string;
-  onBookVisit: () => void;
+  onBookVisit: (serviceName?: string) => void;
   initialCategory?: string;
 }
 
@@ -326,6 +326,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
 }) => {
   const [activeDomain, setActiveDomain] = useState<'all' | 'dentistry' | 'cosmetology'>('all');
   const [activeTab, setActiveTab] = useState('all');
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -954,51 +955,84 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
         {/* Scrollable Content Body */}
         <div className="flex-1 overflow-y-auto p-5 md:p-7 flex flex-col gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredServices.map((svc) => (
-              <div 
-                key={svc.id}
-                className="bg-[#f6f7f1] rounded-2xl p-5 border border-white/50 shadow-[4px_4px_10px_rgba(163,177,198,0.35),-4px_-4px_10px_rgba(255,255,255,0.9)] flex flex-col justify-between hover:shadow-[6px_6px_14px_rgba(163,177,198,0.45),-6px_-6px_14px_rgba(255,255,255,0.95)] transition-all"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <h4 className="font-black text-sm md:text-base text-neutral-900 leading-snug">
-                      {lang === 'en' ? svc.titleEn : svc.titleKa}
-                    </h4>
-                    <span className="px-3 py-1 bg-[#F5D061] text-neutral-900 font-black text-xs rounded-full shadow-sm whitespace-nowrap shrink-0">
-                      {lang === 'en' ? svc.priceEn : svc.priceKa}
-                    </span>
+            {filteredServices.map((svc) => {
+              const isSelected = selectedServiceId === svc.id;
+              const svcTitle = lang === 'en' ? svc.titleEn : svc.titleKa;
+              return (
+                <div 
+                  key={svc.id}
+                  onClick={() => setSelectedServiceId(isSelected ? null : svc.id)}
+                  className={`bg-[#f6f7f1] rounded-2xl p-5 border transition-all flex flex-col justify-between cursor-pointer ${
+                    isSelected
+                      ? 'border-[#F5D061] ring-2 ring-[#F5D061]/60 shadow-[6px_6px_16px_rgba(245,208,97,0.25),-4px_-4px_12px_rgba(255,255,255,0.95)]'
+                      : 'border-white/50 shadow-[4px_4px_10px_rgba(163,177,198,0.35),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:shadow-[6px_6px_14px_rgba(163,177,198,0.45),-6px_-6px_14px_rgba(255,255,255,0.95)]'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-black text-sm md:text-base text-neutral-900 leading-snug">
+                          {svcTitle}
+                        </h4>
+                        {isSelected && (
+                          <span className="w-2 h-2 rounded-full bg-[#F5D061] shrink-0" />
+                        )}
+                      </div>
+                      <span className="px-3 py-1 bg-[#F5D061] text-neutral-900 font-black text-xs rounded-full shadow-sm whitespace-nowrap shrink-0">
+                        {lang === 'en' ? svc.priceEn : svc.priceKa}
+                      </span>
+                    </div>
+
+                    {svc.badgeKa && (
+                      <span className="inline-block px-2.5 py-0.5 bg-neutral-200/70 text-neutral-700 text-[10px] font-extrabold rounded-md mb-3">
+                        {lang === 'en' ? svc.badgeEn : svc.badgeKa}
+                      </span>
+                    )}
+
+                    {/* Sub-prices if applicable */}
+                    {svc.subPricesKa && (
+                      <div className="flex flex-col gap-1.5 mb-3 p-3 bg-white/60 rounded-xl border border-white/40">
+                        {(lang === 'en' && svc.subPricesEn ? svc.subPricesEn : svc.subPricesKa).map((sp, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-xs font-bold">
+                            <span className="text-neutral-700">{sp.name}</span>
+                            <span className="text-neutral-900 font-black shrink-0 ml-2">{sp.price}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Bullet points */}
+                    <ul className="flex flex-col gap-1.5 text-xs font-semibold text-neutral-600">
+                      {(lang === 'en' ? svc.featuresEn : svc.featuresKa).map((f, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-[#d89f18] font-black shrink-0">✓</span>
+                          <span className="leading-snug">{f}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {svc.badgeKa && (
-                    <span className="inline-block px-2.5 py-0.5 bg-neutral-200/70 text-neutral-700 text-[10px] font-extrabold rounded-md mb-3">
-                      {lang === 'en' ? svc.badgeEn : svc.badgeKa}
-                    </span>
-                  )}
-
-                  {/* Sub-prices if applicable */}
-                  {svc.subPricesKa && (
-                    <div className="flex flex-col gap-1.5 mb-3 p-3 bg-white/60 rounded-xl border border-white/40">
-                      {(lang === 'en' && svc.subPricesEn ? svc.subPricesEn : svc.subPricesKa).map((sp, idx) => (
-                        <div key={idx} className="flex justify-between items-center text-xs font-bold">
-                          <span className="text-neutral-700">{sp.name}</span>
-                          <span className="text-neutral-900 font-black shrink-0 ml-2">{sp.price}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Bullet points */}
-                  <ul className="flex flex-col gap-1.5 text-xs font-semibold text-neutral-600">
-                    {(lang === 'en' ? svc.featuresEn : svc.featuresKa).map((f, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-[#d89f18] font-black shrink-0">✓</span>
-                        <span className="leading-snug">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Direct booking button on the card */}
+                  <div className="pt-3.5 mt-4 border-t border-neutral-200/60">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onBookVisit(svcTitle);
+                      }}
+                      className={`w-full py-2.5 px-4 font-black text-xs rounded-xl shadow-md transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 ${
+                        isSelected 
+                          ? 'bg-[#F5D061] text-neutral-900 hover:bg-neutral-900 hover:text-white' 
+                          : 'bg-neutral-900 hover:bg-[#F5D061] text-white hover:text-neutral-900'
+                      }`}
+                    >
+                      <span>📅</span>
+                      <span>{t('Book with Bot', 'დაჯავშნა ბოტთან')}</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -1011,11 +1045,19 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
           </div>
 
           <button
-            onClick={onBookVisit}
+            onClick={() => {
+              const selectedSvc = services.find(s => s.id === selectedServiceId);
+              const svcTitle = selectedSvc ? (lang === 'en' ? selectedSvc.titleEn : selectedSvc.titleKa) : undefined;
+              onBookVisit(svcTitle);
+            }}
             className="w-full sm:w-auto px-7 py-3.5 bg-neutral-900 hover:bg-[#F5D061] text-white hover:text-neutral-900 rounded-full font-black text-xs uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 active:scale-95"
           >
             <span>📅</span>
-            <span>{t('Book Appointment in Chat', 'ვიზიტის დაჯავშნა ექიმთან')}</span>
+            <span>
+              {selectedServiceId
+                ? t('Book Selected Service with Bot', 'მონიშნულის დაჯავშნა ბოტთან')
+                : t('Book Appointment in Chat', 'ვიზიტის დაჯავშნა ექიმთან')}
+            </span>
           </button>
         </div>
 
@@ -1033,6 +1075,7 @@ interface ChatbotWidgetProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   bookingTrigger?: number;
+  bookingService?: string | null;
 }
 
 interface ChatMessage {
@@ -1045,7 +1088,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
   t, 
   isOpen, 
   setIsOpen, 
-  bookingTrigger = 0 
+  bookingTrigger = 0,
+  bookingService = null
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -1140,10 +1184,15 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
       prevTriggerRef.current = bookingTrigger;
       setIsOpen(true);
       setTimeout(() => {
-        handleUserText(t('I would like to book an appointment with Dr. Jenny', 'მსურს ექიმ ჯენისთან ვიზიტის დაჯავშნა'));
+        const text = bookingService
+          ? (lang === 'en'
+              ? `I would like to book an appointment for: ${bookingService}`
+              : `მსურს ვიზიტის დაჯავშნა სერვისზე: ${bookingService}`)
+          : t('I would like to book an appointment with Dr. Jenny', 'მსურს ექიმ ჯენისთან ვიზიტის დაჯავშნა');
+        handleUserText(text);
       }, 200);
     }
-  }, [bookingTrigger, lang]);
+  }, [bookingTrigger, bookingService, lang]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -1338,6 +1387,7 @@ const App: React.FC = () => {
   const [servicesModalCategory, setServicesModalCategory] = useState('all');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [bookingTrigger, setBookingTrigger] = useState(0);
+  const [bookingService, setBookingService] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('home');
 
   const handleOpenServices = (category = 'all') => {
@@ -1345,7 +1395,9 @@ const App: React.FC = () => {
     setIsServicesModalOpen(true);
   };
 
-  const handleStartBooking = () => {
+  const handleStartBooking = (serviceName?: string | React.MouseEvent) => {
+    const validService = typeof serviceName === 'string' && serviceName.trim() ? serviceName.trim() : null;
+    setBookingService(validService);
     setIsServicesModalOpen(false);
     setIsChatOpen(true);
     setBookingTrigger(prev => prev + 1);
@@ -1615,17 +1667,30 @@ const App: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Bottom CTA Button */}
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOpenServices('dentistry');
-                  }}
-                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
-                >
-                  {t('View Services', 'სრულად ნახვა')}
-                </button>
+                {/* Bottom CTA Buttons */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenServices('dentistry');
+                    }}
+                    className="px-5 py-3 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
+                  >
+                    {t('View Services', 'სრულად ნახვა')}
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStartBooking(t('Aesthetic Dentistry', 'ესთეტიკური და აღდგენითი სტომატოლოგია'));
+                    }}
+                    className="px-5 py-3 bg-[#F5D061] hover:scale-105 hover:bg-white hover:-translate-y-0.5 text-neutral-900 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center gap-1.5"
+                  >
+                    <span>📅</span>
+                    <span>{t('Book with Bot', 'დაჯავშნა ბოტთან')}</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1651,17 +1716,30 @@ const App: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Bottom CTA Button */}
-                <button 
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOpenServices('cosmetology');
-                  }}
-                  className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
-                >
-                  {t('View Services', 'სრულად ნახვა')}
-                </button>
+                {/* Bottom CTA Buttons */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenServices('cosmetology');
+                    }}
+                    className="px-5 py-3 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
+                  >
+                    {t('View Services', 'სრულად ნახვა')}
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStartBooking(t('Injection Cosmetology & Aesthetics', 'ინექციური კოსმეტოლოგია და დერმატოლოგია'));
+                    }}
+                    className="px-5 py-3 bg-[#F5D061] hover:scale-105 hover:bg-white hover:-translate-y-0.5 text-neutral-900 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center gap-1.5"
+                  >
+                    <span>📅</span>
+                    <span>{t('Book with Bot', 'დაჯავშნა ბოტთან')}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -2017,6 +2095,7 @@ const App: React.FC = () => {
         isOpen={isChatOpen}
         setIsOpen={setIsChatOpen}
         bookingTrigger={bookingTrigger}
+        bookingService={bookingService}
       />
     </div>
   );
