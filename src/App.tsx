@@ -1500,7 +1500,7 @@ const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> =
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleBadgeClick}
-      className="absolute bottom-[2%] -right-[4%] md:bottom-[10%] md:-right-[5%] bg-white/85 backdrop-blur-md p-2.5 md:p-3.5 rounded-2xl shadow-lg border border-white/50 block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
+      className="absolute bottom-[2%] -right-[8%] md:bottom-[10%] md:-right-[14%] bg-white/85 backdrop-blur-md p-2.5 md:p-3.5 rounded-2xl shadow-lg border border-white/50 block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
       style={{
         boxShadow: showFollowMe
           ? `0 14px 32px rgba(0,0,0,0.12), 0 4px 14px ${current.shadowColor}`
