@@ -7,7 +7,7 @@ const HERO_IMAGE = '/assets/jenny_hero.jpg';
 const DENTIST_PORTRAIT = '/assets/jenny_about.jpg';
 
 const DENTISTRY_CARD_BG = '/assets/dentistry_bg.jpg';
-const DERMATOLOGY_CARD_BG = '/assets/dermatology_bg.jpg';
+const COSMETOLOGY_CARD_BG = '/assets/cosmetology_bg.jpg';
 
 const GALLERY_ITEM_1 = '/assets/gallery_1.jpg';
 const GALLERY_ITEM_2 = '/assets/gallery_2.jpg';
@@ -166,6 +166,14 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
   const hashLinks = ['home', 'services', 'about', 'results', 'contact'];
 
   const scrollTo = (id: string) => {
+    if (id === 'results') {
+      const fbUrl = 'https://www.facebook.com/profile.php?id=100042099562926&sk=photos';
+      const newWin = window.open(fbUrl, '_blank', 'noopener,noreferrer');
+      if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+        window.location.href = fbUrl;
+      }
+      return;
+    }
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
@@ -264,8 +272,8 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
                 key={link}
                 type="button"
                 onClick={() => {
-                  setIsOpen(false);
                   scrollTo(hashLinks[i]);
+                  setIsOpen(false);
                 }}
                 className={`text-3xl font-black text-neutral-800 hover:text-neutral-500 text-left transition-all duration-500 ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
                 style={{ transitionDelay: `${100 + i * 50}ms` }}
@@ -310,18 +318,51 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
   onBookVisit,
   initialCategory = 'all'
 }) => {
-  const [activeTab, setActiveTab] = useState(initialCategory);
+  const [activeDomain, setActiveDomain] = useState<'all' | 'dentistry' | 'cosmetology'>('all');
+  const [activeTab, setActiveTab] = useState('all');
 
   useEffect(() => {
     if (isOpen) {
-      setActiveTab(initialCategory);
+      if (
+        initialCategory === 'cosmetology' || 
+        initialCategory === 'botox' || 
+        initialCategory === 'fillers' || 
+        initialCategory === 'biorevitalization' || 
+        initialCategory === 'mesotherapy' || 
+        initialCategory === 'biostimulation'
+      ) {
+        setActiveDomain('cosmetology');
+        setActiveTab(initialCategory === 'cosmetology' ? 'all' : initialCategory);
+      } else if (
+        initialCategory === 'dentistry' || 
+        initialCategory === 'restoration' || 
+        initialCategory === 'cleaning' || 
+        initialCategory === 'therapy' || 
+        initialCategory === 'surgery' || 
+        initialCategory === 'tech'
+      ) {
+        setActiveDomain('dentistry');
+        setActiveTab(initialCategory === 'dentistry' ? 'all' : initialCategory);
+      } else {
+        setActiveDomain('all');
+        setActiveTab('all');
+      }
     }
   }, [isOpen, initialCategory]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const orig = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = orig;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const categories = [
-    { id: 'all', labelKa: 'ყველა', labelEn: 'All' },
+  const dentalCategories = [
+    { id: 'all', labelKa: 'ყველა სტომატოლოგია', labelEn: 'All Dentistry' },
     { id: 'restoration', labelKa: 'მხატვრული რესტავრაცია', labelEn: 'Restoration' },
     { id: 'cleaning', labelKa: 'წმენდა და გათეთრება', labelEn: 'Cleaning & Whitening' },
     { id: 'therapy', labelKa: 'თერაპია და ორთოპედია', labelEn: 'Therapy & Crowns' },
@@ -329,9 +370,37 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     { id: 'tech', labelKa: 'ციფრული ტექნოლოგიები', labelEn: 'Digital Tech' },
   ];
 
+  const cosmetologyCategories = [
+    { id: 'all', labelKa: 'ყველა პროცედურა', labelEn: 'All Procedures' },
+    { id: 'botox', labelKa: '1. ბოტოქსი', labelEn: '1. Botox' },
+    { id: 'fillers', labelKa: '2. ფილერები', labelEn: '2. Fillers' },
+    { id: 'biorevitalization', labelKa: '3. ბიორევიტალიზაცია', labelEn: '3. Biorevitalization' },
+    { id: 'mesotherapy', labelKa: '4. მეზოთერაპია', labelEn: '4. Mesotherapy' },
+    { id: 'biostimulation', labelKa: '5. კოლაგენოსტიმულატორები', labelEn: '5. Biostimulation' },
+  ];
+
+  const allCategories = [
+    { id: 'all', labelKa: 'ყველა სერვისი', labelEn: 'All Services' },
+    { id: 'restoration', labelKa: 'რესტავრაცია', labelEn: 'Restoration' },
+    { id: 'cleaning', labelKa: 'წმენდა & გათეთრება', labelEn: 'Cleaning & Whitening' },
+    { id: 'botox', labelKa: 'ბოტოქსი', labelEn: 'Botox' },
+    { id: 'fillers', labelKa: 'ფილერები', labelEn: 'Fillers' },
+    { id: 'biorevitalization', labelKa: 'ბიორევიტალიზაცია', labelEn: 'Biorevitalization' },
+    { id: 'mesotherapy', labelKa: 'მეზოთერაპია', labelEn: 'Mesotherapy' },
+    { id: 'biostimulation', labelKa: 'კოლაგენოსტიმულატორები', labelEn: 'Biostimulation' },
+    { id: 'surgery', labelKa: 'იმპლანტები', labelEn: 'Implants' },
+  ];
+
+  const categories = 
+    activeDomain === 'dentistry' ? dentalCategories :
+    activeDomain === 'cosmetology' ? cosmetologyCategories :
+    allCategories;
+
   const services = [
+    // ---------------- DENTISTRY ----------------
     {
       id: 'consultation',
+      domain: 'dentistry',
       category: 'restoration',
       titleKa: 'პირველადი კონსულტაცია',
       titleEn: 'Initial Oral Consultation',
@@ -352,6 +421,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'restoration',
+      domain: 'dentistry',
       category: 'restoration',
       titleKa: 'მხატვრული რესტავრაცია (ერთი კბილი)',
       titleEn: 'Artistic Dental Restoration (Per Tooth)',
@@ -386,6 +456,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'cleaning',
+      domain: 'dentistry',
       category: 'cleaning',
       titleKa: 'პროფესიული წმენდა',
       titleEn: 'Professional Teeth Cleaning',
@@ -418,6 +489,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'whitening',
+      domain: 'dentistry',
       category: 'cleaning',
       titleKa: 'კბილების პროფესიონალური გათეთრება',
       titleEn: 'Professional Teeth Whitening',
@@ -448,6 +520,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'therapy',
+      domain: 'dentistry',
       category: 'therapy',
       titleKa: 'თერაპიული და ენდოდონტიური მკურნალობა',
       titleEn: 'Therapeutic Dentistry & Endodontics',
@@ -476,6 +549,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'prosthetics',
+      domain: 'dentistry',
       category: 'therapy',
       titleKa: 'ორთოპედიული სტომატოლოგია და ვინირები',
       titleEn: 'Prosthodontics & Veneers',
@@ -506,11 +580,12 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'surgery',
+      domain: 'dentistry',
       category: 'surgery',
       titleKa: 'ქირურგია და იმპლანტაცია',
       titleEn: 'Oral Surgery & Implants',
       priceKa: '50 ₾ – 1 500 ₾',
-      priceEn: '50 ₾ – 1 500 ₾',
+      priceEn: '50 ₾ – 1,500 ₾',
       badgeKa: 'პრემიუმ იმპლანტები',
       badgeEn: 'Premium Implants',
       subPricesKa: [
@@ -521,7 +596,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
       subPricesEn: [
         { name: 'Tooth extraction (simple / complex)', price: '50 – 150 ₾' },
         { name: 'Wisdom tooth extraction (impacted)', price: '100 – 300 ₾' },
-        { name: 'Dental implant (premium systems)', price: '700 – 1 500 ₾' }
+        { name: 'Dental implant (premium systems)', price: '700 – 1,500 ₾' }
       ],
       featuresKa: [
         'ატრავმული ქირურგია ძვლის მაქსიმალური შენარჩუნებით',
@@ -536,11 +611,12 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'ortho',
+      domain: 'dentistry',
       category: 'surgery',
       titleKa: 'ორთოდონტია და ბავშვთა სტომატოლოგია',
       titleEn: 'Orthodontics & Pediatric Dentistry',
       priceKa: '60 ₾ – 2 000 ₾+',
-      priceEn: '60 ₾ – 2 000 ₾+',
+      priceEn: '60 ₾ – 2,000 ₾+',
       badgeKa: 'ბრეკეტები და ადაპტაცია',
       badgeEn: 'Braces & Child Care',
       subPricesKa: [
@@ -570,11 +646,12 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
     },
     {
       id: 'tech',
+      domain: 'dentistry',
       category: 'tech',
       titleKa: 'მსოფლიო დონის ციფრული ტექნოლოგიები',
       titleEn: 'State-of-the-Art Digital Technologies',
-      priceKa: 'Smile Agency Tech',
-      priceEn: 'Smile Agency Tech',
+      priceKa: 'ციფრული ცენტრი',
+      priceEn: 'Digital Center',
       badgeKa: 'Planmeca ციფრული ცენტრი',
       badgeEn: 'Planmeca Suite',
       featuresKa: [
@@ -589,16 +666,183 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
         'Guttafusion Oven & SybronEndo — Gold standard hermetic 3D root canal obturation',
         'Estelite Asteria — Premium Japanese aesthetic composite for natural artistic smiles'
       ]
+    },
+
+    // ---------------- INJECTION COSMETOLOGY ----------------
+    {
+      id: 'botox',
+      domain: 'cosmetology',
+      category: 'botox',
+      titleKa: '1. ბოტულინოთერაპია (ბოტოქსი)',
+      titleEn: '1. Botulinum Toxin Therapy (Botox)',
+      priceKa: '150 ₾ – 1 000 ₾',
+      priceEn: '150 ₾ – 1,000 ₾',
+      badgeKa: 'Allergan / Xeomin / Nabota / Dysport',
+      badgeEn: 'Allergan / Xeomin / Nabota / Dysport',
+      subPricesKa: [
+        { name: '1 ზონა (თვალის ირგვლივ ან წარბებს შორის)', price: '150 – 250 ₾' },
+        { name: 'მთლიანი სახე (3 ზონა: შუბლი, წარბთაშუა, თვალები)', price: '350 – 500 ₾' },
+        { name: 'Dysport (ერთეულებით, საშუალოდ 30–60 ერთ. ზონაზე)', price: '4 – 6 ₾ / ერთეული' },
+        { name: 'ჰიპერჰიდროზი — ჭარბი ოფლიანობა (იღლიები / ხელები)', price: '600 – 1 000 ₾' }
+      ],
+      subPricesEn: [
+        { name: '1 Zone (e.g. eye area or glabella)', price: '150 – 250 ₾' },
+        { name: 'Full Face (3 zones: forehead, glabella, eyes)', price: '350 – 500 ₾' },
+        { name: 'Dysport (per unit, avg 30–60 units/zone)', price: '4 – 6 ₾ / unit' },
+        { name: 'Hyperhidrosis — excessive sweating (underarms / hands)', price: '600 – 1,000 ₾' }
+      ],
+      featuresKa: [
+        'გამოიყენება მიმიკური ნაოჭების გასასწორებლად (შუბლი, თვალის ირგვლივ, წარბებს შორის)',
+        'ჰიპერჰიდროზის (ჭარბი ოფლიანობის) ეფექტური და უსაფრთხო მკურნალობა',
+        'პრეპარატები: Botox (Allergan, აშშ), Xeomin (Merz, გერმანია), Nabota (სამხრეთ კორეა), Dysport',
+        'ბუნებრივი მიმიკის შენარჩუნება, დასვენებული და გაახალგაზრდავებული იერი'
+      ],
+      featuresEn: [
+        'Used to smooth dynamic mimic wrinkles (forehead, crow\'s feet, frown lines)',
+        'Effective and safe clinical treatment for hyperhidrosis (excessive sweating)',
+        'FDA-approved preparations: Botox (Allergan, USA), Xeomin (Merz, Germany), Nabota (Korea), Dysport',
+        'Preservation of natural facial expressions with refreshed youthful aesthetic'
+      ]
+    },
+    {
+      id: 'fillers',
+      domain: 'cosmetology',
+      category: 'fillers',
+      titleKa: '2. კონტურული პლასტიკა (ფილერები)',
+      titleEn: '2. Facial Contouring & Dermal Fillers',
+      priceKa: '350 ₾ – 800 ₾',
+      priceEn: '350 ₾ – 800 ₾',
+      badgeKa: 'Juvederm / Restylane / Teosyal',
+      badgeEn: 'Juvederm / Restylane / Teosyal',
+      subPricesKa: [
+        { name: 'პრემიუმ სეგმენტი (1.0 მლ შპრიცი)', price: '500 – 800 ₾' },
+        { name: 'სტანდარტული / ევროპული–კორეული ბრენდები (1.0 მლ)', price: '350 – 500 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Premium Segment (1.0 ml syringe)', price: '500 – 800 ₾' },
+        { name: 'Standard / European-Korean Brands (1.0 ml)', price: '350 – 500 ₾' }
+      ],
+      featuresKa: [
+        'ჰიალურონის მჟავის ბაზაზე დამზადებული შემავსებლები მოცულობის აღსადგენად',
+        'ზონები: ტუჩის აუგმენტაცია, ყვრიმალები, ნიკაპი, ყბის ხაზი, ნასოლაბიალური ნაოჭი',
+        'პრეპარატები: Juvederm (Voluma, Volift, Ultra), Restylane, Cytosial, Teosyal და სხვა',
+        'უსაფრთხო, ჰარმონიული შედეგი ანატომიური პროპორციების მაქსიმალური დაცვით'
+      ],
+      featuresEn: [
+        'Hyaluronic acid-based volumizers designed to restore and sculpt natural contours',
+        'Target areas: Lips, cheekbones, chin, jawline angle, nasolabial folds',
+        'Certified preparations: Juvederm (Voluma, Volift, Ultra), Restylane, Cytosial, Teosyal & more',
+        'Harmonious enhancement preserving natural individual anatomy'
+      ]
+    },
+    {
+      id: 'biorevitalization',
+      domain: 'cosmetology',
+      category: 'biorevitalization',
+      titleKa: '3. ბიორევიტალიზაცია',
+      titleEn: '3. Biorevitalization & Deep Hydration',
+      priceKa: '150 ₾ – 700 ₾',
+      priceEn: '150 ₾ – 700 ₾',
+      badgeKa: 'Profhilo & PDRN',
+      badgeEn: 'Profhilo & PDRN',
+      subPricesKa: [
+        { name: 'Profhilo (პროფაილო - 2 მლ, 1 პროცედურა)', price: '500 – 700 ₾' },
+        { name: 'სხვა ბიორევიტალიზანტები (1.5 – 2 მლ)', price: '150 – 450 ₾' },
+        { name: 'PDRN (პოლინუკლეოტიდები)', price: '250 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Profhilo (2 ml, 1 procedure)', price: '500 – 700 ₾' },
+        { name: 'Other Biorevitalizants (1.5 – 2 ml)', price: '150 – 450 ₾' },
+        { name: 'PDRN (Polynucleotides)', price: '250 ₾' }
+      ],
+      featuresKa: [
+        'კანის ღრმა დატენიანება და ჰიდრობალანსის სრული აღდგენა',
+        'ელასტიურობის ამაღლება და წვრილი ნაოჭების პრევენცია კონცენტრირებული ჰიალურონის მჟავით',
+        'PDRN პოლინუკლეოტიდები — უჯრედული რეგენერაცია და ქსოვილთა განახლება',
+        'ხავერდოვანი, მბზინვარე და ხანგრძლივად ჯანსაღი კანის ეფექტი'
+      ],
+      featuresEn: [
+        'Deep dermal hydration and complete moisture barrier restoration',
+        'Elasticity recovery and fine wrinkle prevention with concentrated hyaluronic acid',
+        'PDRN polynucleotides for cellular regeneration and tissue repair',
+        'Velvet texture, luminous glow, and long-lasting vitality'
+      ]
+    },
+    {
+      id: 'mesotherapy',
+      domain: 'cosmetology',
+      category: 'mesotherapy',
+      titleKa: '4. მეზოთერაპია',
+      titleEn: '4. Mesotherapy',
+      priceKa: '80 ₾ – 250 ₾',
+      priceEn: '80 ₾ – 250 ₾',
+      badgeKa: 'ვიტამინური კოქტეილები',
+      badgeEn: 'Vitamin Cocktails',
+      subPricesKa: [
+        { name: '1 პროცედურა (სახე)', price: '120 – 250 ₾' },
+        { name: 'თვალის ირგვლივ ზონა', price: '80 – 150 ₾' }
+      ],
+      subPricesEn: [
+        { name: '1 Procedure (Full Face)', price: '120 – 250 ₾' },
+        { name: 'Periorbital Eye Zone', price: '80 – 150 ₾' }
+      ],
+      featuresKa: [
+        'ვიტამინების, ამინომჟავების, პეპტიდებისა და მიკროელემენტების "კოქტეილები"',
+        'კანის ტონუსის, ფერისა და ტექსტურის საგრძნობი გაუმჯობესება',
+        'პიგმენტაციასთან, დაღლილობასთან და მუქ წრეებთან ეფექტური ბრძოლა',
+        'უჯრედული მეტაბოლიზმისა და მიკროცირკულაციის სტიმულაცია'
+      ],
+      featuresEn: [
+        'Therapeutic cocktails of vitamins, amino acids, peptides, and trace minerals',
+        'Noticeable improvement in skin firmness, complexion, and micro-texture',
+        'Fights hyperpigmentation, fatigue, and periorbital dark circles',
+        'Boosts cellular metabolism and microcirculation'
+      ]
+    },
+    {
+      id: 'biostimulation',
+      domain: 'cosmetology',
+      category: 'biostimulation',
+      titleKa: '5. კოლაგენოსტიმულატორები (ბიოსტიმულაცია)',
+      titleEn: '5. Collagen Stimulators (Biostimulation)',
+      priceKa: '750 ₾ – 1 200 ₾',
+      priceEn: '750 ₾ – 1,200 ₾',
+      badgeKa: 'Radiesse & Sculptra',
+      badgeEn: 'Radiesse & Sculptra',
+      subPricesKa: [
+        { name: 'Radiesse (1.5 მლ, კალციუმის ჰიდროქსიაპატიტი)', price: '750 – 900 ₾' },
+        { name: 'Sculptra (პოლი-L-რძემჟავა) / AestheFill', price: '850 – 1 200 ₾' }
+      ],
+      subPricesEn: [
+        { name: 'Radiesse (1.5 ml, Calcium Hydroxylapatite)', price: '750 – 900 ₾' },
+        { name: 'Sculptra (Poly-L-lactic acid) / AestheFill', price: '850 – 1,200 ₾' }
+      ],
+      featuresKa: [
+        'პრეპარატები, რომლებიც კანში საკუთარი კოლაგენის გამომუშავებას ასტიმულირებენ',
+        'უზრუნველყოფენ ხანგრძლივ ლიფტინგ-ეფექტს (1.5 – 2 წელი)',
+        'პრეპარატები: Sculptra (პოლი-L-რძემჟავა), Radiesse (კალციუმის ჰიდროქსიაპატიტი), AestheFill',
+        'კანის სტრუქტურული გამკვრივება, ოვალის გამოკვეთა და ქსოვილთა გაახალგაზრდავება'
+      ],
+      featuresEn: [
+        'Advanced formulations that trigger neocollagenesis deep within the dermis',
+        'Provides sustained, natural lifting and firming effect lasting 1.5–2 years',
+        'Top preparations: Sculptra (PLLA), Radiesse (CaHA), AestheFill',
+        'Structural skin thickening, refined jawline contour, and deep tissue rejuvenation'
+      ]
     }
   ];
 
-  const filteredServices = activeTab === 'all' 
+  const domainServices = activeDomain === 'all' 
     ? services 
-    : services.filter(s => s.category === activeTab);
+    : services.filter(s => s.domain === activeDomain);
+
+  const filteredServices = activeTab === 'all' 
+    ? domainServices 
+    : domainServices.filter(s => s.category === activeTab || s.id === activeTab);
 
   return (
-    <div className="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm z-[80] flex items-center justify-center p-3 md:p-6 overflow-y-auto">
-      <div className="bg-[#f6f7f1] rounded-[28px] md:rounded-[36px] w-full max-w-4xl max-h-[92vh] overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/40 flex flex-col relative animate-[scaleUp_0.2s_ease-out]">
+    <div className="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 overflow-y-auto">
+      <div className="bg-[#f6f7f1] rounded-t-[28px] sm:rounded-[28px] md:rounded-[36px] w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/40 flex flex-col relative animate-[scaleUp_0.2s_ease-out]">
         
         {/* Header */}
         <div className="p-5 md:p-7 pb-4 bg-[#f6f7f1] border-b border-neutral-200/80 flex items-start justify-between relative flex-shrink-0">
@@ -608,7 +852,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/70 border border-white/40 text-[10px] font-black text-neutral-600 uppercase tracking-wider mb-1">
-                Smile Agency · {t('Dr. Jenny Pirtskhalava', 'ექიმი ჯენი ფირცხალავა')}
+                {t('Dr. Jenny Pirtskhalava', 'ექიმი ჯენი ფირცხალავა')}
               </div>
               <h3 className="text-xl md:text-2xl font-black text-neutral-900 leading-tight">
                 {t('Services & Estimated Pricing', 'სერვისები და საორიენტაციო ფასები')}
@@ -636,18 +880,63 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
           </p>
         </div>
 
-        {/* Categories Tabs Filter */}
-        <div className="px-5 md:px-7 py-3 bg-[#f6f7f1] border-b border-neutral-200/60 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
+        {/* Major Domain Switcher (Dentistry vs Injection Cosmetology) */}
+        <div className="px-5 md:px-7 pt-3.5 pb-2.5 bg-[#f6f7f1] flex items-center gap-2 border-b border-neutral-200/60 overflow-x-auto no-scrollbar flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => { setActiveDomain('dentistry'); setActiveTab('all'); }}
+            className={`px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeDomain === 'dentistry'
+                ? 'bg-neutral-900 text-white shadow-md'
+                : 'bg-[#f6f7f1] text-neutral-700 hover:text-neutral-900 shadow-[2px_2px_5px_rgba(163,177,198,0.4),-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/30'
+            }`}
+          >
+            <span>🦷</span>
+            <span>{t('Dentistry', 'სტომატოლოგია')}</span>
+            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${activeDomain === 'dentistry' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-neutral-700'}`}>9</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setActiveDomain('cosmetology'); setActiveTab('all'); }}
+            className={`px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs font-black transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeDomain === 'cosmetology'
+                ? 'bg-neutral-900 text-white shadow-md'
+                : 'bg-[#f6f7f1] text-neutral-700 hover:text-neutral-900 shadow-[2px_2px_5px_rgba(163,177,198,0.4),-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/30'
+            }`}
+          >
+            <span>✨</span>
+            <span>{t('Injection Cosmetology', 'ინექციური კოსმეტოლოგია')}</span>
+            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${activeDomain === 'cosmetology' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-neutral-700'}`}>5</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setActiveDomain('all'); setActiveTab('all'); }}
+            className={`px-3.5 md:px-4 py-2 md:py-2.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 whitespace-nowrap ${
+              activeDomain === 'all'
+                ? 'bg-neutral-900 text-white shadow-md'
+                : 'bg-[#f6f7f1] text-neutral-500 hover:text-neutral-900 shadow-[2px_2px_5px_rgba(163,177,198,0.35),-2px_-2px_5px_rgba(255,255,255,0.85)] border border-white/30'
+            }`}
+          >
+            <span>{t('All', 'ყველა')}</span>
+            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${activeDomain === 'all' ? 'bg-white/20 text-white' : 'bg-neutral-200 text-neutral-700'}`}>14</span>
+          </button>
+        </div>
+
+        {/* Subcategories Tabs Filter */}
+        <div className="px-5 md:px-7 py-2.5 bg-[#fbfbf8] border-b border-neutral-200/60 flex gap-2 overflow-x-auto no-scrollbar flex-shrink-0">
           {categories.map((cat) => {
             const isSelected = activeTab === cat.id;
             return (
               <button
                 key={cat.id}
+                type="button"
                 onClick={() => setActiveTab(cat.id)}
-                className={`px-4 py-2 rounded-full text-xs font-black transition-all whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-full text-[11px] md:text-xs font-black transition-all whitespace-nowrap ${
                   isSelected
-                    ? 'bg-neutral-900 text-white shadow-md'
-                    : 'bg-[#f6f7f1] text-neutral-600 hover:text-neutral-900 shadow-[2px_2px_4px_rgba(163,177,198,0.35),-2px_-2px_4px_rgba(255,255,255,0.85)] border border-white/30'
+                    ? 'bg-[#F5D061] text-neutral-900 shadow-sm'
+                    : 'bg-[#f6f7f1] text-neutral-600 hover:text-neutral-900 shadow-[1px_1px_3px_rgba(163,177,198,0.3),-1px_-1px_3px_rgba(255,255,255,0.8)] border border-white/30'
                 }`}
               >
                 {lang === 'en' ? cat.labelEn : cat.labelKa}
@@ -708,7 +997,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
         </div>
 
         {/* Modal Sticky Bottom Actions */}
-        <div className="p-4 md:p-5 bg-[#f6f7f1] border-t border-neutral-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+        <div className="p-4 md:p-5 pb-[max(1rem,env(safe-area-inset-bottom))] bg-[#f6f7f1] border-t border-neutral-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
           <div className="flex items-center gap-3 text-xs font-bold text-neutral-600">
             <span>📍 {t('14 Balanchivadze St, Tbilisi', 'მელიტონ და ანდრია ბალანჩივაძეების ქ. 14, თბილისი')}</span>
             <span className="hidden sm:inline">•</span>
@@ -760,8 +1049,40 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
   const [bookingStep, setBookingStep] = useState<BookingStep>('idle');
   const [bookingData, setBookingData] = useState({ name: '', phone: '', datetime: '' });
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const prevTriggerRef = useRef(bookingTrigger);
   const sessionIdRef = useRef<string>('');
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    const updateHeight = () => {
+      if (window.visualViewport && chatContainerRef.current && window.innerWidth < 768) {
+        chatContainerRef.current.style.height = `${window.visualViewport.height}px`;
+        chatContainerRef.current.style.top = `${window.visualViewport.offsetTop}px`;
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateHeight);
+      window.visualViewport.addEventListener('scroll', updateHeight);
+      updateHeight();
+    }
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateHeight);
+        window.visualViewport.removeEventListener('scroll', updateHeight);
+      }
+    };
+  }, [isOpen]);
   const getSessionId = () => {
     if (sessionIdRef.current) return sessionIdRef.current;
     let s = '';
@@ -783,8 +1104,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
       {
         sender: 'bot',
         text: t(
-          'Hello! 🦷 I am Dr. Jenny Pirtskhalava\'s virtual assistant at Smile Agency. How can I help you?',
-          'მოგესალმებით! 🦷 მე ვარ ექიმ ჯენი ფირცხალავას ვირტუალური ასისტენტი, კლინიკა Smile Agency. რით შემიძლია დაგეხმაროთ?'
+          'Hello! 🦷 I am Dr. Jenny\'s virtual assistant. How can I help you?',
+          'მოგესალმებით! 🦷 მე ვარ ექიმ ჯენის ვირტუალური ასისტენტი. რით დაგეხმაროთ?'
         )
       }
     ]);
@@ -1022,8 +1343,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
         );
       } else if (lower.includes('მისამართ') || lower.includes('სად ხართ') || lower.includes('სად მდებარეობს') || lower.includes('სად არის') || lower.includes('ლოკაცი') || lower.includes('ქუჩ') || lower.includes('address') || lower.includes('location') || lower.includes('where')) {
         replyText = t(
-          'Clinic Address: 14 Meliton and Andria Balanchivadze St, Tbilisi (Smile Agency).\nPhone: 593 56 79 98',
-          'კლინიკის მისამართია: მელიტონ და ანდრია ბალანჩივაძეების ქუჩა №14, თბილისი (Smile Agency).\nტელეფონი: 593 56 79 98'
+          'Clinic Address: 14 Meliton and Andria Balanchivadze St, Tbilisi.\nPhone: 593 56 79 98',
+          'კლინიკის მისამართია: მელიტონ და ანდრია ბალანჩივაძეების ქუჩა №14, თბილისი.\nტელეფონი: 593 56 79 98'
         );
       } else if (lower.includes('ტელეფონ') || lower.includes('ნომერ') || lower.includes('კონტაქტ') || lower.includes('დარეკვ') || lower.includes('მეილ') || lower.includes('ფოსტ') || lower.includes('phone') || lower.includes('contact') || lower.includes('call') || lower.includes('email')) {
         replyText = t(
@@ -1032,8 +1353,33 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
         );
       } else if (lower.includes('ჯენი') || lower.includes('ექიმ') || lower.includes('ფირცხალავა') || lower.includes('გამოცდილებ') || lower.includes('სერთიფიკატ') || lower.includes('jenny') || lower.includes('doctor')) {
         replyText = t(
-          'Dr. Jenny Pirtskhalava is a dental surgeon and aesthetic specialist at Smile Agency with 15+ years of extensive clinical practice and international certifications.',
-          'ექიმი ჯენი ფირცხალავა — ექიმი-სტომატოლოგი, კლინიკა Smile Agency. 15+ წლიანი პრაქტიკული გამოცდილება ესთეტიკურ სტომატოლოგიასა და მხატვრულ რესტავრაციაში საერთაშორისო სერტიფიკატებით.'
+          'Dr. Jenny Pirtskhalava is a dental surgeon and aesthetic specialist with 15+ years of extensive clinical practice and international certifications.',
+          'ექიმი ჯენი ფირცხალავა — ექიმი-სტომატოლოგი. 15+ წლიანი პრაქტიკული გამოცდილება ესთეტიკურ სტომატოლოგიასა და მხატვრულ რესტავრაციაში საერთაშორისო სერტიფიკატებით.'
+        );
+      } else if (lower.includes('ბოტოქს') || lower.includes('botox') || lower.includes('დისპორტ') || lower.includes('dysport') || lower.includes('ქსეომინ') || lower.includes('xeomin') || lower.includes('ნაბოტა') || lower.includes('მიმიკურ') || lower.includes('ჰიპერჰიდროზ') || lower.includes('ოფლიანობ')) {
+        replyText = t(
+          'Botulinum Toxin Therapy (Botox):\n• 1 Zone (eyes / glabella) — 150–250 ₾\n• Full Face (3 zones) — 350–500 ₾\n• Dysport — 4–6 ₾ / unit (~30–60 units/zone)\n• Hyperhidrosis (sweating) — 600–1,000 ₾\nPreparations: Botox (Allergan, USA), Xeomin (Merz, Germany), Nabota (Korea), Dysport.\n\nWould you like to schedule an appointment?',
+          'ბოტულინოთერაპია (ბოტოქსი):\n• 1 ზონა (თვალის ირგვლივ ან წარბებს შორის) — 150–250 ₾\n• მთლიანი სახე (3 ზონა) — 350–500 ₾\n• Dysport (ერთეულებით) — 4–6 ₾ / ერთეული (~30–60 ერთ.)\n• ჰიპერჰიდროზი — ჭარბი ოფლიანობა — 600–1 000 ₾\nპრეპარატები: Botox (Allergan, აშშ), Xeomin (Merz, გერმანია), Nabota (სამხრეთ კორეა).\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('ფილერ') || lower.includes('filler') || lower.includes('ტუჩ') || lower.includes('ყვრიმალ') || lower.includes('ნიკაპ') || lower.includes('კონტურულ') || lower.includes('ჯუვიდერმ') || lower.includes('juvederm') || lower.includes('restylane') || lower.includes('teosyal')) {
+        replyText = t(
+          'Facial Contouring & Fillers (1.0 ml syringe):\n• Premium segment (Juvederm, Restylane, Teosyal) — 500–800 ₾\n• Standard European/Korean brands — 350–500 ₾\nZones: Lips, cheekbones, chin, jawline, nasolabial folds.\n\nWould you like to schedule a visit?',
+          'კონტურული პლასტიკა (ფილერები, 1.0 მლ შპრიცი):\n• პრემიუმ სეგმენტი (Juvederm, Restylane, Teosyal, Cytosial) — 500–800 ₾\n• სტანდარტული ევროპული/კორეული ბრენდები — 350–500 ₾\nზონები: ტუჩის აუგმენტაცია, ყვრიმალები, ნიკაპი, ყბის ხაზი, ნასოლაბიალური ნაოჭი.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('ბიორევიტალიზაცი') || lower.includes('პროფაილო') || lower.includes('profhilo') || lower.includes('pdrn') || lower.includes('დატენიანებ') || lower.includes('biorevital')) {
+        replyText = t(
+          'Biorevitalization & Deep Hydration:\n• Profhilo (2 ml, 1 procedure) — 500–700 ₾\n• Other Biorevitalizants (1.5–2 ml) — 150–450 ₾\n• PDRN (Polynucleotides) — 250 ₾\nRestores deep elasticity and provides luminous radiant glow.\n\nWould you like to book a consultation?',
+          'ბიორევიტალიზაცია (კანის ღრმა დატენიანება):\n• Profhilo (პროფაილო - 2 მლ, 1 პროცედურა) — 500–700 ₾\n• სხვა ბიორევიტალიზანტები (1.5–2 მლ) — 150–450 ₾\n• PDRN (პოლინუკლეოტიდები) — 250 ₾\nუზრუნველყოფს კანის ელასტიურობას, ბზინვარებას და წვრილი ნაოჭების პრევენციას.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('მეზოთერაპი') || lower.includes('mesotherap') || lower.includes('კოქტეილ') || lower.includes('ვიტამინ')) {
+        replyText = t(
+          'Mesotherapy:\n• 1 Procedure (Full Face) — 120–250 ₾\n• Periorbital Eye Zone — 80–150 ₾\nCocktails of vitamins, peptides, and amino acids for skin radiance, tone, and dark circles.\n\nWould you like to schedule a visit?',
+          'მეზოთერაპია:\n• 1 პროცედურა (სახე) — 120–250 ₾\n• თვალის ირგვლივ ზონა — 80–150 ₾\nვიტამინების, პეპტიდებისა და მიკროელემენტების კოქტეილები ტონუსის, ფერისა და პიგმენტაციის გასაუმჯობესებლად.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
+        );
+      } else if (lower.includes('კოლაგენ') || lower.includes('რადიეს') || lower.includes('radiesse') || lower.includes('სკულპტრ') || lower.includes('sculptra') || lower.includes('ბიოსტიმულაცი') || lower.includes('aesthefill')) {
+        replyText = t(
+          'Collagen Stimulators (Biostimulation):\n• Radiesse (1.5 ml) — 750–900 ₾\n• Sculptra (PLLA) / AestheFill — 850–1,200 ₾\nStimulates your own collagen production with a 1.5–2 year lifting effect.\n\nWould you like to schedule an appointment?',
+          'კოლაგენოსტიმულატორები (ბიოსტიმულაცია):\n• Radiesse (1.5 მლ, კალციუმის ჰიდროქსიაპატიტი) — 750–900 ₾\n• Sculptra (პოლი-L-რძემჟავა) / AestheFill — 850–1 200 ₾\nასტიმულირებს საკუთარი კოლაგენის გამომუშავებას და უზრუნველყოფს 1.5–2 წლიან ლიფტინგ-ეფექტს.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
         );
       } else if (lower.includes('ფას') || lower.includes('ღირებულ') || lower.includes('ტარიფ') || lower.includes('რა ღირს') || lower.includes('რა ჯდება') || lower.includes('price') || lower.includes('cost') || lower.includes('fee')) {
         replyText = t(
@@ -1076,7 +1422,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
   };
 
   return (
-    <div className="fixed bottom-6 right-6 md:bottom-20 md:right-20 z-50 flex flex-col items-end">
+    <div className={`fixed z-50 flex flex-col items-end ${isOpen ? 'inset-0 md:inset-auto md:bottom-20 md:right-20' : 'bottom-6 right-6 md:bottom-20 md:right-20'}`}>
       {/* Glow effect styles for gray tactile collapsed button */}
       <style>{`
         @keyframes pulse-gray {
@@ -1092,8 +1438,11 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
       `}</style>
 
       {isOpen && (
-        <div className="w-[320px] md:w-[360px] h-[480px] md:h-[520px] max-h-[85vh] bg-[#f6f7f1] border border-white/30 rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col mb-4 animate-[scaleUp_0.25s_ease-out]">
-          <div className="bg-black text-white p-4 flex items-center justify-between shadow-sm flex-shrink-0">
+        <div 
+          ref={chatContainerRef}
+          className="w-full h-full md:w-[360px] md:h-[520px] md:max-h-[85vh] bg-[#f6f7f1] md:border md:border-white/30 md:rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col md:mb-4 animate-[scaleUp_0.25s_ease-out]"
+        >
+          <div className="bg-black text-white p-4 pt-[max(1rem,env(safe-area-inset-top))] md:pt-4 flex items-center justify-between shadow-sm flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full overflow-hidden border border-white/30 bg-black p-1">
                 <img src="/assets/logo_monogram.png" alt="Dr. Jenny Avatar" className="w-full h-full object-contain" />
@@ -1105,7 +1454,8 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
             </div>
             <button 
               onClick={handleClose}
-              className="text-white hover:text-neutral-300 font-bold text-sm focus:outline-none"
+              className="text-white hover:text-neutral-300 font-bold text-lg md:text-sm focus:outline-none p-1"
+              aria-label="Close chat"
             >
               ✕
             </button>
@@ -1145,19 +1495,19 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
               setInputText('');
               handleUserText(text);
             }}
-            className="p-3 bg-[#f6f7f1] border-t border-white/40 flex items-center gap-2 flex-shrink-0"
+            className="p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pb-3 bg-[#f6f7f1] border-t border-white/40 flex items-center gap-2 flex-shrink-0"
           >
             <input 
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={t('Type a message...', 'დაწერეთ შეტყობინება...')}
-              className="flex-1 bg-white/90 border border-neutral-200/90 rounded-full px-4 py-2.5 text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#F5D061]/50 focus:bg-white transition-all shadow-[inset_2px_2px_4px_rgba(163,177,198,0.25)]"
+              className="flex-1 bg-white/90 border border-neutral-200/90 rounded-full px-4 py-2.5 text-base md:text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#F5D061]/50 focus:bg-white transition-all shadow-[inset_2px_2px_4px_rgba(163,177,198,0.25)]"
             />
             <button 
               type="submit"
               disabled={!inputText.trim()}
-              className="w-9 h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center hover:bg-[#F5D061] hover:text-neutral-900 disabled:opacity-35 disabled:hover:bg-neutral-900 disabled:hover:text-white transition-all shadow-md active:scale-95 flex-shrink-0"
+              className="w-10 h-10 md:w-9 md:h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center hover:bg-[#F5D061] hover:text-neutral-900 disabled:opacity-35 disabled:hover:bg-neutral-900 disabled:hover:text-white transition-all shadow-md active:scale-95 flex-shrink-0"
               aria-label={t('Send message', 'შეტყობინების გაგზავნა')}
             >
               <svg className="w-4 h-4 -rotate-45 -translate-y-0.5 translate-x-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -1176,10 +1526,10 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
             setIsOpen(true);
           }
         }}
-        className={`w-14 h-14 rounded-full flex items-center justify-center border border-white/20 transition-all relative ${
+        className={`w-14 h-14 rounded-full items-center justify-center border border-white/20 transition-all relative ${
           isOpen 
-            ? 'bg-[#f6f7f1] shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] hover:scale-105' 
-            : 'bg-neutral-200 text-neutral-800 animate-[pulse-gray_2.5s_infinite] shadow-lg'
+            ? 'hidden md:flex bg-[#f6f7f1] shadow-[6px_6px_12px_rgba(163,177,198,0.5),-6px_-6px_12px_rgba(255,255,255,0.85)] hover:scale-105' 
+            : 'flex bg-neutral-200 text-neutral-800 animate-[pulse-gray_2.5s_infinite] shadow-lg'
         }`}
         aria-label="Open chat assistant"
       >
@@ -1461,7 +1811,7 @@ const App: React.FC = () => {
           >
             {/* Dentistry Direction Card */}
             <div 
-              onClick={() => handleOpenServices('restoration')}
+              onClick={() => handleOpenServices('dentistry')}
               className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
             >
               <img src={DENTISTRY_CARD_BG} alt="Dentistry showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -1475,13 +1825,13 @@ const App: React.FC = () => {
                   {t('Aesthetic Dentistry', 'ესთეტიკური და აღდგენითი სტომატოლოგია')}
                 </h3>
                 <p className="text-neutral-300 text-xs md:text-sm font-semibold max-w-sm">
-                  {t('Implants, porcelain veneers, crowns and aesthetic smile makeovers.', 'იმპლანტოლოგია, ორთოდონტია და ჰოლივუდის ღიმილი.')}
+                  {t('Implants, porcelain veneers, crowns and artistic restoration.', 'იმპლანტოლოგია, ორთოდონტია, ვინირები და მხატვრული რესტავრაცია.')}
                 </p>
                 <button 
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleOpenServices('restoration');
+                    handleOpenServices('dentistry');
                   }}
                   className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
                 >
@@ -1490,29 +1840,29 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Dermatology Direction Card */}
+            {/* Injection Cosmetology Direction Card */}
             <div 
-              onClick={() => handleOpenServices('all')}
+              onClick={() => handleOpenServices('cosmetology')}
               className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
             >
-              <img src={DERMATOLOGY_CARD_BG} alt="Dermatology showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={COSMETOLOGY_CARD_BG} alt="Injection cosmetology showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/40 to-transparent" />
               <div className="absolute bottom-0 left-0 p-8 w-full flex flex-col items-start gap-4">
                 {/* Neumorphic accent label */}
                 <span className="px-4 py-2 bg-[#f6f7f1] text-neutral-800 font-black text-[10px] rounded-full shadow-md uppercase tracking-wider">
-                  {t('Dermatology', 'დერმატოლოგია')}
+                  {t('Injection Cosmetology', 'ინექციური კოსმეტოლოგია')}
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black text-white leading-none">
-                  {t('Advanced Dermatology', 'თანამედროვე სამედიცინო დერმატოლოგია')}
+                  {t('Injection Cosmetology & Aesthetics', 'ინექციური კოსმეტოლოგია და დერმატოლოგია')}
                 </h3>
                 <p className="text-neutral-300 text-xs md:text-sm font-semibold max-w-sm">
-                  {t('Skin diagnostics, anti-aging therapies and aesthetic procedures.', 'კანის გაახალგაზრდავება, დიაგნოსტიკა და ესთეტიკური პროცედურები.')}
+                  {t('Botox, dermal fillers, biorevitalization, mesotherapy & biostimulation.', 'ბოტოქსი, კონტურული პლასტიკა, ბიორევიტალიზაცია და ბიოსტიმულაცია.')}
                 </p>
                 <button 
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleOpenServices('all');
+                    handleOpenServices('cosmetology');
                   }}
                   className="px-6 py-3.5 bg-[#f6f7f1] hover:scale-105 hover:bg-neutral-800 hover:text-white hover:-translate-y-0.5 text-neutral-800 font-black text-xs rounded-full shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
                 >
@@ -1627,10 +1977,17 @@ const App: React.FC = () => {
               </p>
             </div>
             
-            {/* Arrows */}
+            {/* Link to Facebook photos */}
             <div className="flex gap-2 shrink-0">
-              <button className="w-10 h-10 rounded-full border border-neutral-300 hover:bg-[#f6f7f1] flex items-center justify-center font-bold text-xs transition-colors">←</button>
-              <button className="w-10 h-10 rounded-full border border-neutral-300 hover:bg-[#f6f7f1] flex items-center justify-center font-bold text-xs transition-colors">→</button>
+              <a 
+                href="https://www.facebook.com/profile.php?id=100042099562926&sk=photos"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 hover:scale-105 font-black text-xs text-neutral-800 flex items-center gap-1.5 transition-all"
+              >
+                <span>{t('All Results (Facebook)', 'ყველა შედეგი (Facebook)')}</span>
+                <span>↗</span>
+              </a>
             </div>
           </div>
 
@@ -1674,7 +2031,7 @@ const App: React.FC = () => {
 
             {/* Gallery Item 3 - See More Card */}
             <a 
-              href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
+              href="https://www.facebook.com/profile.php?id=100042099562926&sk=photos"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
@@ -1688,7 +2045,7 @@ const App: React.FC = () => {
                 <div 
                   className="w-full py-3 bg-[#f6f7f1] group-hover:bg-neutral-800 group-hover:text-white text-neutral-800 font-black text-xs rounded-xl shadow-md transition-all duration-300 text-center"
                 >
-                  {t('View on Instagram', 'გალერეა (Instagram)')} ↗
+                  {t('View on Facebook', 'გალერეა (Facebook)')} ↗
                 </div>
               </div>
             </a>
@@ -1810,7 +2167,7 @@ const App: React.FC = () => {
               onClick={() => { const el = document.getElementById('services'); el?.scrollIntoView({ behavior: 'smooth' }); }} 
               className="text-neutral-500 font-bold text-xs hover:text-neutral-800 transition-colors text-left cursor-pointer"
             >
-              {t('Dermatology Care', 'დერმატოლოგია')}
+              {t('Injection Cosmetology', 'ინექციური კოსმეტოლოგია')}
             </button>
             <button 
               type="button"
