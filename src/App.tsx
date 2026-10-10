@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { GlowCard } from '@/components/ui/spotlight-card';
 
 // ==========================================
 // IMAGE & ASSET CONSTANTS
@@ -842,7 +843,12 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 overflow-y-auto">
-      <div className="bg-[#f6f7f1] rounded-t-[28px] sm:rounded-[28px] md:rounded-[36px] w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/40 flex flex-col relative animate-[scaleUp_0.2s_ease-out]">
+      <GlowCard 
+        customSize 
+        glowColor="gold" 
+        borderRadius="32" 
+        className="bg-[#f6f7f1] rounded-t-[28px] sm:rounded-[28px] md:rounded-[36px] w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden shadow-[20px_20px_40px_rgba(163,177,198,0.7),-20px_-20px_40px_rgba(255,255,255,0.9)] border border-white/40 flex flex-col relative animate-[scaleUp_0.2s_ease-out] !p-0"
+      >
         
         {/* Header */}
         <div className="p-5 md:p-7 pb-4 bg-[#f6f7f1] border-b border-neutral-200/80 flex items-start justify-between relative flex-shrink-0">
@@ -1013,7 +1019,7 @@ const ServicesDetailsModal: React.FC<ServicesDetailsModalProps> = ({
           </button>
         </div>
 
-      </div>
+      </GlowCard>
     </div>
   );
 };
@@ -1216,9 +1222,12 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
       `}</style>
 
       {isOpen && (
-        <div 
+        <GlowCard 
           ref={chatContainerRef}
-          className="w-full h-full md:w-[360px] md:h-[520px] md:max-h-[85vh] bg-[#f6f7f1] md:border md:border-white/30 md:rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col md:mb-4 animate-[scaleUp_0.25s_ease-out]"
+          customSize
+          glowColor="gold"
+          borderRadius="32"
+          className="w-full h-full md:w-[360px] md:h-[520px] md:max-h-[85vh] bg-[#f6f7f1] md:border md:border-white/30 md:rounded-[32px] overflow-hidden shadow-[10px_10px_25px_rgba(163,177,198,0.6),-10px_-10px_25px_rgba(255,255,255,0.85)] flex flex-col md:mb-4 animate-[scaleUp_0.25s_ease-out] !p-0"
         >
           <div className="bg-black text-white p-4 pt-[max(1rem,env(safe-area-inset-top))] md:pt-4 flex items-center justify-between shadow-sm flex-shrink-0">
             <div className="flex items-center gap-3">
@@ -1293,7 +1302,7 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
               </svg>
             </button>
           </form>
-        </div>
+        </GlowCard>
       )}
 
       <button 
@@ -1588,9 +1597,12 @@ const App: React.FC = () => {
             className="grid md:grid-cols-2 gap-8 w-full"
           >
             {/* Dentistry Direction Card */}
-            <div 
+            <GlowCard 
+              customSize
+              glowColor="gold"
+              borderRadius="28"
               onClick={() => handleOpenServices('dentistry')}
-              className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
+              className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer !p-0"
             >
               <img src={DENTISTRY_CARD_BG} alt="Dentistry showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/85 via-neutral-950/35 to-neutral-950/90" />
@@ -1621,12 +1633,15 @@ const App: React.FC = () => {
                   {t('View Services', 'სრულად ნახვა')}
                 </button>
               </div>
-            </div>
+            </GlowCard>
 
             {/* Injection Cosmetology Direction Card */}
-            <div 
+            <GlowCard 
+              customSize
+              glowColor="gold"
+              borderRadius="28"
               onClick={() => handleOpenServices('cosmetology')}
-              className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer"
+              className="group relative overflow-hidden rounded-[28px] shadow-lg h-[460px] bg-neutral-100 cursor-pointer !p-0"
             >
               <img src={COSMETOLOGY_CARD_BG} alt="Injection cosmetology showcase" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/85 via-neutral-950/35 to-neutral-950/90" />
@@ -1657,7 +1672,7 @@ const App: React.FC = () => {
                   {t('View Services', 'სრულად ნახვა')}
                 </button>
               </div>
-            </div>
+            </GlowCard>
           </div>
         </section>
 
@@ -1846,7 +1861,7 @@ const App: React.FC = () => {
         <section className="py-20 px-6 bg-[#f6f7f1] border-t border-b border-white/10">
           <div className="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-8">
             {/* Review 1 */}
-            <div className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
+            <GlowCard customSize glowColor="gold" borderRadius="16" className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
               <div className="text-yellow-500 font-bold text-lg">★★★★★</div>
               <p className="text-xs md:text-sm font-bold text-neutral-500 italic leading-relaxed">
                 {t(
@@ -1855,10 +1870,10 @@ const App: React.FC = () => {
                 )}
               </p>
               <span className="text-xs font-black text-neutral-800">{t('Mariam Beridze', 'მარიამ ბერიძე')}</span>
-            </div>
+            </GlowCard>
 
             {/* Review 2 */}
-            <div className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
+            <GlowCard customSize glowColor="gold" borderRadius="16" className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
               <div className="text-yellow-500 font-bold text-lg">★★★★★</div>
               <p className="text-xs md:text-sm font-bold text-neutral-500 italic leading-relaxed">
                 {t(
@@ -1867,10 +1882,10 @@ const App: React.FC = () => {
                 )}
               </p>
               <span className="text-xs font-black text-neutral-800">{t('Levan Giorgadze', 'ლევან გიორგაძე')}</span>
-            </div>
+            </GlowCard>
 
             {/* Review 3 */}
-            <div className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
+            <GlowCard customSize glowColor="gold" borderRadius="16" className="bg-white/70 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/60 flex flex-col gap-4">
               <div className="text-yellow-500 font-bold text-lg">★★★★★</div>
               <p className="text-xs md:text-sm font-bold text-neutral-500 italic leading-relaxed">
                 {t(
@@ -1879,7 +1894,7 @@ const App: React.FC = () => {
                 )}
               </p>
               <span className="text-xs font-black text-neutral-800">{t('Ana Metreveli', 'ანა მეტრეველი')}</span>
-            </div>
+            </GlowCard>
           </div>
         </section>
       </main>
