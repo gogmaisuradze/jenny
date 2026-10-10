@@ -142,14 +142,7 @@ const openFacebookPhotos = (e?: React.MouseEvent) => {
     e.stopPropagation();
   }
   const fbUrl = 'https://www.facebook.com/profile.php?id=100042099562926&sk=photos';
-  try {
-    const newWin = window.open(fbUrl, '_blank', 'noopener,noreferrer');
-    if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
-      window.location.href = fbUrl;
-    }
-  } catch {
-    window.location.href = fbUrl;
-  }
+  window.open(fbUrl, '_blank', 'noopener,noreferrer');
 };
 
 // ==========================================
