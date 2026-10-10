@@ -1034,8 +1034,6 @@ interface ChatMessage {
   text: string;
 }
 
-type BookingStep = 'idle' | 'awaiting_name' | 'awaiting_phone' | 'awaiting_datetime';
-
 const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ 
   lang, 
   t, 
@@ -1046,8 +1044,6 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [bookingStep, setBookingStep] = useState<BookingStep>('idle');
-  const [bookingData, setBookingData] = useState({ name: '', phone: '', datetime: '' });
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const prevTriggerRef = useRef(bookingTrigger);
@@ -1137,21 +1133,9 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
     if (bookingTrigger > 0 && bookingTrigger !== prevTriggerRef.current) {
       prevTriggerRef.current = bookingTrigger;
       setIsOpen(true);
-      setBookingStep('awaiting_name');
-      setBookingData({ name: '', phone: '', datetime: '' });
-
       setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          {
-            sender: 'bot',
-            text: t(
-              'I will gladly assist you in booking an appointment with Dr. Jenny. 🦷\n\nPlease enter your First and Last Name:',
-              'სიამოვნებით დაგეხმარებით ექიმ ჯენისთან ვიზიტის დაჯავშნაში. 🦷\n\nგთხოვთ მომწეროთ თქვენი სახელი და გვარი:'
-            )
-          }
-        ]);
-      }, 150);
+        handleUserText(t('I would like to book an appointment with Dr. Jenny', 'მსურს ექიმ ჯენისთან ვიზიტის დაჯავშნა'));
+      }, 200);
     }
   }, [bookingTrigger, lang]);
 
@@ -1161,264 +1145,58 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
     }
   }, [messages, isTyping, isOpen]);
 
-  const handleUserText = (rawText: string) => {
+  const handleUserText = async (rawText: string) => {
     const userMsg: ChatMessage = { sender: 'user', text: rawText };
     setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
-    setTimeout(() => {
-      // 1. Interactive booking sequence
-      if (bookingStep === 'awaiting_name') {
-        setBookingData(prev => ({ ...prev, name: rawText }));
-        setBookingStep('awaiting_phone');
-        setMessages(prev => [
-          ...prev,
-          {
-            sender: 'bot',
-            text: t(
-              `Thank you, ${rawText}! Please provide your contact phone number:`,
-              `გმადლობთ, ${rawText}! გთხოვთ მომწეროთ თქვენი საკონტაქტო ტელეფონის ნომერი:`
-            )
-          }
-        ]);
-        setIsTyping(false);
-        return;
-      }
-
-      if (bookingStep === 'awaiting_phone') {
-        setBookingData(prev => ({ ...prev, phone: rawText }));
-        setBookingStep('awaiting_datetime');
-        setMessages(prev => [
-          ...prev,
-          {
-            sender: 'bot',
-            text: t(
-              'Please specify your preferred day and time for your visit.\n\nWorking hours:\n• Mon, Tue, Thu, Fri: 15:00–20:00\n• Wed: 11:00–15:00\n• Sat & Sun: Closed',
-              'გთხოვთ მიუთითოთ თქვენთვის სასურველი დღე და საათი.\n\nსამუშაო საათები:\n• ორშაბათი, სამშაბათი, ხუთშაბათი, პარასკევი: 15:00–20:00\n• ოთხშაბათი: 11:00–15:00\n• შაბათი და კვირა: დასვენება'
-            )
-          }
-        ]);
-        setIsTyping(false);
-        return;
-      }
-
-      if (bookingStep === 'awaiting_datetime') {
-        const patientName = bookingData.name || rawText;
-        const patientPhone = bookingData.phone || '-';
-        const patientTime = rawText;
-
-        setBookingStep('idle');
-        setBookingData({ name: '', phone: '', datetime: '' });
-
-        // Forward booking details to the Pikapod webhook in background
-        fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            message: `[ახალი ჯავშანი საიტიდან]\nპაციენტი: ${patientName}\nტელეფონი: ${patientPhone}\nსასურველი დრო: ${patientTime}`, 
-            sessionId: getSessionId() 
-          }),
-        }).catch(() => {});
-
-        setMessages(prev => [
-          ...prev,
-          {
-            sender: 'bot',
-            text: t(
-              `Thank you! Your information has been forwarded to Dr. Jenny:\n\n• Patient: ${patientName}\n• Phone: ${patientPhone}\n• Preferred Time: ${patientTime}\n\nDr. Jenny looks forward to a painless and comfortable visit. See you soon!`,
-              `გმადლობთ! თქვენი მონაცემები გადავეცი ექიმ ჯენის:\n\n• პაციენტი: ${patientName}\n• ტელეფონი: ${patientPhone}\n• სასურველი დრო: ${patientTime}\n\nის უმტკივნეულო და კომფორტულ ვიზიტზე გელოდებათ. შეხვედრამდე.`
-            )
-          }
-        ]);
-        setIsTyping(false);
-        return;
-      }
-
-      // 2. Idle State: Natural Booking Trigger Detection
-      const lower = rawText.toLowerCase();
-
-      const isBookingIntent = 
-        lower.includes('ჯავშ') ||
-        lower.includes('ჩაწერ') ||
-        lower.includes('ვიზიტ') ||
-        lower.includes('კალენდ') ||
-        lower.includes('დაჯავშნ') ||
-        lower.includes('ჩამწერ') ||
-        lower.includes('book') ||
-        lower.includes('appoint') ||
-        lower.includes('schedul') ||
-        lower.includes('visit') ||
-        ((lower === 'კი' || lower === 'დიახ' || lower === 'მსურს' || lower === 'მინდა' || lower === 'yes' || lower === 'sure') &&
-          messages.some(m => m.sender === 'bot' && m.text.includes('ვიზიტის დრო')));
-
-      if (isBookingIntent) {
-        setBookingStep('awaiting_name');
-        setBookingData({ name: '', phone: '', datetime: '' });
-        setMessages(prev => [
-          ...prev,
-          {
-            sender: 'bot',
-            text: t(
-              'I will gladly help you book an appointment with Dr. Jenny. 🦷\n\nPlease enter your First and Last Name:',
-              'სიამოვნებით დაგეხმარებით ექიმ ჯენისთან ვიზიტის დაჯავშნაში. 🦷\n\nგთხოვთ მომწეროთ თქვენი სახელი და გვარი:'
-            )
-          }
-        ]);
-        setIsTyping(false);
-        return;
-      }
-
-      // 3. Knowledge Base Matching
-      let replyText = '';
-
-      if (lower.includes('კონსულტაცი') || lower.includes('უფასო') || lower.includes('პირველად') || lower.includes('consult')) {
-        replyText = t(
-          'First consultation is completely free! It includes a comprehensive oral examination, patient dental chart, and digital photo protocol.\n\nWould you like to schedule a visit?',
-          'პირველადი კონსულტაცია უფასოა. ის მოიცავს პირის ღრუს სრულ შეფასებას, პაციენტის ანკეტის შედგენას და ფოტოპროტოკოლის გადაღებას.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('მტკივ') || lower.includes('ტკივილ') || lower.includes('საშინელ') || lower.includes('ნემს') || lower.includes('pain') || lower.includes('hurt')) {
-        replyText = t(
-          'The clinic utilizes modern digital technology, ensuring treatments are painless and maximally comfortable for every patient.\n\nWould you like to book a consultation?',
-          'კლინიკა იყენებს უახლეს ციფრულ აპარატურას, რაც მკურნალობას ხდის უმტკივნეულოს და მაქსიმალურად კომფორტულს.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ანაბეჭდ') || lower.includes('მასით') || lower.includes('სკანერ') || lower.includes('emerald') || lower.includes('impression') || lower.includes('scan')) {
-        replyText = t(
-          'We do not use paste impressions. We use the intraoral digital scanner Planmeca Emerald S for precise 3D scans.\n\nWould you like to schedule a visit?',
-          'არა, ანაბეჭდს მასით აღარ ვიღებთ. ვიყენებთ ციფრულ შიდაპირის სკანერს Planmeca Emerald S — უსიამოვნო მასებით ანაბეჭდის აღება აღარ არის საჭირო.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('გარანტი') || lower.includes('warranty') || lower.includes('guarantee')) {
-        replyText = t(
-          'Yes, artistic restorations come with a 2-month warranty. Corrections are free if ever needed.\n\nWould you like to book an appointment?',
-          'დიახ, მხატვრულ რესტავრაციას აქვს 2-თვიანი გარანტია. საჭიროების შემთხვევაში კორექცია უფასოა.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('რესტავრაცი') || lower.includes('მხატვრულ') || lower.includes('ასტერია') || lower.includes('restoration')) {
-        replyText = t(
-          'Artistic Restoration (Single Tooth) indicative pricing:\n• Without tints — 250 ₾\n• With artistic tints — 350 ₾\nIncludes: photo protocol, dental arch proportion calculation, Estelite Asteria composite, and 2-month warranty.\n\nExact plan and cost are determined during consultation with Dr. Jenny. Would you like to schedule a visit?',
-          'მხატვრული რესტავრაციის საორიენტაციო ღირებულება (ერთი კბილი):\n• საღებავების გარეშე — 250 ₾\n• საღებავებით — 350 ₾\nფასი მოიცავს: ფოტოპროტოკოლს, რკალის პროპორციების ინდივიდუალურ გამოთვლას, Estelite Asteria-ს მასალას და 2-თვიან გარანტიას.\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან პირის ღრუს ციფრული დათვალიერების შემდეგ. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('წმენდ') || lower.includes('გაწმენდ') || lower.includes('ნადებ') || lower.includes('ქვებ') || lower.includes('air flow') || lower.includes('აირჭავლ') || lower.includes('clean')) {
-        replyText = t(
-          'Professional oral cleaning indicative pricing:\n• Basic — 150 ₾ (plaque indicator, tartar & plaque removal, polish)\n• Deep — 180 ₾ (+ Air Flow, tongue cleaning)\n• Periodontal — 230 ₾ (+ fluoridation, gum therapy 1 session)\n\nExact plan is provided at consultation. Would you like to schedule a visit?',
-          'პროფესიული წმენდის საორიენტაციო ფასებია:\n• საბაზისო — 150 ₾ (ნადების შეღებვა, ქვებისა და ნადების მოცილება, პოლირება)\n• ღრმა — 180 ₾ (+ Air Flow აირჭავლი, ენის წმენდა)\n• პაროდონტოლოგიური — 230 ₾ (+ ფტორირება, ღრძილების მკურნალობა 1 სეანსი)\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('გათეთრ') || lower.includes('თეთრ') || lower.includes('zoom') || lower.includes('ზუმ') || lower.includes('whiten') || lower.includes('bleach')) {
-        replyText = t(
-          'Professional whitening indicative pricing:\n• Zoom Whitening — 450 ₾ (includes cleaning + Zoom device + care guide)\n• Boost Whitening — 550 ₾ (includes cleaning + 45-min boost + care guide)\n• Whitening Trays (Home) — 800 ₾ (custom trays + 2 gels + cleaning)\n\nExact cost is confirmed at consultation. Would you like to schedule a visit?',
-          'პროფესიონალური გათეთრების საორიენტაციო ფასებია:\n• Zoom-ით გათეთრება — 450 ₾ (მოიცავს წმენდას, Zoom სისტემას და ინსტრუქციას)\n• ბუსტით გათეთრება — 550 ₾ (მოიცავს წმენდას, 45-წთ ბუსტს და ინსტრუქციას)\n• კაპებით გათეთრება (სახლის პირობებში) — 800 ₾ (ინდივიდუალური კაპები, 2 გელი და ინსტრუქცია)\n\nზუსტი ღირებულება დგინდება უფასო კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('დაბჟენ') || lower.includes('ბჟენ') || lower.includes('პლომბ') || lower.includes('კარიეს') || lower.includes('არხ') || lower.includes('ენდოდონტ') || lower.includes('filling') || lower.includes('caries') || lower.includes('canal') || lower.includes('root')) {
-        replyText = t(
-          'Therapeutic dentistry indicative pricing:\n• Tooth Filling (German / Japanese materials) — 150–250 ₾\n• Root Canal Therapy (Endodontics) — 120–250 ₾ (using Guttafusion & SybronEndo)\n\nExact cost is determined at free consultation. Would you like to schedule a visit?',
-          'თერაპიული სერვისების საორიენტაციო ფასებია:\n• კბილის დაბჟენვა (გერმანული / იაპონური მასალით) — 150–250 ₾\n• ფესვის არხების მკურნალობა (ენდოდონტია) — 120–250 ₾ (ვიყენებთ Guttafusion Oven და SybronEndo სისტემებს)\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან უფასო კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('გვირგვინ') || lower.includes('ვინირ') || lower.includes('ცირკონ') || lower.includes('მეტალო') || lower.includes('crown') || lower.includes('veneer') || lower.includes('zircon')) {
-        replyText = t(
-          'Orthopedic crowns & veneers indicative pricing:\n• Metal-Ceramic Crown — 150–220 ₾\n• Zirconia-Ceramic Crown — 350–500 ₾\n• Ceramic Veneer — 400–600 ₾\n\nExact plan is tailored during consultation with Dr. Jenny. Would you like to schedule a visit?',
-          'ორთოპედიული სერვისების საორიენტაციო ფასები:\n• მეტალო-კერამიკის გვირგვინი — 150–220 ₾\n• ცირკონო-კერამიკის გვირგვინი (უმაღლესი ესთეტიკა) — 350–500 ₾\n• კერამიკული ვინირი — 400–600 ₾\n\nზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან პირის ღრუს ციფრული დათვალიერების შემდეგ. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('იმპლანტ') || lower.includes('ამოღებ') || lower.includes('ექსტრაქცი') || lower.includes('სიბრძნის') || lower.includes('implant') || lower.includes('extract') || lower.includes('surgery')) {
-        replyText = t(
-          'Surgery & Implantation indicative pricing:\n• Tooth Extraction — 50–150 ₾\n• Wisdom Tooth Extraction — 100–300 ₾\n• Dental Implant (premium systems) — 700–1500 ₾\n\nExact evaluation requires clinical consultation. Would you like to schedule a visit?',
-          'ქირურგიისა და იმპლანტაციის საორიენტაციო ფასები:\n• კბილის ექსტრაქცია — 50–150 ₾\n• სიბრძნის კბილის ექსტრაქცია — 100–300 ₾\n• დენტალური იმპლანტი (პრემიუმ სისტემები) — 700–1500 ₾\n\nზუსტი ღირებულება დგინდება ექიმთან კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ბრეკეტ') || lower.includes('თანკბილვ') || lower.includes('ელაინერ') || lower.includes('brace') || lower.includes('aligner') || lower.includes('ortho')) {
-        replyText = t(
-          'Orthodontic treatment indicative pricing:\n• Metal Brackets (both jaws) — from 1,200 ₾\n• Ceramic / Sapphire Brackets (both jaws) — from 2,000 ₾\n\nIndividual calculation is done after digital scan. Would you like to schedule a visit?',
-          'ორთოდონტიული მკურნალობის საორიენტაციო ფასები:\n• მეტალის ბრეკეტ-სისტემა (ორივე ყბა) — 1 200 ₾-დან\n• კერამიკული / საფირონის ბრეკეტები (ორივე ყბა) — 2 000 ₾-დან\n\nზუსტი გათვლა ხდება ინდივიდუალურად. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ბავშვ') || lower.includes('სარძევე') || lower.includes('pediatric') || lower.includes('kid') || lower.includes('child')) {
-        replyText = t(
-          'Pediatric dentistry indicative pricing:\n• Baby Tooth Filling (adaptation + colored/standard fillings) — 60–150 ₾\n• Baby Tooth Extraction — 30–50 ₾\n• Fluoridation / Remineralization — 50–80 ₾\n\nWould you like to schedule a visit?',
-          'ბავშვთა სტომატოლოგია:\n• სარძევე კბილის დაბჟენა (ადაპტაციით, ფერადი ან სტანდარტული ბჟენით) — 60–150 ₾\n• სარძევე კბილის ექსტრაქცია — 30–50 ₾\n• ფტორირება / რემინერალიზაცია — 50–80 ₾\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ტექნოლოგი') || lower.includes('აპარატურ') || lower.includes('რენტგენ') || lower.includes('3d') || lower.includes('პრომაქს') || lower.includes('planmeca') || lower.includes('promax') || lower.includes('tech') || lower.includes('equip')) {
-        replyText = t(
-          'The clinic features world-class digital equipment:\n• Planmeca ProMax 3D Plus (high-resolution 3D CBCT)\n• Planmeca Emerald S (intraoral digital scanner, no paste impressions)\n• Guttafusion Oven & SybronEndo (advanced 3D canal obturation)\n• Estelite Asteria (premium Japanese aesthetic composites)',
-          'კლინიკა იყენებს მსოფლიო დონის ციფრულ აპარატურას:\n• Planmeca ProMax 3D Plus — უახლესი თაობის 3D რენტგენოგრაფია\n• Planmeca Emerald S — შიდაპირის ციფრული სკანერი (აღარ არის საჭირო მასით ანაბეჭდი)\n• Guttafusion Oven და SybronEndo — არხების უმაღლესი ხარისხით მკურნალობა\n• Estelite Asteria — უმაღლესი კლასის კომპოზიტი მხატვრული რესტავრაციისთვის'
-        );
-      } else if (lower.includes('საათ') || lower.includes('გრაფიკ') || lower.includes('როდის') || lower.includes('როდემდე') || lower.includes('დრო') || lower.includes('შაბათ') || lower.includes('კვირ') || lower.includes('hours') || lower.includes('schedule') || lower.includes('open') || lower.includes('time')) {
-        replyText = t(
-          'Working Hours:\n• Monday, Tuesday, Thursday, Friday: 15:00–20:00\n• Wednesday: 11:00–15:00\n• Saturday & Sunday: Closed',
-          'სამუშაო საათები:\n• ორშაბათი, სამშაბათი, ხუთშაბათი, პარასკევი: 15:00–20:00\n• ოთხშაბათი: 11:00–15:00\n• შაბათი და კვირა: დასვენება'
-        );
-      } else if (lower.includes('მისამართ') || lower.includes('სად ხართ') || lower.includes('სად მდებარეობს') || lower.includes('სად არის') || lower.includes('ლოკაცი') || lower.includes('ქუჩ') || lower.includes('address') || lower.includes('location') || lower.includes('where')) {
-        replyText = t(
-          'Clinic Address: 14 Meliton and Andria Balanchivadze St, Tbilisi.\nPhone: 593 56 79 98',
-          'კლინიკის მისამართია: მელიტონ და ანდრია ბალანჩივაძეების ქუჩა №14, თბილისი.\nტელეფონი: 593 56 79 98'
-        );
-      } else if (lower.includes('ტელეფონ') || lower.includes('ნომერ') || lower.includes('კონტაქტ') || lower.includes('დარეკვ') || lower.includes('მეილ') || lower.includes('ფოსტ') || lower.includes('phone') || lower.includes('contact') || lower.includes('call') || lower.includes('email')) {
-        replyText = t(
-          'Phone: 593 56 79 98\nAddress: 14 Meliton and Andria Balanchivadze St, Tbilisi\nEmail: info@jenny.ge',
-          'საკონტაქტო ნომერი: 593 56 79 98\nმისამართი: მელიტონ და ანდრია ბალანჩივაძეების ქუჩა №14, თბილისი\nელ-ფოსტა: info@jenny.ge'
-        );
-      } else if (lower.includes('ჯენი') || lower.includes('ექიმ') || lower.includes('ფირცხალავა') || lower.includes('გამოცდილებ') || lower.includes('სერთიფიკატ') || lower.includes('jenny') || lower.includes('doctor')) {
-        replyText = t(
-          'Dr. Jenny Pirtskhalava is a dental surgeon and aesthetic specialist with 15+ years of extensive clinical practice and international certifications.',
-          'ექიმი ჯენი ფირცხალავა — ექიმი-სტომატოლოგი. 15+ წლიანი პრაქტიკული გამოცდილება ესთეტიკურ სტომატოლოგიასა და მხატვრულ რესტავრაციაში საერთაშორისო სერტიფიკატებით.'
-        );
-      } else if (lower.includes('ბოტოქს') || lower.includes('botox') || lower.includes('დისპორტ') || lower.includes('dysport') || lower.includes('ქსეომინ') || lower.includes('xeomin') || lower.includes('ნაბოტა') || lower.includes('მიმიკურ') || lower.includes('ჰიპერჰიდროზ') || lower.includes('ოფლიანობ')) {
-        replyText = t(
-          'Botulinum Toxin Therapy (Botox):\n• 1 Zone (eyes / glabella) — 150–250 ₾\n• Full Face (3 zones) — 350–500 ₾\n• Dysport — 4–6 ₾ / unit (~30–60 units/zone)\n• Hyperhidrosis (sweating) — 600–1,000 ₾\nPreparations: Botox (Allergan, USA), Xeomin (Merz, Germany), Nabota (Korea), Dysport.\n\nWould you like to schedule an appointment?',
-          'ბოტულინოთერაპია (ბოტოქსი):\n• 1 ზონა (თვალის ირგვლივ ან წარბებს შორის) — 150–250 ₾\n• მთლიანი სახე (3 ზონა) — 350–500 ₾\n• Dysport (ერთეულებით) — 4–6 ₾ / ერთეული (~30–60 ერთ.)\n• ჰიპერჰიდროზი — ჭარბი ოფლიანობა — 600–1 000 ₾\nპრეპარატები: Botox (Allergan, აშშ), Xeomin (Merz, გერმანია), Nabota (სამხრეთ კორეა).\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ფილერ') || lower.includes('filler') || lower.includes('ტუჩ') || lower.includes('ყვრიმალ') || lower.includes('ნიკაპ') || lower.includes('კონტურულ') || lower.includes('ჯუვიდერმ') || lower.includes('juvederm') || lower.includes('restylane') || lower.includes('teosyal')) {
-        replyText = t(
-          'Facial Contouring & Fillers (1.0 ml syringe):\n• Premium segment (Juvederm, Restylane, Teosyal) — 500–800 ₾\n• Standard European/Korean brands — 350–500 ₾\nZones: Lips, cheekbones, chin, jawline, nasolabial folds.\n\nWould you like to schedule a visit?',
-          'კონტურული პლასტიკა (ფილერები, 1.0 მლ შპრიცი):\n• პრემიუმ სეგმენტი (Juvederm, Restylane, Teosyal, Cytosial) — 500–800 ₾\n• სტანდარტული ევროპული/კორეული ბრენდები — 350–500 ₾\nზონები: ტუჩის აუგმენტაცია, ყვრიმალები, ნიკაპი, ყბის ხაზი, ნასოლაბიალური ნაოჭი.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ბიორევიტალიზაცი') || lower.includes('პროფაილო') || lower.includes('profhilo') || lower.includes('pdrn') || lower.includes('დატენიანებ') || lower.includes('biorevital')) {
-        replyText = t(
-          'Biorevitalization & Deep Hydration:\n• Profhilo (2 ml, 1 procedure) — 500–700 ₾\n• Other Biorevitalizants (1.5–2 ml) — 150–450 ₾\n• PDRN (Polynucleotides) — 250 ₾\nRestores deep elasticity and provides luminous radiant glow.\n\nWould you like to book a consultation?',
-          'ბიორევიტალიზაცია (კანის ღრმა დატენიანება):\n• Profhilo (პროფაილო - 2 მლ, 1 პროცედურა) — 500–700 ₾\n• სხვა ბიორევიტალიზანტები (1.5–2 მლ) — 150–450 ₾\n• PDRN (პოლინუკლეოტიდები) — 250 ₾\nუზრუნველყოფს კანის ელასტიურობას, ბზინვარებას და წვრილი ნაოჭების პრევენციას.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('მეზოთერაპი') || lower.includes('mesotherap') || lower.includes('კოქტეილ') || lower.includes('ვიტამინ')) {
-        replyText = t(
-          'Mesotherapy:\n• 1 Procedure (Full Face) — 120–250 ₾\n• Periorbital Eye Zone — 80–150 ₾\nCocktails of vitamins, peptides, and amino acids for skin radiance, tone, and dark circles.\n\nWould you like to schedule a visit?',
-          'მეზოთერაპია:\n• 1 პროცედურა (სახე) — 120–250 ₾\n• თვალის ირგვლივ ზონა — 80–150 ₾\nვიტამინების, პეპტიდებისა და მიკროელემენტების კოქტეილები ტონუსის, ფერისა და პიგმენტაციის გასაუმჯობესებლად.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('კოლაგენ') || lower.includes('რადიეს') || lower.includes('radiesse') || lower.includes('სკულპტრ') || lower.includes('sculptra') || lower.includes('ბიოსტიმულაცი') || lower.includes('aesthefill')) {
-        replyText = t(
-          'Collagen Stimulators (Biostimulation):\n• Radiesse (1.5 ml) — 750–900 ₾\n• Sculptra (PLLA) / AestheFill — 850–1,200 ₾\nStimulates your own collagen production with a 1.5–2 year lifting effect.\n\nWould you like to schedule an appointment?',
-          'კოლაგენოსტიმულატორები (ბიოსტიმულაცია):\n• Radiesse (1.5 მლ, კალციუმის ჰიდროქსიაპატიტი) — 750–900 ₾\n• Sculptra (პოლი-L-რძემჟავა) / AestheFill — 850–1 200 ₾\nასტიმულირებს საკუთარი კოლაგენის გამომუშავებას და უზრუნველყოფს 1.5–2 წლიან ლიფტინგ-ეფექტს.\n\nგსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('ფას') || lower.includes('ღირებულ') || lower.includes('ტარიფ') || lower.includes('რა ღირს') || lower.includes('რა ჯდება') || lower.includes('price') || lower.includes('cost') || lower.includes('fee')) {
-        replyText = t(
-          'Prices are indicative. Exact plan and cost are determined during free initial consultation with Dr. Jenny after digital inspection. Would you like to choose a time for your visit?',
-          'ფასები საორიენტაციოა. ზუსტი გეგმისა და ღირებულების დადგენა შესაძლებელია ექიმ ჯენისთან პირის ღრუს ციფრული დათვალიერების შემდეგ (პირველადი კონსულტაცია უფასოა). გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('დიაგნოზ') || lower.includes('წამალ') || lower.includes('მედიკამენტ') || lower.includes('დანიშნულებ')) {
-        replyText = t(
-          'As a virtual assistant, I do not diagnose conditions or prescribe medications — that is strictly the doctor\'s prerogative. I recommend visiting Dr. Jenny for a free initial consultation. Would you like to choose a time for your visit?',
-          'როგორც ვირტუალური ასისტენტი, მე არ ვსვამ დიაგნოზს და არ ვიძლევი სამედიცინო დანიშნულებას — ეს მხოლოდ ექიმის პრეროგატივაა. გირჩევთ მობრძანდეთ ექიმ ჯენისთან პირველად უფასო კონსულტაციაზე. გსურთ, შეგირჩიოთ ვიზიტის დრო?'
-        );
-      } else if (lower.includes('გამარჯობ') || lower.includes('სალამ') || lower.includes('დილა მშვიდობის') || lower.includes('საღამო მშვიდობის') || lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-        replyText = t(
-          'Hello! 🦷 How can I assist you today?',
-          'მოგესალმებით! 🦷 რით შემიძლია დაგეხმაროთ?'
-        );
-      } else {
-        replyText = t(
-          'Thank you for your message! I am Dr. Jenny Pirtskhalava\'s virtual assistant. You can ask about our services, pricing, technologies, working hours, or book a visit directly here.',
-          'გმადლობთ შეტყობინებისთვის! მე ვარ ექიმ ჯენი ფირცხალავას ასისტენტი. შეგიძლიათ მკითხოთ სერვისებზე, ფასებზე, ტექნოლოგიებზე, სამუშაო საათებზე ან დაჯავშნოთ ვიზიტი პირდაპირ აქ.'
-        );
-      }
-
-      fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
+    try {
+      const response = await fetch('https://meticulous-oyster.pikapod.net/webhook/jeni-website-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: rawText, sessionId: getSessionId() }),
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          const remoteReply = data && (data.output || data.text || data.message);
-          setMessages((prev) => [...prev, { sender: 'bot', text: remoteReply || replyText }]);
-          setIsTyping(false);
-        })
-        .catch(() => {
-          setMessages((prev) => [...prev, { sender: 'bot', text: replyText }]);
-          setIsTyping(false);
-        });
-    }, 400);
+        body: JSON.stringify({ 
+          message: rawText, 
+          sessionId: getSessionId() 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const data = await response.json().catch(() => null);
+      let botReply = '';
+      if (typeof data === 'string') {
+        botReply = data;
+      } else if (Array.isArray(data) && data.length > 0) {
+        botReply = data[0]?.output || data[0]?.text || data[0]?.message || data[0]?.response || '';
+      } else if (data && typeof data === 'object') {
+        botReply = data.output || data.text || data.message || data.response || '';
+      }
+
+      if (!botReply) {
+        botReply = t(
+          'Thank you for your message. How else can I assist you?',
+          'გმადლობთ შეტყობინებისთვის. რით შემიძლია კიდევ დაგეხმაროთ?'
+        );
+      }
+
+      setMessages((prev) => [...prev, { sender: 'bot', text: botReply }]);
+    } catch (err) {
+      console.error('Chat webhook error:', err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: 'bot',
+          text: t(
+            'Sorry, I am temporarily unable to connect to the server. Please call us directly: 593 56 79 98',
+            'ბოდიშს გიხდით, კავშირის დროებითი შეფერხებაა. გთხოვთ დაგვიკავშირდეთ ნომერზე: 593 56 79 98'
+          ),
+        },
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
