@@ -1461,7 +1461,7 @@ const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> =
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleBadgeClick}
-      className="absolute top-[10%] -left-[5%] bg-white/80 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-white/50 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
+      className="absolute bottom-[10%] -right-[5%] bg-white/80 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-white/50 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
       style={{
         boxShadow: isHovered
           ? `0 14px 32px rgba(0,0,0,0.12), 0 4px 14px ${current.shadowColor}`
@@ -1748,7 +1748,7 @@ const App: React.FC = () => {
                 {/* Floating Glass Badges */}
                 <SocialRotatingBadge t={t} />
 
-                <div className="absolute bottom-[10%] -right-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
+                <div className="absolute top-[10%] -left-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-[#F5D061] flex items-center justify-center text-white text-xl font-black shrink-0 shadow-[0_2px_8px_rgba(245,208,97,0.4)]">
                       ★
