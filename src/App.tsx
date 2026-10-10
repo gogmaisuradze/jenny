@@ -1377,6 +1377,159 @@ const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({
     </div>
   );
 };
+
+// ==========================================
+// ROTATING SOCIAL MEDIA BADGE (Hero Section)
+// ==========================================
+const SOCIAL_NETWORKS_HERO = [
+  {
+    name: 'Instagram',
+    handle: '@dr.jenny_pirtskhalava',
+    url: 'https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr',
+    bgClass: 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]',
+    shadowColor: 'rgba(220,39,67,0.45)',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+      </svg>
+    )
+  },
+  {
+    name: 'Facebook',
+    handle: 'Jenny Pirtskhalava',
+    url: 'https://www.facebook.com/MaRiAm.jenni.pirtskhalava',
+    bgClass: 'bg-[#1877F2]',
+    shadowColor: 'rgba(24,119,242,0.45)',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.8c4.56-.93 8-4.96 8-9.8z"/>
+      </svg>
+    )
+  },
+  {
+    name: 'TikTok',
+    handle: '@jennypirtskhalava',
+    url: 'https://www.tiktok.com/@jennypirtskhalava?_r=1',
+    bgClass: 'bg-neutral-950',
+    shadowColor: 'rgba(0,0,0,0.4)',
+    icon: (
+      <svg className="w-5 h-5 fill-current text-[#25F4EE]" viewBox="0 0 24 24">
+        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.52-4.06-1.41-.33-.25-.63-.53-.9-.85-.02 2.22.01 4.43-.02 6.65-.09 1.91-.73 3.86-2.07 5.24-1.63 1.76-4.22 2.62-6.57 2.23-2.31-.34-4.54-1.92-5.46-4.14-1.07-2.43-.65-5.5 1.12-7.51 1.5-1.77 3.96-2.63 6.22-2.22v4.18c-1.34-.34-2.88-.02-3.89.93-.97.9-.99 2.52-.16 3.55.77.99 2.14 1.34 3.32.96 1.07-.31 1.83-1.33 1.89-2.45.06-2.95.02-5.91.04-8.86v-.03z"/>
+      </svg>
+    )
+  },
+  {
+    name: 'Telegram',
+    handle: '@JennyDentbot',
+    url: 'https://t.me/JennyDentbot',
+    bgClass: 'bg-[#229ED9]',
+    shadowColor: 'rgba(34,158,217,0.45)',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.6.15-.15 2.72-2.5 2.77-2.7.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.25-.02-.11.02-1.85 1.17-5.23 3.45-.5.34-.95.5-1.35.5-.44-.01-1.29-.25-1.92-.45-.77-.25-1.39-.39-1.34-.83.03-.23.35-.47.97-.73 3.82-1.66 6.37-2.75 7.64-3.28 3.64-1.53 4.4-1.8 4.89-1.8.11 0 .35.03.5.15.13.1.17.24.18.35-.01.07.01.19 0 .28z"/>
+      </svg>
+    )
+  }
+];
+
+const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> = ({ t }) => {
+  const [index, setIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  useEffect(() => {
+    if (isHovered) return;
+    const interval = setInterval(() => {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % SOCIAL_NETWORKS_HERO.length);
+        setIsFlipping(false);
+      }, 250);
+    }, 2400);
+
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
+  const current = SOCIAL_NETWORKS_HERO[index];
+
+  const handleBadgeClick = () => {
+    window.open(current.url, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleBadgeClick}
+      className="absolute top-[10%] -left-[5%] bg-white/80 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-white/50 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
+      style={{
+        boxShadow: isHovered
+          ? `0 14px 32px rgba(0,0,0,0.12), 0 4px 14px ${current.shadowColor}`
+          : '0 10px 25px rgba(163,177,198,0.45), -6px -6px 15px rgba(255,255,255,0.9)'
+      }}
+    >
+      {!isHovered ? (
+        <div className="flex items-center gap-3 min-w-[190px]">
+          <div
+            className={`w-10 h-10 rounded-full ${current.bgClass} flex items-center justify-center text-white shrink-0 shadow-md transition-all duration-300 ${
+              isFlipping ? 'scale-75 rotate-180 opacity-40' : 'scale-100 rotate-0 opacity-100'
+            }`}
+          >
+            {current.icon}
+          </div>
+
+          <div className="flex flex-col overflow-hidden">
+            <div className="flex items-center gap-1.5">
+              <p className="text-xs font-black text-neutral-800 leading-tight">
+                {current.name}
+              </p>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
+            <p className="text-[10px] font-bold text-neutral-400 truncate max-w-[130px] mt-0.5">
+              {current.handle}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2 min-w-[205px]">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base animate-bounce">👋</span>
+              <div>
+                <p className="text-xs font-black text-neutral-900 leading-tight">
+                  {t('Follow Me', 'დამიმეგობრდი')}
+                </p>
+                <p className="text-[9px] font-bold text-neutral-400 leading-none mt-0.5">
+                  {t('Connect on Social Media', 'გამოიწერეთ გვერდები')}
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] font-black text-[#d89f18] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+              ↗
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-neutral-200/70">
+            {SOCIAL_NETWORKS_HERO.map((soc) => (
+              <a
+                key={soc.name}
+                href={soc.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className={`w-7 h-7 rounded-full ${soc.bgClass} flex items-center justify-center text-white shadow-sm hover:scale-125 hover:shadow-md transition-all duration-200`}
+                title={soc.name}
+              >
+                <span className="scale-75">{soc.icon}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ==========================================
 // MAIN APP COMPONENT
 // ==========================================
@@ -1593,15 +1746,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Floating Glass Badges */}
-                <div className="absolute top-[10%] -left-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">🏆</span>
-                    <div>
-                      <p className="text-xs font-black text-neutral-800">{t('Expertise', 'ექსპერტული ცოდნა')}</p>
-                      <p className="text-[10px] font-bold text-neutral-400">{t('15+ Years Practice', '15+ წლიანი გამოცდილება')}</p>
-                    </div>
-                  </div>
-                </div>
+                <SocialRotatingBadge t={t} />
 
                 <div className="absolute bottom-[10%] -right-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
                   <div className="flex items-center gap-3">
@@ -2002,23 +2147,48 @@ const App: React.FC = () => {
             </p>
             
             {/* Social icons row */}
+            {/* Social icons row */}
             <div className="flex gap-3.5 mt-4">
-              <a href="https://www.facebook.com/MaRiAm.jenni.pirtskhalava" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Facebook">
+              <a 
+                href="https://www.facebook.com/MaRiAm.jenni.pirtskhalava" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-white hover:bg-[#1877F2] hover:border-[#1877F2] hover:shadow-[0_4px_14px_rgba(24,119,242,0.5)] transition-all duration-300 hover:scale-110 active:scale-95" 
+                aria-label="Facebook"
+              >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.8c4.56-.93 8-4.96 8-9.8z"/>
                 </svg>
               </a>
-              <a href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Instagram">
+              <a 
+                href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-white hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:border-transparent hover:shadow-[0_4px_14px_rgba(220,39,67,0.5)] transition-all duration-300 hover:scale-110 active:scale-95" 
+                aria-label="Instagram"
+              >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                 </svg>
               </a>
-              <a href="https://www.tiktok.com/@jennypirtskhalava?_r=1" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="TikTok">
+              <a 
+                href="https://www.tiktok.com/@jennypirtskhalava?_r=1" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-[#25F4EE] hover:bg-neutral-950 hover:border-black hover:shadow-[0_4px_14px_rgba(0,0,0,0.5)] transition-all duration-300 hover:scale-110 active:scale-95" 
+                aria-label="TikTok"
+              >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.52-4.06-1.41-.33-.25-.63-.53-.9-.85-.02 2.22.01 4.43-.02 6.65-.09 1.91-.73 3.86-2.07 5.24-1.63 1.76-4.22 2.62-6.57 2.23-2.31-.34-4.54-1.92-5.46-4.14-1.07-2.43-.65-5.5 1.12-7.51 1.5-1.77 3.96-2.63 6.22-2.22v4.18c-1.34-.34-2.88-.02-3.89.93-.97.9-.99 2.52-.16 3.55.77.99 2.14 1.34 3.32.96 1.07-.31 1.83-1.33 1.89-2.45.06-2.95.02-5.91.04-8.86v-.03z"/>
                 </svg>
               </a>
-              <a href="https://t.me/JennyDentbot" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-neutral-900 transition-transform hover:scale-105" aria-label="Telegram">
+              <a 
+                href="https://t.me/JennyDentbot" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 flex items-center justify-center text-neutral-700 hover:text-white hover:bg-[#229ED9] hover:border-[#229ED9] hover:shadow-[0_4px_14px_rgba(34,158,217,0.5)] transition-all duration-300 hover:scale-110 active:scale-95" 
+                aria-label="Telegram"
+              >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.6.15-.15 2.72-2.5 2.77-2.7.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.25-.02-.11.02-1.85 1.17-5.23 3.45-.5.34-.95.5-1.35.5-.44-.01-1.29-.25-1.92-.45-.77-.25-1.39-.39-1.34-.83.03-.23.35-.47.97-.73 3.82-1.66 6.37-2.75 7.64-3.28 3.64-1.53 4.4-1.8 4.89-1.8.11 0 .35.03.5.15.13.1.17.24.18.35-.01.07.01.19 0 .28z"/>
                 </svg>
