@@ -1435,71 +1435,110 @@ const SOCIAL_NETWORKS_HERO = [
 const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> = ({ t }) => {
   const [index, setIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const [isMobileAutoFollow, setIsMobileAutoFollow] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
+  const badgeRef = useRef<HTMLDivElement>(null);
+
+  const showFollowMe = isHovered || isMobileExpanded || isMobileAutoFollow;
 
   useEffect(() => {
-    if (isHovered) return;
+    if (isHovered || isMobileExpanded) return;
     const interval = setInterval(() => {
+      const isTouch = window.matchMedia('(max-width: 767px), (hover: none)').matches;
       setIsFlipping(true);
       setTimeout(() => {
-        setIndex((prev) => (prev + 1) % SOCIAL_NETWORKS_HERO.length);
+        if (isTouch) {
+          if (isMobileAutoFollow) {
+            setIsMobileAutoFollow(false);
+            setIndex(0);
+          } else if (index === SOCIAL_NETWORKS_HERO.length - 1) {
+            setIsMobileAutoFollow(true);
+          } else {
+            setIndex((prev) => (prev + 1) % SOCIAL_NETWORKS_HERO.length);
+          }
+        } else {
+          setIndex((prev) => (prev + 1) % SOCIAL_NETWORKS_HERO.length);
+        }
         setIsFlipping(false);
       }, 250);
     }, 2400);
 
     return () => clearInterval(interval);
-  }, [isHovered]);
+  }, [isHovered, isMobileExpanded, isMobileAutoFollow, index]);
+
+  // Close mobile expanded state when tapping outside
+  useEffect(() => {
+    if (!isMobileExpanded) return;
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (badgeRef.current && !badgeRef.current.contains(e.target as Node)) {
+        setIsMobileExpanded(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('touchstart', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [isMobileExpanded]);
 
   const current = SOCIAL_NETWORKS_HERO[index];
 
   const handleBadgeClick = () => {
+    const isTouch = window.matchMedia('(max-width: 767px), (hover: none)').matches;
+    if (isTouch && !isMobileExpanded) {
+      setIsMobileExpanded(true);
+      return;
+    }
     window.open(current.url, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div
+      ref={badgeRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleBadgeClick}
-      className="absolute bottom-[10%] -right-[5%] bg-white/80 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-white/50 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
+      className="absolute bottom-[2%] -right-[4%] md:bottom-[10%] md:-right-[5%] bg-white/85 backdrop-blur-md p-2.5 md:p-3.5 rounded-2xl shadow-lg border border-white/50 block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 transition-all duration-300 cursor-pointer select-none z-20 group"
       style={{
-        boxShadow: isHovered
+        boxShadow: showFollowMe
           ? `0 14px 32px rgba(0,0,0,0.12), 0 4px 14px ${current.shadowColor}`
           : '0 10px 25px rgba(163,177,198,0.45), -6px -6px 15px rgba(255,255,255,0.9)'
       }}
     >
-      {!isHovered ? (
-        <div className="flex items-center gap-3 min-w-[190px]">
+      {!showFollowMe ? (
+        <div className="flex items-center gap-2.5 md:gap-3 min-w-[150px] md:min-w-[190px]">
           <div
-            className={`w-10 h-10 rounded-full ${current.bgClass} flex items-center justify-center text-white shrink-0 shadow-md transition-all duration-300 ${
+            className={`w-8 h-8 md:w-10 md:h-10 rounded-full ${current.bgClass} flex items-center justify-center text-white shrink-0 shadow-md transition-all duration-300 ${
               isFlipping ? 'scale-75 rotate-180 opacity-40' : 'scale-100 rotate-0 opacity-100'
             }`}
           >
-            {current.icon}
+            <span className="scale-90 md:scale-100">{current.icon}</span>
           </div>
 
           <div className="flex flex-col overflow-hidden">
             <div className="flex items-center gap-1.5">
-              <p className="text-xs font-black text-neutral-800 leading-tight">
+              <p className="text-[11px] md:text-xs font-black text-neutral-800 leading-tight">
                 {current.name}
               </p>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
-            <p className="text-[10px] font-bold text-neutral-400 truncate max-w-[130px] mt-0.5">
+            <p className="text-[9px] md:text-[10px] font-bold text-neutral-400 truncate max-w-[105px] md:max-w-[130px] mt-0.5">
               {current.handle}
             </p>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 min-w-[205px]">
+        <div className="flex flex-col gap-2 min-w-[175px] md:min-w-[205px]">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-base animate-bounce">👋</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <span className="text-sm md:text-base animate-bounce">👋</span>
               <div>
-                <p className="text-xs font-black text-neutral-900 leading-tight">
+                <p className="text-[11px] md:text-xs font-black text-neutral-900 leading-tight">
                   {t('Follow Me', 'დამიმეგობრდი')}
                 </p>
-                <p className="text-[9px] font-bold text-neutral-400 leading-none mt-0.5">
+                <p className="text-[8px] md:text-[9px] font-bold text-neutral-400 leading-none mt-0.5">
                   {t('Connect on Social Media', 'გამოიწერეთ გვერდები')}
                 </p>
               </div>
@@ -1509,7 +1548,7 @@ const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> =
             </span>
           </div>
 
-          <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-neutral-200/70">
+          <div className="flex items-center justify-between gap-1.5 pt-1.5 md:pt-2 border-t border-neutral-200/70">
             {SOCIAL_NETWORKS_HERO.map((soc) => (
               <a
                 key={soc.name}
@@ -1517,12 +1556,74 @@ const SocialRotatingBadge: React.FC<{ t: (en: string, ka: string) => string }> =
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className={`w-7 h-7 rounded-full ${soc.bgClass} flex items-center justify-center text-white shadow-sm hover:scale-125 hover:shadow-md transition-all duration-200`}
+                className={`w-6 h-6 md:w-7 md:h-7 rounded-full ${soc.bgClass} flex items-center justify-center text-white shadow-sm hover:scale-125 active:scale-110 hover:shadow-md transition-all duration-200`}
                 title={soc.name}
               >
-                <span className="scale-75">{soc.icon}</span>
+                <span className="scale-[0.65] md:scale-75">{soc.icon}</span>
               </a>
             ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ==========================================
+// RATING & EXPERTISE BADGE (Hero Top-Left)
+// ==========================================
+const RatingExpertiseBadge: React.FC<{ t: (en: string, ka: string) => string }> = ({ t }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMobileAlt, setIsMobileAlt] = useState(false);
+
+  // On mobile/touch devices, automatically cycle between 5.0 Rating and 15+ Years Expertise
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px), (hover: none)');
+    if (!mediaQuery.matches) return;
+
+    const interval = setInterval(() => {
+      setIsMobileAlt((prev) => !prev);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const showExpertise = isHovered || isMobileAlt;
+
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => setIsMobileAlt((prev) => !prev)}
+      className="absolute top-[2%] -left-[4%] md:top-[10%] md:-left-[5%] bg-white/85 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-lg border border-white/50 block hover:-translate-y-2 hover:scale-105 hover:bg-white/95 hover:shadow-xl transition-all duration-300 cursor-pointer select-none z-20"
+    >
+      {!showExpertise ? (
+        <div className="flex items-center gap-2.5 md:gap-3">
+          <div className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-[#F5D061] flex items-center justify-center text-white text-base md:text-xl font-black shrink-0 shadow-[0_2px_8px_rgba(245,208,97,0.4)]">
+            ★
+          </div>
+          <div className="flex flex-col">
+            <p className="text-[11px] md:text-xs font-black text-neutral-800 leading-none">
+              {t('5.0 Rating', '5.0 რეიტინგი')}
+            </p>
+            <div className="flex text-[#F5D061] text-[10px] md:text-[11px] tracking-tight leading-none mt-1">
+              ★★★★★
+            </div>
+            <p className="text-[8px] md:text-[9px] font-bold text-neutral-400 mt-1">
+              {t('Google Reviews', 'Google Reviews')}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2.5 md:gap-3 py-0.5">
+          <span className="text-xl md:text-2xl leading-none">🏆</span>
+          <div>
+            <p className="text-[11px] md:text-xs font-black text-neutral-800 leading-tight">
+              {t('Expertise', 'ექსპერტული ცოდნა')}
+            </p>
+            <p className="text-[9px] md:text-[10px] font-bold text-neutral-400 mt-0.5">
+              {t('15+ Years Practice', '15+ წლიანი გამოცდილება')}
+            </p>
           </div>
         </div>
       )}
@@ -1746,22 +1847,8 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Floating Glass Badges */}
+                <RatingExpertiseBadge t={t} />
                 <SocialRotatingBadge t={t} />
-
-                <div className="absolute top-[10%] -left-[5%] bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/40 hidden md:block hover:-translate-y-2 hover:scale-105 hover:bg-white/90 hover:shadow-xl transition-all duration-300 cursor-pointer select-none">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-full bg-[#F5D061] flex items-center justify-center text-white text-xl font-black shrink-0 shadow-[0_2px_8px_rgba(245,208,97,0.4)]">
-                      ★
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="text-xs font-black text-neutral-800 leading-none">{t('5.0 Rating', '5.0 რეიტინგი')}</p>
-                      <div className="flex text-[#F5D061] text-[11px] tracking-tight leading-none mt-1">
-                        ★★★★★
-                      </div>
-                      <p className="text-[9px] font-bold text-neutral-400 mt-1">{t('Google Reviews', 'Google Reviews')}</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
