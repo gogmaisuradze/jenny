@@ -101,7 +101,7 @@ const GlowCard = React.forwardRef<HTMLDivElement, GlowCardProps>(({
       backgroundAttachment: 'fixed',
       border: 'var(--border-size) solid var(--backup-border)',
       position: 'relative' as const,
-      touchAction: 'none' as const,
+      touchAction: 'pan-y' as const,
     };
 
     // Add width and height if provided

@@ -136,6 +136,23 @@ const SplashScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   );
 };
 
+const openFacebookPhotos = (e?: React.MouseEvent) => {
+  if (e) {
+    if (e.metaKey || e.ctrlKey) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const fbUrl = 'https://www.facebook.com/profile.php?id=100042099562926&sk=photos';
+  try {
+    const newWin = window.open(fbUrl, '_blank', 'noopener,noreferrer');
+    if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+      window.location.href = fbUrl;
+    }
+  } catch {
+    window.location.href = fbUrl;
+  }
+};
+
 // ==========================================
 // NAVBAR COMPONENT
 // ==========================================
@@ -168,11 +185,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, t, onBookClick, activeSe
 
   const scrollTo = (id: string) => {
     if (id === 'results') {
-      const fbUrl = 'https://www.facebook.com/profile.php?id=100042099562926&sk=photos';
-      const newWin = window.open(fbUrl, '_blank', 'noopener,noreferrer');
-      if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
-        window.location.href = fbUrl;
-      }
+      openFacebookPhotos();
       return;
     }
     const el = document.getElementById(id);
@@ -1786,6 +1799,7 @@ const App: React.FC = () => {
                 href="https://www.facebook.com/profile.php?id=100042099562926&sk=photos"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={openFacebookPhotos}
                 className="px-4 py-2 rounded-full bg-[#f6f7f1] shadow-[3px_3px_6px_rgba(163,177,198,0.5),-3px_-3px_6px_rgba(255,255,255,0.85)] border border-white/20 hover:scale-105 font-black text-xs text-neutral-800 flex items-center gap-1.5 transition-all"
               >
                 <span>{t('All Results (Facebook)', 'ყველა შედეგი (Facebook)')}</span>
@@ -1799,59 +1813,83 @@ const App: React.FC = () => {
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full"
           >
             {/* Gallery Item 1 */}
-            <a 
-              href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
+            <GlowCard
+              customSize
+              glowColor="gold"
+              borderRadius="16"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block !p-0"
             >
-              <img src={GALLERY_ITEM_1} alt="Dental Restoration Case" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span>Instagram</span> <span>↗</span>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end items-start gap-1">
-                <p className="text-white font-black text-sm">{t('Implantology', 'იმპლანტოლოგია')}</p>
-                <p className="text-neutral-300 text-[11px] font-bold">{t('Full mouth restoration', 'სრული რესტავრაცია')}</p>
-              </div>
-            </a>
+              <a 
+                href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-full block relative"
+              >
+                <img src={GALLERY_ITEM_1} alt="Dental Restoration Case" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span>Instagram</span> <span>↗</span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end items-start gap-1">
+                  <p className="text-white font-black text-sm">{t('Implantology', 'იმპლანტოლოგია')}</p>
+                  <p className="text-neutral-300 text-[11px] font-bold">{t('Full mouth restoration', 'სრული რესტავრაცია')}</p>
+                </div>
+              </a>
+            </GlowCard>
 
             {/* Gallery Item 2 */}
-            <a 
-              href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
+            <GlowCard
+              customSize
+              glowColor="gold"
+              borderRadius="16"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block !p-0"
             >
-              <img src={GALLERY_ITEM_2} alt="Veneers Transformation Case" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span>Instagram</span> <span>↗</span>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end items-start gap-1">
-                <p className="text-white font-black text-sm">{t('Aesthetic Smile', 'ესთეტიკური ღიმილი')}</p>
-                <p className="text-neutral-300 text-[11px] font-bold">{t('After ceramic veneers placement', 'ვენირების შემდეგ')}</p>
-              </div>
-            </a>
+              <a 
+                href="https://www.instagram.com/dr.jenny_pirtskhalava?igsh=MW4xZmNhdXhoNHdw&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full h-full block relative"
+              >
+                <img src={GALLERY_ITEM_2} alt="Veneers Transformation Case" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-white flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span>Instagram</span> <span>↗</span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end items-start gap-1">
+                  <p className="text-white font-black text-sm">{t('Aesthetic Smile', 'ესთეტიკური ღიმილი')}</p>
+                  <p className="text-neutral-300 text-[11px] font-bold">{t('After ceramic veneers placement', 'ვენირების შემდეგ')}</p>
+                </div>
+              </a>
+            </GlowCard>
 
             {/* Gallery Item 3 - See More Card */}
-            <a 
-              href="https://www.facebook.com/profile.php?id=100042099562926&sk=photos"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block"
+            <GlowCard
+              customSize
+              glowColor="gold"
+              borderRadius="16"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/5] shadow-md bg-neutral-100 cursor-pointer block !p-0"
+              onClick={openFacebookPhotos}
             >
-              <img src={GALLERY_ITEM_3} alt="Full Orthodontic teeth model" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/50 to-transparent p-6 flex flex-col justify-end items-start gap-3 w-full">
-                <div>
-                  <h4 className="font-black text-lg text-white mb-1 tracking-tight">{t('See More Cases', 'იხილეთ მეტი')}</h4>
-                  <p className="text-neutral-300 text-[11px] font-bold">{t('500+ successful cosmetic cases', '500+ წარმატებული შემთხვევა')}</p>
+              <a 
+                href="https://www.facebook.com/profile.php?id=100042099562926&sk=photos"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={openFacebookPhotos}
+                className="w-full h-full block relative"
+              >
+                <img src={GALLERY_ITEM_3} alt="Full Orthodontic teeth model" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/50 to-transparent p-6 flex flex-col justify-end items-start gap-3 w-full">
+                  <div>
+                    <h4 className="font-black text-lg text-white mb-1 tracking-tight">{t('See More Cases', 'იხილეთ მეტი')}</h4>
+                    <p className="text-neutral-300 text-[11px] font-bold">{t('500+ successful cosmetic cases', '500+ წარმატებული შემთხვევა')}</p>
+                  </div>
+                  <div 
+                    onClick={openFacebookPhotos}
+                    className="w-full py-3 bg-[#f6f7f1] group-hover:bg-neutral-800 group-hover:text-white text-neutral-800 font-black text-xs rounded-xl shadow-md transition-all duration-300 text-center cursor-pointer active:scale-95"
+                  >
+                    {t('View on Facebook', 'გალერეა (Facebook)')} ↗
+                  </div>
                 </div>
-                <div 
-                  className="w-full py-3 bg-[#f6f7f1] group-hover:bg-neutral-800 group-hover:text-white text-neutral-800 font-black text-xs rounded-xl shadow-md transition-all duration-300 text-center"
-                >
-                  {t('View on Facebook', 'გალერეა (Facebook)')} ↗
-                </div>
-              </div>
-            </a>
+              </a>
+            </GlowCard>
           </div>
         </section>
 
