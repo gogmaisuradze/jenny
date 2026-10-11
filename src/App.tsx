@@ -1657,44 +1657,61 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const STORAGE_KEY = 'jenny_unique_visitors_total_v3';
+    const UNIQUE_VISITOR_FLAG = 'jenny_unique_visitor_counted_v1';
     const HISTORICAL_OFFSET = 57; // Preserves the 58 visits previously recorded on hits.dwyl.com
-    const cached = localStorage.getItem(STORAGE_KEY);
-    if (cached) {
-      setVisitorCount(cached);
+
+    let alreadyCounted = false;
+    try {
+      const cached = localStorage.getItem(STORAGE_KEY);
+      if (cached) {
+        setVisitorCount(cached);
+      }
+      alreadyCounted = localStorage.getItem(UNIQUE_VISITOR_FLAG) === 'true';
+    } catch {
+      // ignore storage errors
     }
 
-    const updateCount = (rawNum: number) => {
+    const updateCount = (rawNum: number, markCounted = false) => {
       if (!isNaN(rawNum) && rawNum > 0) {
         const formatted = String(rawNum).padStart(5, '0');
         setVisitorCount(formatted);
         try {
           localStorage.setItem(STORAGE_KEY, formatted);
+          if (markCounted) {
+            localStorage.setItem(UNIQUE_VISITOR_FLAG, 'true');
+          }
         } catch {
           // ignore storage errors
         }
       }
     };
 
-    // Real-time CORS-enabled global counter across all visitors and devices
-    fetch('https://abacus.jasoncameron.dev/hit/jenny.ge/visitors', { cache: 'no-store' })
+    const endpoint = alreadyCounted
+      ? 'https://abacus.jasoncameron.dev/get/jenny.ge/visitors'
+      : 'https://abacus.jasoncameron.dev/hit/jenny.ge/visitors';
+
+    // Real-time CORS-enabled global unique visitor counter across all devices
+    fetch(endpoint, { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) throw new Error('Counter response not ok');
         return res.json();
       })
       .then((data) => {
         if (data && typeof data.value === 'number') {
-          updateCount(HISTORICAL_OFFSET + data.value);
+          updateCount(HISTORICAL_OFFSET + data.value, true);
         } else {
           throw new Error('Invalid counter payload');
         }
       })
       .catch(() => {
-        // Fallback: localStorage counter starting from 58
+        // Fallback: localStorage unique counter starting from 58
         try {
           let count = parseInt(localStorage.getItem(STORAGE_KEY) || '58', 10);
           if (isNaN(count) || count < 58) count = 58;
-          count += 1;
-          updateCount(count);
+          if (!alreadyCounted) {
+            count += 1;
+          }
+          updateCount(count, true);
         } catch {
           setVisitorCount('00059');
         }
