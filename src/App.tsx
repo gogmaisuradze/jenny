@@ -1589,7 +1589,7 @@ const RatingExpertiseBadge: React.FC<{ t: (en: string, ka: string) => string }> 
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="absolute -top-[4%] -left-[8%] md:top-[10%] md:-left-[5%] bg-white/85 backdrop-blur-md px-2.5 py-1.5 md:p-4 rounded-xl md:rounded-2xl shadow-lg border border-white/50 block md:hover:-translate-y-2 md:hover:scale-105 md:hover:bg-white/95 md:hover:shadow-xl transition-all duration-300 cursor-pointer select-none z-20"
+      className="absolute top-[4%] -left-[8%] md:top-[10%] md:-left-[5%] bg-white/85 backdrop-blur-md px-2.5 py-1.5 md:p-4 rounded-xl md:rounded-2xl shadow-lg border border-white/50 block md:hover:-translate-y-2 md:hover:scale-105 md:hover:bg-white/95 md:hover:shadow-xl transition-all duration-300 cursor-pointer select-none z-20"
     >
       {!isHovered ? (
         <div className="flex items-center gap-2 md:gap-3">
