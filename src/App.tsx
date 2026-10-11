@@ -1651,40 +1651,52 @@ const App: React.FC = () => {
     setBookingTrigger(prev => prev + 1);
   };
 
-  const [visitorCount, setVisitorCount] = useState<string>('00001');
+  const [visitorCount, setVisitorCount] = useState<string>('00058');
 
   const t = (en: string, ka: string) => (lang === 'en' ? en : ka);
 
   useEffect(() => {
-    const STORAGE_KEY = 'jenny_unique_visitors_total_v2';
+    const STORAGE_KEY = 'jenny_unique_visitors_total_v3';
+    const HISTORICAL_OFFSET = 57; // Preserves the 58 visits previously recorded on hits.dwyl.com
     const cached = localStorage.getItem(STORAGE_KEY);
     if (cached) {
       setVisitorCount(cached);
     }
 
-    // Real-time global counter across all visitors and devices
-    fetch('https://hits.dwyl.com/gogmaisuradze/jenny.json')
-      .then((res) => res.json())
+    const updateCount = (rawNum: number) => {
+      if (!isNaN(rawNum) && rawNum > 0) {
+        const formatted = String(rawNum).padStart(5, '0');
+        setVisitorCount(formatted);
+        try {
+          localStorage.setItem(STORAGE_KEY, formatted);
+        } catch {
+          // ignore storage errors
+        }
+      }
+    };
+
+    // Real-time CORS-enabled global counter across all visitors and devices
+    fetch('https://abacus.jasoncameron.dev/hit/jenny.ge/visitors', { cache: 'no-store' })
+      .then((res) => {
+        if (!res.ok) throw new Error('Counter response not ok');
+        return res.json();
+      })
       .then((data) => {
-        if (data && data.message) {
-          const num = parseInt(data.message, 10);
-          if (!isNaN(num) && num > 0) {
-            const formatted = String(num).padStart(5, '0');
-            setVisitorCount(formatted);
-            localStorage.setItem(STORAGE_KEY, formatted);
-          }
+        if (data && typeof data.value === 'number') {
+          updateCount(HISTORICAL_OFFSET + data.value);
+        } else {
+          throw new Error('Invalid counter payload');
         }
       })
       .catch(() => {
+        // Fallback: localStorage counter starting from 58
         try {
-          let count = parseInt(localStorage.getItem(STORAGE_KEY) || '1', 10);
-          if (isNaN(count)) count = 1;
+          let count = parseInt(localStorage.getItem(STORAGE_KEY) || '58', 10);
+          if (isNaN(count) || count < 58) count = 58;
           count += 1;
-          const formatted = String(count).padStart(5, '0');
-          setVisitorCount(formatted);
-          localStorage.setItem(STORAGE_KEY, formatted);
+          updateCount(count);
         } catch {
-          setVisitorCount('00001');
+          setVisitorCount('00059');
         }
       });
   }, []);
